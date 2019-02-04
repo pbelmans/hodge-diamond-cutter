@@ -295,6 +295,11 @@ class HodgeDiamond:
     return HochschildHomology([sum([self.matrix[d - i + j, j] for j in range(max(0, i - d), min(i, d) + 1)]) for i in range(2*d + 1)])
 
 
+  def hh(self):
+    """Shorthand for ```HodgeDiamond.hochschild()```"""
+    return self.hochschild()
+
+
 
 
   """
@@ -549,6 +554,11 @@ class HochschildHomology:
 
     # see the object C^{(\lambda)} in the Polishchuk--Van den Bergh paper
     return HochschildHomology.from_polynomial(sum([product([summand(self.polynomial, ri) for ri in P.to_exp()]) for P in Partitions(k)]))
+
+
+  def sym(self, k):
+    """Shorthand for ```HochschildHomology.symmetric_power```"""
+    return self.symmetric_power(k)
 
 
 """Hodge diamond for the point"""
