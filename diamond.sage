@@ -888,13 +888,17 @@ def weighted_hypersurface(degree, weights):
   vdeg = sum(weights)
   tdeg = (n + 1) * degree - vdeg + 1
   T = P.taylor(t, 0, tdeg)
-  H = []
+  middle = []
 
   for q in range(0, n - 1):
-    H.append(T.coefficient(t, (q+1)*degree - vdeg))
+    middle.append(T.coefficient(t, (q+1)*degree - vdeg))
 
   # adding in non-primitive cohomology if necessary
-  if len(H) % 2 == 1: H[len(H) // 2] += 1
+  if len(middle) % 2 == 1: middle[len(middle) // 2] += 1
+
+  M = matrix.identity(n - 1)
+  for i in range(n - 1):
+    M[i, n - i - 2] = middle[i]
 
   return HodgeDiamond.from_matrix(M, from_variety=True)
 
