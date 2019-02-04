@@ -21,31 +21,43 @@ class HodgeDiamond:
 
 
   @classmethod
-  def from_matrix(cls, m):
+  def from_matrix(cls, m, from_variety=False):
     """
     Constructor when given a polynomial
 
     INPUT:
 
     - ``m`` -- a square symmetric integer matrix representing a Hodge diamond
+
+    - ``from_variety`` (default: False) -- whether a check should be performed that it comes from a variety
     """
     diamond = cls(matrix(m))
     diamond.matrix = matrix(m)
     diamond.__normalise() # get rid trailing zeroes from the diamond
 
+    if from_variety:
+      assert diamond.arises_from_variety(), "The matrix does not satisfy the conditions satisfied by the Hodge diamond of a smooth projective variety."
+
     return diamond
 
 
   @classmethod
-  def from_polynomial(cls, f):
+  def from_polynomial(cls, f, from_variety=False):
     """
     Constructor when given a Hodge--Poincaré polynomial
 
     INPUT:
 
     - ``f`` -- an integer polynomial in the ring ``HodgeDiamond.R`` representing the Hodge--Poincaré polynomial
+
+    - ``from_variety`` (default: False) -- whether a check should be performed that it comes from a variety
     """
-    return cls(cls.__to_matrix(f))
+    diamond = cls(cls.__to_matrix(f))
+
+    if from_variety:
+      assert diamond.arises_from_variety(), "The matrix does not satisfy the conditions satisfied by the Hodge diamond of a smooth projective variety."
+
+    return diamond
 
 
   @property
@@ -540,7 +552,7 @@ class HochschildHomology:
 
 
 """Hodge diamond for the point"""
-point = HodgeDiamond.from_matrix(matrix([[1]]))
+point = HodgeDiamond.from_matrix(matrix([[1]]), from_variety=True)
 
 
 """Hodge diamond for the Lefschetz motive"""
@@ -551,14 +563,14 @@ def Pn(n):
   """
   Hodge diamond for projective space of dimension ``n``
   """
-  return HodgeDiamond.from_matrix(matrix.identity(n + 1))
+  return HodgeDiamond.from_matrix(matrix.identity(n + 1), from_variety=True)
 
 
 def curve(g):
   """
   Hodge diamond for a curve of genus ``g``
   """
-  return HodgeDiamond.from_matrix(matrix([[1, g], [g, 1]]))
+  return HodgeDiamond.from_matrix(matrix([[1, g], [g, 1]]), from_variety=True)
 
 
 def symmetric_power(n, g):
@@ -584,7 +596,7 @@ def symmetric_power(n, g):
   for (i,j) in cartesian_product([range(n+1), range(n+1)]):
     M[i,j] = hpq(g, n, i, j)
 
-  return HodgeDiamond.from_matrix(M)
+  return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
 def jacobian(g):
@@ -597,7 +609,7 @@ def jacobian(g):
   for (i,j) in cartesian_product([range(g+1), range(g+1)]):
     M[i,j] = binomial(g, i) * binomial(g, j)
 
-  return HodgeDiamond.from_matrix(M)
+  return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
 def abelian(g):
@@ -606,7 +618,7 @@ def abelian(g):
 
   This is just an alias for ``jacobian(g)``.
   """
-  return jacobian(g)
+  return jacobian(g, from_variety=True)
 
 
 def moduli_vector_bundles(r, d, g):
@@ -650,7 +662,7 @@ def moduli_vector_bundles(r, d, g):
     exponent = sum([sum([(g-1) * C[i] * C[j] for i in range(j)]) for j in range(len(C))]) + sum([(C[i] + C[i+1]) * bracket(-(sum(C[0:i+1]) * d / C.size())) for i in range(len(C) - 1)])
     return (x*y)^exponent
 
-  return HodgeDiamond.from_polynomial(R(sum([one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)])))
+  return HodgeDiamond.from_polynomial(R(sum([one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)])), from_variety=True)
 
 
 def hilbtwo(X):
@@ -670,7 +682,7 @@ def hilbtwo(X):
 
   d = X.dimension()
 
-  return HodgeDiamond.from_polynomial(X.R(1/2 * ((X.polynomial)^2 + X.polynomial(-X.x^2, -X.y^2)) + sum([X.x^(i+1) * X.y^(i+1) * X.polynomial for i in range(d - 1)])))
+  return HodgeDiamond.from_polynomial(X.R(1/2 * ((X.polynomial)^2 + X.polynomial(-X.x^2, -X.y^2)) + sum([X.x^(i+1) * X.y^(i+1) * X.polynomial for i in range(d - 1)])), from_variety=True)
 
 
 def hilbthree(X):
@@ -695,7 +707,7 @@ def hilbthree(X):
     + 1/3 * X.polynomial(X.x^3, X.y^3)
     + sum([(X^2)(i).polynomial for i in range(1, d)])
     + sum([X(i+j).polynomial for i in range(1, d) for j in range(i, d)])
-    ))
+    ), from_variety=True)
 
 
 def generalisedkummer(n):
@@ -714,7 +726,7 @@ def generalisedkummer(n):
 
     return sum([gcd(a.keys())^4 * (x*y)^(n - sum(a.values())) * prod([sum([prod([1 / (j^b[j] * factorial(b[j])) * ((1-x^j) * (1-y^j))^(2*b[j]) for j in b.keys()]) for b in [b.to_exp_dict() for b in Partitions(a[i])]]) for i in a.keys()]) for a in [a.to_exp_dict() for a in Partitions(n)]])(-x, -y)
 
-  return HodgeDiamond.from_polynomial(HodgeDiamond.R(product(n) / product(1)))
+  return HodgeDiamond.from_polynomial(HodgeDiamond.R(product(n) / product(1)), from_variety=True)
 
 
 """
@@ -731,7 +743,7 @@ ogrady6 = HodgeDiamond.from_matrix(
     [0, 12, 0, 1144, 0, 12, 0],
     [1, 0, 173, 0, 173, 0, 1],
     [0, 6, 0, 12, 0, 6, 0],
-    [1, 0, 1, 0, 1, 0, 1]])
+    [1, 0, 1, 0, 1, 0, 1]], from_variety=True)
 
 
 def hilbn(S, n):
@@ -766,7 +778,7 @@ def hilbn(S, n):
     if monomial in series.coefficients():
       M[p,q] = series.coefficients()[monomial]
 
-  return HodgeDiamond(M)
+  return HodgeDiamond(M, from_variety=True)
 
 
 def nestedhilbn(S, n):
@@ -778,7 +790,7 @@ def nestedhilbn(S, n):
   assert S.arises_from_variety()
   assert S.dimension() == 2
 
-  R.<x, y, t> = PowerSeriesRing(ZZ, default_prec = (6*n + 1)) # TODO lower this?
+  R.<x, y, t> = PowerSeriesRing(ZZ, default_prec = (5*n + 1)) # TODO lower this?
 
   series = R(1)
   for k in range(1, 3*n): # TODO lower this?
@@ -797,8 +809,7 @@ def nestedhilbn(S, n):
     if monomial in series.coefficients():
       M[p,q] = series.coefficients()[monomial]
 
-  return HodgeDiamond(M)
-
+  return HodgeDiamond(M, from_variety=True)
 
 
 
@@ -827,7 +838,7 @@ def complete_intersection(degrees, dimension):
   for i in range(dimension + 1):
     M[i, dimension - i] = middle[i]
 
-  return HodgeDiamond.from_matrix(M)
+  return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
 """Hodge diamond for a K3 surface"""
@@ -875,7 +886,7 @@ def weighted_hypersurface(degree, weights):
   # adding in non-primitive cohomology if necessary
   if len(H) % 2 == 1: H[len(H) // 2] += 1
 
-  return H
+  return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
 def cyclic_cover(ramification_degree, cover_degree, weights):
@@ -924,7 +935,7 @@ def partial_flag_variety(D, I):
   for i in range(d + 1):
     diagonal[i] = len([l for l in lengths if l == i])
 
-  return HodgeDiamond.from_matrix(diagonal_matrix(diagonal))
+  return HodgeDiamond.from_matrix(diagonal_matrix(diagonal), from_variety=True)
 
 
 def gushel_mukai(n):
