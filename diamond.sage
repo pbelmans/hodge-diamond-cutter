@@ -788,7 +788,7 @@ def hilbn(S, n):
     if monomial in series.coefficients():
       M[p,q] = series.coefficients()[monomial]
 
-  return HodgeDiamond(M, from_variety=True)
+  return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
 def nestedhilbn(S, n):
@@ -819,7 +819,7 @@ def nestedhilbn(S, n):
     if monomial in series.coefficients():
       M[p,q] = series.coefficients()[monomial]
 
-  return HodgeDiamond(M, from_variety=True)
+  return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
 
