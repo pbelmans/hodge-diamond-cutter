@@ -361,6 +361,10 @@ class HodgeDiamond:
 
     return self + sum([other(i) for i in range(1, codim)])
 
+  def bundle(self, rank):
+    """Compute the Hodge diamond of a projective bundle"""
+    return sum([self(i) for i in range(rank)])
+
 
 class HochschildHomology:
   """
