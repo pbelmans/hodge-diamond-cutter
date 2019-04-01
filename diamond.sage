@@ -956,6 +956,61 @@ def partial_flag_variety(D, I):
   return HodgeDiamond.from_matrix(diagonal_matrix(diagonal), from_variety=True)
 
 
+def grassmannian(k, n):
+  """
+  Hodge diamond of the Grassmannian Gr(k, n) of k-dimensional subspaces in an n-dimensional vector space
+
+
+  INPUT:
+
+  - ``k`` -- dimension of the subspaces
+
+  - ``n`` -- dimension of the ambient vector space
+  """
+  return partial_flag_variety("A" + str(n - 1), [i for i in range(1, n) if i != k])
+
+
+def orthogonal_grassmannian(k, n):
+  """
+  Hodge diamond of the orthogonal Grassmannian OGr(k, n) of k-dimensional subspaces in an n-dimensional vector space isotropic with respect to a non-degenerate symmetric bilinear form
+
+
+  INPUT:
+
+  - ``k`` -- dimension of the subspaces
+
+  - ``n`` -- dimension of the ambient vector space
+  """
+  assert k <= n // 2
+
+  if n % 2 == 0:
+    # TODO exceptional cases need to be handled separately? check this!
+    if (k, n) == (2, 4):
+      return Pn(1) + Pn(1)
+    elif (k, n) == (2, 6):
+      return partial_flag_variety("D3", [1])
+    else:
+      return partial_flag_variety("D" + str(n // 2), [i for i in range(1, n // 2 + 1) if i != k])
+  else:
+    return partial_flag_variety("B" + str(n // 2), [i for i in range(1, n // 2 + 1) if i != k])
+
+
+def symplectic_grassmannian(k, n):
+  """
+  Hodge diamond of the symplectic Grassmannian SGr(k, n) of k-dimensional subspaces in an n-dimensional vector space isotropic with respect to a non-degenerate skew-symmetric bilinear form
+
+
+  INPUT:
+
+  - ``k`` -- dimension of the subspaces
+
+  - ``n`` -- dimension of the ambient vector space
+  """
+  assert n % 2 == 0
+
+  return partial_flag_variety("C" + str(n // 2), [i for i in range(1, n // 2 + 1) if i != k])
+
+
 def gushel_mukai(n):
   r"""
   Hodge diamond for a smooth $n$-dimensional Gushel--Mukai variety.
