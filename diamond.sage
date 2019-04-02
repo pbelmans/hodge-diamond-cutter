@@ -981,14 +981,15 @@ def orthogonal_grassmannian(k, n):
 
   - ``n`` -- dimension of the ambient vector space
   """
-  assert k <= n // 2
+  if n % 2 == 0:
+    assert k < n // 2
+  else:
+    assert k <= n // 2
 
   if n % 2 == 0:
-    # TODO exceptional cases need to be handled separately? check this!
-    if (k, n) == (2, 4):
-      return Pn(1) + Pn(1)
-    elif (k, n) == (2, 6):
-      return partial_flag_variety("D3", [1])
+    # exceptional case: need submaximal parabolic associated to the 2 tails
+    if k - 1 == n // 2:
+      return partial_flag_variety("D" + str(n // 2), [i for i in range(1, n // 2 - 1)])
     else:
       return partial_flag_variety("D" + str(n // 2), [i for i in range(1, n // 2 + 1) if i != k])
   else:
