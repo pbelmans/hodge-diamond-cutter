@@ -587,6 +587,15 @@ def curve(g):
   return HodgeDiamond.from_matrix(matrix([[1, g], [g, 1]]), from_variety=True)
 
 
+
+def surface(pg, q, h11):
+  """
+  Hodge diamond for a surface with geometric genus ``pg``, irregularity ``q`` and middle Hodge numbers ``h11``
+  """
+  return HodgeDiamond.from_matrix(matrix([[1, q, pg], [q, h11, q], [pg, q, 1]]), from_variety=True)
+
+
+
 def symmetric_power(n, g):
   """
   Hodge diamond for the $n$th symmetric power of a genus $g$ curve
