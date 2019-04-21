@@ -525,6 +525,10 @@ class HochschildHomology:
       return self._L[len(self._L) // 2 - i]
 
 
+  def __iter__(self):
+    return self._L.__iter__()
+
+
   def symmetric_power(self, k):
     """
     Hochschild homology of the Ganter--Kapranov symmetric power of a smooth and proper dg category
