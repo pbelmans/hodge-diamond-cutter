@@ -773,6 +773,27 @@ ogrady6 = HodgeDiamond.from_matrix(
     [1, 0, 1, 0, 1, 0, 1]], from_variety=True)
 
 
+"""
+Hodge diamond for O'Grady's exceptional 10-dimensional hyperkähler variety
+
+For the proof, see theorem A of [1905.03217]
+
+* [1905.03217] de Cataldo--Rapagnetta--Saccà, The Hodge numbers of O'Grady 10 via Ngô strings
+"""
+ogrady10 = HodgeDiamond.from_matrix(
+    [[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+    [0, 22, 0, 22, 0, 23, 0, 22, 0, 22, 0],
+    [1, 0, 254, 0, 276, 0, 276, 0, 254, 0, 1],
+    [0, 22, 0, 2299, 0, 2531, 0, 2299, 0, 22, 0],
+    [1, 0, 276, 0, 16490, 0, 16490, 0, 276, 0, 1],
+    [0, 23, 0, 2531, 0, 88024, 0, 2531, 0, 23, 0],
+    [1, 0, 276, 0, 16490, 0, 16490, 0, 276, 0, 1],
+    [0, 22, 0, 2299, 0, 2531, 0, 2299, 0, 22, 0],
+    [1, 0, 254, 0, 276, 0, 276, 0, 254, 0, 1],
+    [0, 22, 0, 22, 0, 23, 0, 22, 0, 22, 0],
+    [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]], from_variety=True)
+
+
 def hilbn(S, n):
   """
   Hodge diamond for Hilbert scheme of ``n`` points on a smooth projective surface ``S``
