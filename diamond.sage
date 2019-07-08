@@ -692,6 +692,21 @@ def moduli_vector_bundles(r, d, g):
   return HodgeDiamond.from_polynomial(R(sum([one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)])), from_variety=True)
 
 
+def quot_scheme_curve(g, n, r):
+  """
+  Hodge diamond for the Quot scheme of zero-dimensional quotients of length ``r`` of a vector bundle of rank ``r`` on a curve of genus ``g``
+
+  For the proof, see proposition 4.5 of [1907.00826] (or rather, the reference [Bif89] in there)
+
+  * [1907.00826] Bagnarol--Fantechi--Perroni, On the motive of zero-dimensional Quot schemes on a curve
+  """
+  def dn(P):
+    # shift in indexing because we start at 0
+    return sum([i * ni for (i, ni) in enumerate(P)])
+
+  return sum([product([symmetric_power(ni, g) for ni in P])(dn(P)) for P in IntegerVectors(n, r)])
+
+
 def hilbtwo(X):
   """
   Hodge diamond for the Hilbert square of any smooth projective variety
