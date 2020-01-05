@@ -235,9 +235,16 @@ class HodgeDiamond:
       return self.polynomial(x, y)
 
 
-  def __getitem__(self, (p, q)):
-    """Get (p, q)th entry of Hodge diamond"""
-    return self.matrix[p, q]
+  def __getitem__(self, index):
+    """Get (p, q)th entry of Hodge diamond or the ith row of the Hodge diamond"""
+    # first try it as (p, q)
+    try:
+      (p, q) = index
+      return self.matrix[p, q]
+    # now we assume it's an integer
+    except TypeError:
+      # we could do something smarter, but this is it for now
+      return [self.matrix[p, index - p] for p in range(index + 1)]
 
 
   """
