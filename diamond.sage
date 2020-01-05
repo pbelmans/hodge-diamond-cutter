@@ -1088,3 +1088,21 @@ def gushel_mukai(n):
   elif n == 5: return curve(10)(2) + Pn(5)
   else:        return K3(2) + point(3) + Pn(6)
 
+
+def fano_variety_lines_cubic(n):
+  r"""
+  Hodge diamond for the Fano variety of lines on an ``n``-dimensional cubic hypersurface.
+
+  This follows from the "beautiful formula" or X-F(X)-relation due to Galkin--Shinder, theorem 5.1 of [1405.5154v2].
+
+  * [1405.5154v2] Galkin--Shinder, The Fano variety of lines and rationality problem for a cubic hypersurface
+
+  INPUT:
+
+  - ``n`` -- the dimension, where ``n`` is at least 2
+  """
+  assert n >= 2
+
+  X = hypersurface(3, n)
+  return (hilbtwo(X) - Pn(n) * X)(-2)
+
