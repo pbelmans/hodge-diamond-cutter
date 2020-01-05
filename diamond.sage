@@ -904,6 +904,11 @@ def complete_intersection(degrees, dimension):
   return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
+def hypersurface(degree, dimension):
+  """Shorthand for a complete intersection of the given dimension where ``k=1``"""
+  return complete_intersection(degree, dimension)
+
+
 """Hodge diamond for a K3 surface"""
 K3 = complete_intersection(4, 2)
 
