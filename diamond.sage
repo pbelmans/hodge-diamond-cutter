@@ -397,7 +397,7 @@ class HochschildHomology:
 
     - ``L`` -- a list of integers representing $\mathrm{HH}_{-n}$ to $\mathrm{HH}_n$
     """
-    return cls(double)
+    return cls(L)
 
 
   @classmethod
@@ -602,7 +602,7 @@ def surface(pg, q, h11):
 
 def symmetric_power(n, g):
   """
-  Hodge diamond for the $n$th symmetric power of a genus $g$ curve
+  Hodge diamond for the ``n``th symmetric power of a genus ``g`` curve
 
   For the proof, see example 1.1(1) of [MR2777820]. An earlier reference, probably in Macdonald, should exist.
 
