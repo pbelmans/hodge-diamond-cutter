@@ -144,14 +144,14 @@ class HodgeDiamond:
 
     if self.is_zero():
       T = [[0]]
+    else:
+      for i in range(2*d + 1):
+        row = [""]*(abs(d - i))
 
-    for i in range(2*d + 1):
-      row = [""]*(abs(d - i))
+        for j in range(max(0, i - d), min(i, d) + 1):
+          row.extend([self.matrix[j, i - j], ""])
 
-      for j in range(max(0, i - d), min(i, d) + 1):
-        row.extend([self.matrix[j, i - j], ""])
-
-      T.append(row)
+        T.append(row)
 
     # padding all rows to full length
     for i in range(len(T)):
@@ -279,6 +279,12 @@ class HodgeDiamond:
     """Betti numbers of the Hodge diamond"""
     d = self.__size()
     return [sum([self.matrix[j, i - j] for j in range(max(0, i - d), min(i, d) + 1)]) for i in range(2*d + 1)]
+
+
+  def middle(self):
+    """Middle cohomology"""
+    d = self.__size()
+    return [self.matrix[i, d - i] for i in range(d + 1)]
 
 
   def euler(self):
@@ -575,6 +581,9 @@ class HochschildHomology:
     """Shorthand for ```HochschildHomology.symmetric_power```"""
     return self.symmetric_power(k)
 
+"""Hodge diamond for the empty space"""
+zero = HodgeDiamond.from_matrix(matrix([[0]]), from_variety=True)
+
 
 """Hodge diamond for the point"""
 point = HodgeDiamond.from_matrix(matrix([[1]]), from_variety=True)
@@ -625,6 +634,9 @@ def symmetric_power(n, g):
       return hpq(g, n, q, p)
     if p + q > n:
       return hpq(g, n, n - p, n - q)
+
+  if n < 0:
+    return zero
 
   M = matrix(n + 1)
   for (i,j) in cartesian_product([range(n+1), range(n+1)]):
