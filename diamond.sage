@@ -711,6 +711,40 @@ def moduli_vector_bundles(r, d, g):
   return HodgeDiamond.from_polynomial(R(sum([one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)])), from_variety=True)
 
 
+def fano_variety_intersection_quadrics(g, i):
+  """
+  Hodge diamond for the Fano variety of (g-i)-planes on the intersection of
+  two quadrics in $\\mathbb{P}^{2g+1}$, using [MR3689749].
+
+  We have that for i = 2 we get M_C(2,L) as above, for deg L odd.
+
+  * [MR3689749] Chen--Vilonen--Xue, On the cohomology of Fano varieties and the Springer correspondence, Adv. Math. 318 (2017), 515–533.
+  """
+  def N(i, k, j):
+    # some random high bound which works in many cases
+    R.<q> = PowerSeriesRing(ZZ, default_prec=10*abs(i) + 10*abs(k) + 20)
+    return (q^(-(j-i+1)*(2*i-1)) * (1 - q^(4*j)) * prod([1 - q^(2*l) for l in range(j-i+2, i+j-1)]) / prod([1 - q^(2*l) for l in range(1, 2*i-1)]))[k]
+
+  d = (g - i + 1) * (2*i - 1)
+
+  (x, y) = (HodgeDiamond.x, HodgeDiamond.y)
+
+  polynomial = 0
+
+  for k in range(2*d + 1):
+    for j in range(i - 1, g + 1):
+      if N(i, d - k, j) == 0:
+        continue
+
+      dimensions = (symmetric_power(g - j, g) - symmetric_power(g - j - 2, g)(1)).middle()
+      exterior = sum([dimensions[m] * x^m * y^((g - j) - m) for m in range((g - j) + 1)])
+      polynomial = polynomial + N(i, d - k, j) * exterior * x^((k - (g - j))/2) * y^((k - (g - j))/2)
+
+      assert binomial(2*g, g - j) == exterior(1, 1) # checking the Betti numbers
+
+  return HodgeDiamond.from_polynomial(polynomial)
+
+
 def quot_scheme_curve(g, n, r):
   """
   Hodge diamond for the Quot scheme of zero-dimensional quotients of length ``r`` of a vector bundle of rank ``r`` on a curve of genus ``g``
