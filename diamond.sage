@@ -32,8 +32,8 @@ class HodgeDiamond:
     - ``from_variety`` (default: False) -- whether a check should be performed that it comes from a variety
     """
     diamond = cls(matrix(m))
-    diamond.matrix = matrix(m)
-    diamond.__normalise() # get rid trailing zeroes from the diamond
+    # get rid of trailing zeroes from the diamond
+    diamond.matrix = HodgeDiamond.__to_matrix(diamond.polynomial)
 
     if from_variety:
       assert diamond.arises_from_variety(), "The matrix does not satisfy the conditions satisfied by the Hodge diamond of a smooth projective variety."
@@ -121,7 +121,7 @@ class HodgeDiamond:
 
   def __normalise(self):
     """Internal method to get rid of trailing zeros"""
-    self.matrix = HodgeDiamond.__to_matrix(self.polynomial)
+    self._m = HodgeDiamond.__to_matrix(self.polynomial)
 
 
   """
