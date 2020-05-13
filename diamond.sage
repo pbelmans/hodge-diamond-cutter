@@ -1049,18 +1049,16 @@ def partial_flag_variety(D, I):
 
   - ``I`` -- indices of vertices to be omitted in defining the parabolic subgroup
   """
-  W = WeylGroup(D)
+  R.<x> = PolynomialRing(ZZ)
 
-  cosets = set([w.coset_representative(index_set=I) for w in W])
-  lengths = [len(w.reduced_word()) for w in cosets]
-  d = max(lengths)
+  D = DynkinDiagram(D)
+  WG = D.root_system().root_lattice().weyl_group()
+  WL = D.subtype(I).root_system().root_lattice().weyl_group()
 
-  diagonal = [0]*(d + 1)
+  P = prod([sum([x^i for i in range(n)]) for n in WG.degrees()])
+  Q = prod([sum([x^i for i in range(n)]) for n in WL.degrees()])
 
-  for i in range(d + 1):
-    diagonal[i] = len([l for l in lengths if l == i])
-
-  return HodgeDiamond.from_matrix(diagonal_matrix(diagonal), from_variety=True)
+  return HodgeDiamond.from_matrix(diagonal_matrix(R(P/Q).coefficients()), from_variety=True)
 
 
 def grassmannian(k, n):
