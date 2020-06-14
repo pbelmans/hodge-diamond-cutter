@@ -612,25 +612,29 @@ def Pn(n):
     return HodgeDiamond.from_matrix(matrix.identity(n + 1), from_variety=True)
 
 
-def curve(g):
+def curve(genus):
     """
-    Hodge diamond for a curve of genus ``g``
+    Hodge diamond for a curve of a given genus.
     """
+    g = genus
     return HodgeDiamond.from_matrix(matrix([[1, g], [g, 1]]), from_variety=True)
 
 
 
-def surface(pg, q, h11):
+def surface(genus, irregularity, h11):
     """
-    Hodge diamond for a surface with geometric genus ``pg``, irregularity ``q`` and middle Hodge numbers ``h11``
+    Hodge diamond for a surface with given geometric genus, irregularity and
+    middle Hodge numbers ``h11``
     """
+    pg = genus
+    q = irregularity
     return HodgeDiamond.from_matrix(matrix([[1, q, pg], [q, h11, q], [pg, q, 1]]), from_variety=True)
 
 
 
-def symmetric_power(n, g):
+def symmetric_power(n, genus):
     """
-    Hodge diamond for the ``n``th symmetric power of a genus ``g`` curve
+    Hodge diamond for the ``n``th symmetric power of a curve of given genus
 
     For the proof, see example 1.1(1) of [MR2777820]. An earlier reference, probably in Macdonald, should exist.
 
@@ -651,37 +655,38 @@ def symmetric_power(n, g):
         return zero
 
     M = matrix(n + 1)
-    for (i,j) in cartesian_product([range(n+1), range(n+1)]):
-        M[i,j] = hpq(g, n, i, j)
+    for (i, j) in cartesian_product([range(n + 1), range(n + 1)]):
+        M[i, j] = hpq(genus, n, i, j)
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
-def jacobian(g):
+def jacobian(genus):
     """
     Hodge diamond for the Jacobian of a genus $g$ curve
 
     This description is standard, and follows from the fact that the cohomology is the exterior power of the H^1, as graded bialgebras. See e.g. proposition 7.27 in the Edixhoven--van der Geer--Moonen book in progress on abelian varieties.
     """
-    M = matrix(g + 1)
-    for (i,j) in cartesian_product([range(g+1), range(g+1)]):
-        M[i,j] = binomial(g, i) * binomial(g, j)
+    M = matrix(genus + 1)
+    for (i, j) in cartesian_product([range(g+1), range(g+1)]):
+        M[i, j] = binomial(g, i) * binomial(g, j)
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
-def abelian(g):
+def abelian(dimension):
     """
-    Hodge diamond for an abelian variety of dimension $g$
+    Hodge diamond for an abelian variety of a given dimension.
 
     This is just an alias for ``jacobian(g)``.
     """
-    return jacobian(g, from_variety=True)
+    return jacobian(dimension)
 
 
-def moduli_vector_bundles(r, d, g):
+def moduli_vector_bundles(rank, degree, genus):
     """
-    Hodge diamond for the moduli space of vector bundles of rank ``r`` and fixed determinant of degree ``d`` on a curve of genus ``g``
+    Hodge diamond for the moduli space of vector bundles of given rank and
+    fixed determinant of given degree on a curve of a given genus.
 
     For the proof, see corollary 5.1 of [MR1817504].
 
@@ -692,6 +697,10 @@ def moduli_vector_bundles(r, d, g):
             sage: jacobian(g) * moduli_vector_bundles(r, d, g)
 
     """
+    r = rank
+    d = degree
+    g = genus
+
     assert g >= 2, "genus needs to be at least 2"
     assert gcd(r, d) == 1, "rank and degree need to be coprime"
 
@@ -757,11 +766,13 @@ def fano_variety_intersection_quadrics(g, i):
     return HodgeDiamond.from_polynomial(polynomial)
 
 
-def quot_scheme_curve(g, n, r):
+def quot_scheme_curve(genus, length, rank):
     """
-    Hodge diamond for the Quot scheme of zero-dimensional quotients of length ``r`` of a vector bundle of rank ``r`` on a curve of genus ``g``
+    Hodge diamond for the Quot scheme of zero-dimensional quotients of given
+    length of a vector bundle of given rank on a curve of given genus.
 
-    For the proof, see proposition 4.5 of [1907.00826] (or rather, the reference [Bif89] in there)
+    For the proof, see proposition 4.5 of [1907.00826] (or rather, the
+    reference [Bif89] in there)
 
     * [1907.00826] Bagnarol--Fantechi--Perroni, On the motive of zero-dimensional Quot schemes on a curve
     """
@@ -874,7 +885,7 @@ ogrady10 = HodgeDiamond.from_matrix(
         [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]], from_variety=True)
 
 
-def hilbn(S, n):
+def hilbn(surface, n):
     """
     Hodge diamond for Hilbert scheme of ``n`` points on a smooth projective surface ``S``
 
@@ -888,8 +899,8 @@ def hilbn(S, n):
 
     - ``n`` -- number of points
     """
-    assert S.arises_from_variety()
-    assert S.dimension() == 2
+    assert surface.arises_from_variety()
+    assert surface.dimension() == 2
 
     R.<a, b, t> = PowerSeriesRing(ZZ, default_prec = (3*n + 1))
     series = R(1)
@@ -897,7 +908,7 @@ def hilbn(S, n):
     # theorem 2.3.14 of Göttsche's book
     for k in range(1, n+1):
         for (p,q) in cartesian_product([range(3), range(3)]):
-            series = series * (1 + (-1)**(p+q+1) * a**(p+k-1) * b**(q+k-1) * t**k)**((-1)**(p+q+1) * S[p,q])
+            series = series * (1 + (-1)**(p+q+1) * a**(p+k-1) * b**(q+k-1) * t**k)**((-1)**(p+q+1) * surface[p,q])
 
     # read off Hodge diamond from the (truncated) series
     M = matrix([[0 for _ in range(2*n + 1)] for _ in range(2*n + 1)])
@@ -909,14 +920,14 @@ def hilbn(S, n):
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
-def nestedhilbn(S, n):
+def nestedhilbn(surface, n):
     """
     Hodge diamond for the nested Hilbert scheme ``S^[n-1,n]`` of a smooth projective surface ``S``
 
     This is a smooth projective variety of dimension 2n.
     """
-    assert S.arises_from_variety()
-    assert S.dimension() == 2
+    assert surface.arises_from_variety()
+    assert surface.dimension() == 2
 
     R.<x, y, t> = PowerSeriesRing(ZZ, default_prec = (5*n + 1)) # TODO lower this?
 
@@ -928,7 +939,7 @@ def nestedhilbn(S, n):
             else:
                 series = series * (1 - x**(p+k-1) * y^(q+k-1) * t^k)^(-S[p, q])
 
-    series = series * R(S.polynomial) * t / (1 - x*y*t)
+    series = series * R(surface.polynomial) * t / (1 - x*y*t)
 
     # read off Hodge diamond from the (truncated) series
     M = matrix(2*n + 1)
@@ -1051,9 +1062,9 @@ def cyclic_cover(ramification_degree, cover_degree, weights):
     if type(weights) == sage.rings.integer.Integer:
         weights = [1]*(weights + 1)
 
-    weights.append(ramification_degree // cover_degree)
+    weights.append(ramification // cover)
 
-    return weighted_hypersurface(ramification_degree, weights)
+    return weighted_hypersurface(ramification, weights)
 
 
 def partial_flag_variety(D, I):

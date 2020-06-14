@@ -1,57 +1,145 @@
 # Hodge diamond cutter
 
-A collection of Python classes and functions to deal with Hodge diamonds (and Hochschild homology) of smooth projective varieties, together with many constructions.
+A collection of Python classes and functions in Sage to deal with Hodge diamonds (and Hochschild homology) of smooth projective varieties, together with many constructions.
+
 
 ## Getting started
 
-It suffices to load ``diamond.sage`` in Sage to get started. It was written using Sage 8.3, but presumably it works without modification in more recent and not too old versions, as nothing fancy is used.
+It suffices to load ``diamond.sage`` in Sage to get started.
+
+
+# Functionality
+
+## Varieties and constructions
+
+Below is the list of currently implemented constructions. See their respective documentation if their usage is not clear. They are roughly grouped into themes.
+```
+zero
+point
+lefschetz
+Pn(n)
+
+curve(genus)
+symmetric_power(n, genus)
+jacobian(genus)
+abelian(dimension)
+moduli_vector_bundles(rank, degree, genus)
+quot_scheme_curve(genus, length, rank)
+
+fano_variety_intersection_quadrics(g, i)
+fano_variety_lines_cubic(n)
+
+hilbtwo(X)
+hilbthree(X)
+
+generalisedkummer(n)
+ogrady6
+ogrady10
+
+surface(genus, irregularity, h11)
+hilbn(surface, n)
+nestedhilbn(surface, n)
+
+complete_intersection(degrees, dimension)
+hypersurface(degree, dimension)
+
+weighted_hypersurface(degree, weights)
+cyclic_cover(ramification, cover, weights)
+
+partial_flag_variety(D, I)
+grassmannian(k, n)
+orthogonal_grassmannian(k, n)
+symplectic_grassmannian(k, n)
+
+gushel_mukai(n)
+```
+
+
+## The library
+Of course, Hodge diamonds are little more than collections of numbers. But to make manipulating them easy, there is a convenient `HodgeDiamond` class which has many convenient methods, so that manipulating them becomes easy. Describing the whole interface is a bit tedious, let me just give the ones which are not obvious operations.
+
+The `HodgeDiamond` class:
+```
+HodgeDiamond.betti()
+HodgeDiamond.middle()
+HodgeDiamond.euler
+HodgeDiamond.hirzebruch
+HodgeDiamond.homological_unit()
+HodgeDiamond.hochschild()
+
+HodgeDiamond.level()
+
+HodgeDiamond.blowup(other, codim)
+HodgeDiamond.bundle(rank)
+```
+
+The `HochschildHomology` class:
+```
+HochschildHomology.symmetric_power(k)
+```
+
 
 ## Examples
 
-1. As a first example, let us consider the cubic fourfold. There is an intricate connection to K3 surfaces. To see the Hodge diamond of a K3 surface, it suffices to do
+As an example of why it is interesting to consider Hodge diamonds and , let us consider the cubic fourfold. There is an intricate connection to K3 surfaces. Let us try and see this well-known connection.
 
-   ```
-   print K3
-   ```
+To see the Hodge diamond of a K3 surface, it suffices to do
 
-   because K3 surfaces are hardcoded (well, all of them have the same Hodge diamond, which is just that of a quartic surface), which is
+```
+print(K3)
+```
 
-   ```
-             1
-         0        0
-     1       20       1
-         0        0
-             1
-   ```
+because K3 surfaces are hardcoded (well, all of them have the same Hodge diamond, which is just that of a quartic surface), which is
 
-   Now for the cubic fourfold we do
+```
+          1
+      0        0
+  1       20       1
+      0        0
+          1
+```
 
-   ```
-   print complete_intersection(3, 4)
-   ```
+Now for the cubic fourfold we do
 
-   which gives
+```
+print(hypersurface(3, 4))
+```
 
-   ```
-                     1
-                 0        0
-             0       1        0
-         0       0        0       0
-     0       1       21       1       0
-         0       0        0       0
-             0       1        0
-                 0        0
-                     1
-   ```
+which gives
 
-   Removing the primitive part of the cohomology gives you back the Hodge diamond of a K3 surface, and this is the first glimpse at a very interesting story relating the two.
+```
+                  1
+              0        0
+          0       1        0
+      0       0        0       0
+  0       1       21       1       0
+      0       0        0       0
+          0       1        0
+              0        0
+                  1
+```
 
-2. As a second example, let us discuss a conjectural semiorthogonal decomposition for the moduli space of rank 2 bundles with fixed determinant of degree 1 on a curve $C$ of genus $g$. As observed by [Kyoung-Seog Lee](https://arxiv.org/abs/1806.11101) and [myself](https://www.mfo.de/document/1822/preliminary_OWR_2018_24.pdf) the Hodge diamond of this variety can be decomposed in terms of symmetric powers of the curve $C$, which can be checked as follows
+Removing the primitive part of the middle cohomology gives you back the Hodge diamond of a K3 surface, and this is the first glimpse at a very interesting story relating the two.
 
-   ```
-   for g in range(2, 10):
-     assert moduli_vector_bundles(2, 1, g) == sum([symmetric_power(i, g)(i) for i in range(g)]) + sum([symmetric_power(i, g)(3*g - 3 - 2*i) for i in range(g - 1)])
-   ```
+```
+print(hypersurface(3, 4) - K3(1))
+```
+
+gives
+
+```
+                  1
+              0       0
+          0       0       0
+      0       0       0       0
+  0       0       1       0       0
+      0       0       0       0
+          0       0       0
+              0       0
+                  1
+```
+suggesting that there is a "boring" and an "interesting" part of the cohomology of a cubic fourfold.
+
 
 ## Contributing
 
