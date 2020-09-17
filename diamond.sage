@@ -661,13 +661,13 @@ def symmetric_power(n, genus):
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
-def jacobian(genus):
+def jacobian(g):
     """
     Hodge diamond for the Jacobian of a genus $g$ curve
 
     This description is standard, and follows from the fact that the cohomology is the exterior power of the H^1, as graded bialgebras. See e.g. proposition 7.27 in the Edixhoven--van der Geer--Moonen book in progress on abelian varieties.
     """
-    M = matrix(genus + 1)
+    M = matrix(g + 1)
     for (i, j) in cartesian_product([range(g+1), range(g+1)]):
         M[i, j] = binomial(g, i) * binomial(g, j)
 
