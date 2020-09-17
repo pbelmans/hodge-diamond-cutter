@@ -668,8 +668,8 @@ def jacobian(genus):
     This description is standard, and follows from the fact that the cohomology is the exterior power of the H^1, as graded bialgebras. See e.g. proposition 7.27 in the Edixhoven--van der Geer--Moonen book in progress on abelian varieties.
     """
     M = matrix(genus + 1)
-    for (i, j) in cartesian_product([range(g+1), range(g+1)]):
-        M[i, j] = binomial(g, i) * binomial(g, j)
+    for (i, j) in cartesian_product([range(genus+1), range(genus+1)]):
+        M[i, j] = binomial(genus, i) * binomial(genus, j)
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -780,7 +780,7 @@ def quot_scheme_curve(genus, length, rank):
         # shift in indexing because we start at 0
         return sum([i * ni for (i, ni) in enumerate(P)])
 
-    return sum([product([symmetric_power(ni, g) for ni in P])(dn(P)) for P in IntegerVectors(n, r)])
+    return sum([product([symmetric_power(ni, genus) for ni in P])(dn(P)) for P in IntegerVectors(length, rank)])
 
 
 def hilbtwo(X):
@@ -935,9 +935,9 @@ def nestedhilbn(surface, n):
     for k in range(1, 3*n): # TODO lower this?
         for (p, q) in cartesian_product([range(3), range(3)]):
             if p + q % 2 == 1:
-                series = series * (1 + x**(p+k-1) * y^(q+k-1) * t^k)^(S[p, q])
+                series = series * (1 + x**(p+k-1) * y^(q+k-1) * t^k)^(surface[p, q])
             else:
-                series = series * (1 - x**(p+k-1) * y^(q+k-1) * t^k)^(-S[p, q])
+                series = series * (1 - x**(p+k-1) * y^(q+k-1) * t^k)^(-surface[p, q])
 
     series = series * R(surface.polynomial) * t / (1 - x*y*t)
 
