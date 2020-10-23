@@ -1113,6 +1113,8 @@ def grassmannian(k, n):
 
     - ``n`` -- dimension of the ambient vector space
     """
+    if n in [0, 1] and k in [0, 1]: return point
+
     D = "A" + str(n - 1)
     I = [i for i in range(1, n) if i != k]
     return partial_flag_variety(D, I)
