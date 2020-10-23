@@ -769,7 +769,30 @@ def fano_variety_intersection_quadrics_odd(g, i):
 
             assert binomial(2*g, g - j) == exterior(1, 1) # checking the Betti numbers
 
-    return HodgeDiamond.from_polynomial(polynomial)
+    return HodgeDiamond.from_polynomial(polynomial, from_variety=True)
+
+
+def fano_variety_intersection_quadrics_even(g, i):
+    """
+    Hodge diamond for the Fano variety of (i - 1)-planes on the intersection of
+    two quadrics in $\\mathbb{P}^{2g}$, using [1510.05986v3].
+    
+    We have that for i = g-1 we get the moduli space of parabolic bundles on P^1 with weight 1/2 in 2g+1 points.
+
+    * [1510.05986v3] Chen--Vilonen--Xue, Springer correspondence, hyperelliptic curves, and cohomology of Fano varieties
+    """
+    def M(g, i, k, j):
+        return grassmannian(i - j, 2*g - i - j)[k - j*(g-i), k - j*(g-i)]
+
+    (x, y) = (HodgeDiamond.x, HodgeDiamond.y)
+    polynomial = 0
+
+    for k in range(0, i * (2*g - 2*i) + 1):
+        polynomial = polynomial + sum([M(g, i, k, j) * binomial(2*g+1, j) * x^k * y^k for j in range(i+1)])
+
+    return HodgeDiamond.from_polynomial(polynomial, from_variety=True)
+
+
 
 
 def quot_scheme_curve(genus, length, rank):
