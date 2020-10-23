@@ -30,7 +30,8 @@ abelian(dimension)
 moduli_vector_bundles(rank, degree, genus)
 quot_scheme_curve(genus, length, rank)
 
-fano_variety_intersection_quadrics(g, i)
+fano_variety_intersection_quadrics_odd(g, i)
+fano_variety_intersection_quadrics_even(g, i)
 fano_variety_lines_cubic(n)
 
 hilbtwo(X)
