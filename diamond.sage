@@ -252,7 +252,13 @@ class HodgeDiamond:
         # first try it as (p, q)
         try:
             (p, q) = index
-            return self.matrix[p, q]
+            if p < 0 or q < 0:
+                return 0
+            else:
+                try:
+                    return self.matrix[p, q]
+                except IndexError:
+                    return 0
         # now we assume it's an integer
         except TypeError:
             # we could do something smarter, but this is it for now
@@ -732,7 +738,7 @@ def moduli_vector_bundles(rank, degree, genus):
     return HodgeDiamond.from_polynomial(R(sum([one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)])), from_variety=True)
 
 
-def fano_variety_intersection_quadrics(g, i):
+def fano_variety_intersection_quadrics_odd(g, i):
     """
     Hodge diamond for the Fano variety of (g-i)-planes on the intersection of
     two quadrics in $\\mathbb{P}^{2g+1}$, using [MR3689749].
