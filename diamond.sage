@@ -777,7 +777,7 @@ def fano_variety_intersection_quadrics_even(g, i):
     Hodge diamond for the Fano variety of (i - 1)-planes on the intersection of
     two quadrics in $\\mathbb{P}^{2g}$, using [1510.05986v3].
     
-    We have that for i = g-1 we get the moduli space of parabolic bundles on P^1 with weight 1/2 in 2g+1 points.
+    We have that for i = g-1 we get the moduli space of parabolic bundles on P^1 with weight 1/2 in 2g+3 points.
 
     * [1510.05986v3] Chen--Vilonen--Xue, Springer correspondence, hyperelliptic curves, and cohomology of Fano varieties
     """
@@ -1245,3 +1245,27 @@ def fano_variety_lines_cubic(n):
 
     X = hypersurface(3, n)
     return (hilbtwo(X) - Pn(n) * X)(-2)
+
+
+def Mzeronbar(n):
+    r"""
+    Hodge diamond for the moduli space of n pointed stable curves of genus 0
+
+    Taken from (0.12) in [MR1363064]. Keel's original paper has a recursion
+    on page 550, but that seems to not work.
+
+    * [MR1363064] Manin, Generating functions in algebraic geometry and sums
+      over trees
+    """
+    assert n >= 2
+
+    x = HodgeDiamond.x
+    y = HodgeDiamond.y
+
+    def Manin(n):
+        if n in [2, 3]:
+            return HodgeDiamond.R(1)
+        else:
+            return Manin(n - 1) + x*y * sum([binomial(n - 2, i) * Manin(i + 1) * Manin(n - i) for i in range(2, n - 1)])
+
+    return HodgeDiamond.from_polynomial(Manin(n))
