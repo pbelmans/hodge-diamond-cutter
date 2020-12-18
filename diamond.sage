@@ -738,6 +738,44 @@ def moduli_vector_bundles(rank, degree, genus):
     return HodgeDiamond.from_polynomial(R(sum([one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)])), from_variety=True)
 
 
+def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
+    """
+    Hodge diamond for the moduli space of parabolic rank 2 bundles with
+    fixed determinant of odd degree on a curve of genus genus.
+
+    See Corollary 5.34 of [2011.14872].
+
+    * [2011.14872] Fu--Hoskins--Pepin Lehalleur, Motives of moduli spaces of
+      bundles on curves via variation of stability and flips
+
+    This is not a proof of the formula we implemented per se, but it should be correct.
+    Also, it could be that the choice of weights give something singular / stacky. Then it'll
+    give bad output without warning. You have been warned.
+    """
+    def d(j, alpha):
+        N = len(alpha)
+        return len([I for I in Subsets(N) if (len(I) - j) % 2 == 0 and j - 1 < len(I) + sum([alpha[i - 1] for i in range(1, N + 1) if i not in I]) - sum([alpha[i - 1] for i in I]) and len(I) + sum([alpha[i - 1] for i in range(1, N + 1) if i not in I]) - sum([alpha[i - 1] for i in I]) < j + 1])
+
+    def c(j, alpha):
+        return binomial(len(alpha), j) - d(j, alpha)
+
+    def b(j, alpha):
+        return sum([((i + 2) / 2).floor() * c(j - i, alpha) for i in range(j + 1)])
+
+    N = len(alpha)
+
+    if genus == 0: M = zero
+    if genus == 1: M = curve(1)
+    if genus >= 2: M = moduli_vector_bundles(2, 1, genus)
+
+    result = M * Pn(1)^N + sum([b(j, alpha) * jacobian(genus)(genus + j) for j in range(N - 2)])
+    assert result.arises_from_variety()
+
+    return result
+
+
+
+
 def fano_variety_intersection_quadrics_odd(g, i):
     """
     Hodge diamond for the Fano variety of (g-i)-planes on the intersection of
