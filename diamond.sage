@@ -1282,7 +1282,7 @@ def horospherical(D, y=0, z=0):
         if i == 3:
             n = X[3:].split(",")[0]
             m = int(X[:-1].split(",")[1])
-            return horospherical("C" + n, m)
+            return horospherical("C" + n, m, m - 1)
         if i == 4: return horospherical("F4", 2, 3)
         if i == 5: return horospherical("G2", 1, 2)
 
