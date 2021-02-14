@@ -1162,6 +1162,21 @@ def partial_flag_variety(D, I):
                                     from_variety=True)
 
 
+def generalized_grassmannian(D, k):
+    """
+    Hodge diamond of the generalized Grassmannian of type D / P_k. This is just
+    shorthand for `partial_flag_variety(D, I)` where I is a singleton.
+
+
+    INPUT:
+
+    - ``D`` -- Dynkin type
+
+    - ``k`` -- the vertex in the Dynkin diagram defining the maximal parabolic
+    """
+    return partial_flag_variety(D, [i for i in range(1, int(D[1:]) + 1) if i != k])
+
+
 def grassmannian(k, n):
     """
     Hodge diamond of the Grassmannian Gr(k, n) of k-dimensional subspaces in
@@ -1231,6 +1246,87 @@ def symplectic_grassmannian(k, n):
     D = "C" + str(n // 2)
     I = [i for i in range(1, n // 2 + 1) if i != k]
     return partial_flag_variety(D, I)
+
+
+def horospherical(D, y=0, z=0):
+    """
+    Horospherical varieties as discussed in [1803.05063], with labelling
+    and notation as in op. cit.
+
+    INPUT:
+
+    - ``D``: either a Dynkin type from the (small) list of allowed types
+             in the classification
+             _or_ a plaintext label from X1(n), X2, X3(n,m), X4, X5
+
+    - ``y``: index for the parabolic subgroup for Y, see classification
+
+    - ``z``: index for the parabolic subgroup for the closed orbit Z
+
+    ``y`` and ``z`` must be omitted if a plaintext description is given.
+
+    * [1803.05063] Gonzales--Pech--Perrin--Samokhin, Geometry of horospherical
+      varieties of Picard rank one
+    """
+    # treat D as the plaintext description of a horospherical variety
+    # not supposed to be 100% robust
+    if y == 0 and z == 0:
+        X = D # rename for less confusion
+
+        i = int(X[1])
+
+        if i == 1:
+            n = X[3:-1]
+            return horospherical(B + n, int(n) - 1, int(n))
+        if i == 2: return horospherical("B3", 1, 3)
+        if i == 3:
+            n = X[3:].split(",")[0]
+            m = int(X[:-1].split(",")[1])
+            return horospherical("C" + n, m)
+        if i == 4: return horospherical("F4", 2, 3)
+        if i == 5: return horospherical("G2", 1, 2)
+
+        # didn't recognise it so far, so must be wrong
+        raise Exception
+
+    # determine the Hodge diamond from the blowup description
+    Y = generalized_grassmannian(D, y)
+    Z = generalized_grassmannian(D, z)
+
+    n = int(D[1:])
+
+    if D[0] == "B":
+        assert (n == 3 and y == 1 and z == 3) or (n >= 3 and y == n - 1 and z == n)
+        if n == 3 and y == 1:
+            dimension = n * (n + 3) / 2
+        else:
+            dimension = 9
+    elif D[0] == "C":
+        assert n >= 2 and y in range(2, n + 1) and z == y - 1
+        dimension = y * (2*n + 1 - y) - y * (y - 1) / 2
+    elif D == "F4":
+        assert y == 2 and z == 3
+        dimension = 23
+    elif D == "G2":
+        assert y == 1 and z == 2
+        dimension = 7
+
+    codimXY = dimension - Y.dimension()
+    codimXZ = dimension - Z.dimension()
+
+    return Y.bundle(codimXY + 1) + Z - Z.bundle(codimXZ)
+    
+
+def odd_symplectic_grassmannian(k, n):
+    """
+    Hodge diamond of the odd symplectic Grassmannian SGr(k, n), where n is odd,
+    introduced by Mihai. This is just shorthand for a call to `horospherical_variety`
+    for type C, n // 2 and Y and Z determined by k and k - 1.
+
+    """
+    assert n % 2 == 1
+
+    return horospherical("C" + str(n // 2), k, k - 1)
 
 
 def gushel_mukai(n):

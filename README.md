@@ -52,9 +52,13 @@ weighted_hypersurface(degree, weights)
 cyclic_cover(ramification, cover, weights)
 
 partial_flag_variety(D, I)
+generalized_grassmannian(D, k)
 grassmannian(k, n)
 orthogonal_grassmannian(k, n)
 symplectic_grassmannian(k, n)
+
+horospherical(D, y, z)
+odd_symplectic_grassmannian(k, n)
 
 gushel_mukai(n)
 
