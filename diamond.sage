@@ -1277,7 +1277,7 @@ def horospherical(D, y=0, z=0):
 
         if i == 1:
             n = X[3:-1]
-            return horospherical(B + n, int(n) - 1, int(n))
+            return horospherical("B" + n, int(n) - 1, int(n))
         if i == 2: return horospherical("B3", 1, 3)
         if i == 3:
             n = X[3:].split(",")[0]
@@ -1298,9 +1298,9 @@ def horospherical(D, y=0, z=0):
     if D[0] == "B":
         assert (n == 3 and y == 1 and z == 3) or (n >= 3 and y == n - 1 and z == n)
         if n == 3 and y == 1:
-            dimension = n * (n + 3) / 2
-        else:
             dimension = 9
+        else:
+            dimension = n * (n + 3) / 2
     elif D[0] == "C":
         assert n >= 2 and y in range(2, n + 1) and z == y - 1
         dimension = y * (2*n + 1 - y) - y * (y - 1) / 2
