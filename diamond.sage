@@ -814,7 +814,7 @@ def fano_variety_intersection_quadrics_even(g, i):
     """
     Hodge diamond for the Fano variety of (i - 1)-planes on the intersection of
     two quadrics in $\\mathbb{P}^{2g}$, using [1510.05986v3].
-    
+
     We have that for i = g-1 we get the moduli space of parabolic bundles on P^1 with weight 1/2 in 2g+3 points.
 
     * [1510.05986v3] Chen--Vilonen--Xue, Springer correspondence, hyperelliptic curves, and cohomology of Fano varieties
@@ -1315,7 +1315,7 @@ def horospherical(D, y=0, z=0):
     codimXZ = dimension - Z.dimension()
 
     return Y.bundle(codimXY + 1) + Z - Z.bundle(codimXZ)
-    
+
 
 def odd_symplectic_grassmannian(k, n):
     """
@@ -1403,3 +1403,124 @@ def Mzeronbar(n):
             return Manin(n - 1) + x*y * sum([binomial(n - 2, i) * Manin(i + 1) * Manin(n - i) for i in range(2, n - 1)])
 
     return HodgeDiamond.from_polynomial(Manin(n))
+
+
+# make Theta into slope stability
+def mu(Theta):
+    return lambda d: sum([a * b for (a, b) in zip(Theta, d)]) / sum(d)
+
+
+def quiver_moduli(Q, d, mu):
+    r"""
+    Hodge diamond for the moduli space of semistable quiver representations
+    for a quiver Q, dimension vector d, and slope-stability condition mu.
+
+    Taken from Corollary 6.9 of [MR1974891]
+
+    * [MR1974891] Reineke, The Harder-Narasimhan system in quantum groups and
+    cohomology of quiver moduli
+    """
+    K.<v> = FunctionField(QQ)
+    # we will use v, not v^2, throughout
+
+    # solve Ax=b for A upper triangular via back substitution
+    def solve(A, b):
+        assert A.is_square() and A.nrows() == len(b)
+
+        n = len(b) - 1
+        x = [0] * (n + 1)
+
+        # start
+        x[n] = b[n] / A[n,n]
+
+        # induct
+        for i in range(n - 1, -1, -1):
+            x[i] = (b[i] - sum([A[i,j] * x[j] for j in range(i + 1, n + 1)])) / A[i,i]
+
+        return x
+
+    @cached_function
+    def GL(n):
+        """Cardinality of general linear group ``\\mathrm{GL}_n(\\mathbb{F}_v)``"""
+        return prod([v^n - v^k for k in range(n)])
+
+    # not caching this one seems faster
+    #@cached_function
+    def Rd(Q, d):
+        """Cardinality of ``R_d`` from Definition 3.1"""
+        return v^sum([d[i] * d[j] * Q[i,j] for (i,j) in Q.dict()])
+
+    @cached_function
+    def Gd(d):
+        """Cardinality of ``G_d`` from Definition 3.1"""
+        return prod([GL(di) for di in d])
+
+    def Id(Q, d, mu):
+        """Returns the indexing set from Corollary 5.5
+
+        These are the dimension vectors smaller than ``d`` whose slope is bigger
+        than ``d``, together with the zero dimension vector and ``d`` itself.
+
+        Keyword arguments:
+        Q -- adjacency matrix of quiver
+        d -- dimension vector
+        mu -- stability condition
+        """
+        # all possible dimension vectors e <= d
+        E = cartesian_product(list(map(range, map(lambda di: di + 1, d))))
+
+        # predicate from Corollary 5.5, E[0] is the zero dimension vector
+        return [E[0]] + list(filter(lambda e: mu(e) > mu(d), E[1:])) + [d]
+
+    def Td(Q, d, mu):
+        """Returns the upper triangular transfer matrix from Corollary 5.5
+
+        Keyword arguments:
+        Q -- adjacency matrix of an acyclic quiver
+        d -- dimension vector
+        mu -- stability condition
+        """
+        # Euler form
+        chi = matrix.identity(len(d)) - Q
+        # indexing set for the transfer matrix
+        I = Id(Q, d, mu)
+        # make them vectors now so that we only do it once
+        I = list(map(vector, I))
+
+        def entry(Q, e, f):
+            """Entry of the transfer matrix, as per Corollary 6.9"""
+            fe = f - e
+
+            if all(fei >= 0 for fei in fe):
+                return v^(-fe * chi * e) * Rd(Q, fe) / Gd(fe)
+            return 0
+
+        T = matrix(K, len(I), len(I))
+
+        for i in range(len(I)):
+            for j in range(i, len(I)): # upper triangular
+                T[i, j] = entry(Q, I[i], I[j])
+
+        return T
+
+    Q = DiGraph(matrix(Q))
+    # see Section 2
+    assert Q.is_directed_acyclic(), "Q needs to be acyclic"
+
+    # see Definition 6.3 and following lemmas
+    assert gcd(d) == 1, "dimension vector is not coprime"
+
+    # (0,d)-entry of the inverse of the transfer matrix, as per Corollary 6.9
+    T = Td(Q.adjacency_matrix(), d, mu)
+    # doing a back-substitution is faster
+    result = solve(T, [0] * (T.nrows() - 1) + [1])[0] * (1 - v)
+    #result = T.inverse()[0,-1] * (1 - v)
+
+    assert result.denominator() == 1, "result needs to be a polynomial"
+
+    x = HodgeDiamond.x
+    y = HodgeDiamond.y
+
+    result = HodgeDiamond.R(result.numerator().subs(v=x*y))
+
+    return HodgeDiamond.from_polynomial(result)
