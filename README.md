@@ -63,6 +63,10 @@ odd_symplectic_grassmannian(k, n)
 gushel_mukai(n)
 
 Mzeronbar(n)
+
+quiver_moduli(Q, d, mu)
+
+fano_threefold(rho, ID)
 ```
 
 
@@ -92,7 +96,7 @@ HochschildHomology.symmetric_power(k)
 
 ## Examples
 
-As an example of why it is interesting to consider Hodge diamonds and , let us consider the cubic fourfold. There is an intricate connection to K3 surfaces. Let us try and see this well-known connection.
+As an example of why it is interesting to consider Hodge diamonds and perform operations on them, let us consider the cubic fourfold. There is an intricate connection to K3 surfaces. Let us try and see this well-known connection.
 
 To see the Hodge diamond of a K3 surface, it suffices to do
 

@@ -1419,6 +1419,14 @@ def quiver_moduli(Q, d, mu):
 
     * [MR1974891] Reineke, The Harder-Narasimhan system in quantum groups and
     cohomology of quiver moduli
+
+    INPUT:
+
+    - ``Q`` -- adjacency matrix of an acyclic quiver
+
+    - ``d`` -- dimension vector
+
+    - ``mu`` -- stability condition
     """
     K.<v> = FunctionField(QQ)
     # we will use v, not v^2, throughout
@@ -1460,11 +1468,6 @@ def quiver_moduli(Q, d, mu):
 
         These are the dimension vectors smaller than ``d`` whose slope is bigger
         than ``d``, together with the zero dimension vector and ``d`` itself.
-
-        Keyword arguments:
-        Q -- adjacency matrix of quiver
-        d -- dimension vector
-        mu -- stability condition
         """
         # all possible dimension vectors e <= d
         E = cartesian_product(list(map(range, map(lambda di: di + 1, d))))
@@ -1473,13 +1476,7 @@ def quiver_moduli(Q, d, mu):
         return [E[0]] + list(filter(lambda e: mu(e) > mu(d), E[1:])) + [d]
 
     def Td(Q, d, mu):
-        """Returns the upper triangular transfer matrix from Corollary 5.5
-
-        Keyword arguments:
-        Q -- adjacency matrix of an acyclic quiver
-        d -- dimension vector
-        mu -- stability condition
-        """
+        """Returns the upper triangular transfer matrix from Corollary 5.5"""
         # Euler form
         chi = matrix.identity(len(d)) - Q
         # indexing set for the transfer matrix
@@ -1524,3 +1521,126 @@ def quiver_moduli(Q, d, mu):
     result = HodgeDiamond.R(result.numerator().subs(v=x*y))
 
     return HodgeDiamond.from_polynomial(result)
+
+
+def fano_threefold(rho, ID):
+    """Hodge diamond of a Fano 3-fold
+
+    INPUT:
+
+    - ``rho` -- Picard rank
+
+    - ``ID`` -- numbering from the Mori--Mukai classification
+    """
+    h12 = {(1, 1): 52,
+           (1, 2): 30,
+           (1, 3): 20,
+           (1, 4): 14,
+           (1, 5): 10,
+           (1, 6): 7,
+           (1, 7): 5,
+           (1, 8): 3,
+           (1, 9): 2,
+           (1, 10): 0,
+           (1, 11): 21,
+           (1, 12): 10,
+           (1, 13): 5,
+           (1, 14): 2,
+           (1, 15): 0,
+           (1, 16): 0,
+           (1, 17): 0,
+           (2, 1): 22,
+           (2, 2): 20,
+           (2, 3): 11,
+           (2, 4): 10,
+           (2, 5): 6,
+           (2, 6): 9,
+           (2, 7): 5,
+           (2, 8): 9,
+           (2, 9): 5,
+           (2, 10): 3,
+           (2, 11): 5,
+           (2, 12): 3,
+           (2, 13): 2,
+           (2, 14): 1,
+           (2, 15): 4,
+           (2, 16): 2,
+           (2, 17): 1,
+           (2, 18): 2,
+           (2, 19): 2,
+           (2, 20): 0,
+           (2, 21): 0,
+           (2, 22): 0,
+           (2, 23): 1,
+           (2, 24): 0,
+           (2, 25): 1,
+           (2, 26): 0,
+           (2, 27): 0,
+           (2, 28): 1,
+           (2, 29): 0,
+           (2, 30): 0,
+           (2, 31): 0,
+           (2, 32): 0,
+           (2, 33): 0,
+           (2, 34): 0,
+           (2, 35): 0,
+           (2, 36): 0,
+           (3, 1): 8,
+           (3, 2): 3,
+           (3, 3): 3,
+           (3, 4): 2,
+           (3, 5): 0,
+           (3, 6): 1,
+           (3, 7): 1,
+           (3, 8): 0,
+           (3, 9): 3,
+           (3, 10): 0,
+           (3, 11): 1,
+           (3, 12): 0,
+           (3, 13): 0,
+           (3, 14): 1,
+           (3, 15): 0,
+           (3, 16): 0,
+           (3, 17): 0,
+           (3, 18): 0,
+           (3, 19): 0,
+           (3, 20): 0,
+           (3, 21): 0,
+           (3, 22): 0,
+           (3, 23): 0,
+           (3, 24): 0,
+           (3, 25): 0,
+           (3, 26): 0,
+           (3, 27): 0,
+           (3, 28): 0,
+           (3, 29): 0,
+           (3, 30): 0,
+           (3, 31): 0,
+           (4, 1): 1,
+           (4, 2): 1,
+           (4, 3): 0,
+           (4, 4): 0,
+           (4, 5): 0,
+           (4, 6): 0,
+           (4, 7): 0,
+           (4, 8): 0,
+           (4, 9): 0,
+           (4, 10): 0,
+           (4, 11): 0,
+           (4, 12): 0,
+           (4, 13): 0,
+           (5, 1): 0,
+           (5, 2): 0,
+           (5, 3): 0,
+           (6, 1): 0,
+           (7, 1): 0,
+           (8, 1): 0,
+           (9, 1): 0,
+           (10, 1): 0}
+
+    M = matrix([[1, 0, 0, 0],
+                [0, rho, h12[(rho, ID)], 0],
+                [0, h12[(rho, ID)], rho, 0],
+                [0, 0, 0, 1]])
+
+    return HodgeDiamond.from_matrix(M, from_variety=True)
