@@ -738,6 +738,35 @@ def moduli_vector_bundles(rank, degree, genus):
     return HodgeDiamond.from_polynomial(R(sum([one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)])), from_variety=True)
 
 
+def seshadris_desingularisation(g):
+    """
+    Hodge diamond for Seshadri's desingularisation of the moduli space of
+    rank 2 bundles with trivial determinant on a curve of a given genus.
+
+    For the statement, see Corollary 3.18 of [MR1895918].
+
+    * [MR1895918] del Baño, On the motive of moduli spaces of rank two vector bundles over a curve. Compositio Math. 131 (2002), 1-30.
+    """
+
+    assert g >= 2, "genus needs to be at least 2"
+
+    R = HodgeDiamond.R
+    x = HodgeDiamond.x
+    y = HodgeDiamond.y
+
+    L = x*y
+    A = (1 + x) * (1 + y)
+    B = (1 - x) * (1 - y)
+
+    one = ((1 + x*L)^g * (1 + y*L)^g - L^g * A^g) / ((1 - L) * (1 - L^2))
+    two = (A^g * (L - L^g) / (1 - L) + (A^g + B^g) / 2) / (1 + L) # fixed typo in del Bano: compare to 3.12, motive of P^(g-2)
+    three = (A^g - 2^(2*g)) / 2 * ((1 - L^(g-1)) / (1 - L))^2
+    four = (B^g / 2 - 2^(2*g - 1)) * (1 - L^(2*g-2)) / (1 - L^2) # fixed typo in del Bano: compare to 3.14, power of L at the end
+    five = ((1 - L^g) * (1 - L^(g-1)) * (1 - L^(g-2)) / ((1 - L) * (1 - L^2) * (1 - L^3)) + (1 - L^g) * (1 - L^(g-1)) / ((1 - L) * (1 - L^2)) * L^(g-2)) * 2^(2*g)
+
+    return HodgeDiamond.from_polynomial(R(one - two + three + four + five))
+
+
 def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     """
     Hodge diamond for the moduli space of parabolic rank 2 bundles with
@@ -772,8 +801,6 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     assert result.arises_from_variety()
 
     return result
-
-
 
 
 def fano_variety_intersection_quadrics_odd(g, i):

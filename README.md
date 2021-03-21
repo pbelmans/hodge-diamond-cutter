@@ -28,6 +28,8 @@ symmetric_power(n, genus)
 jacobian(genus)
 abelian(dimension)
 moduli_vector_bundles(rank, degree, genus)
+seshadris_desingularisation(genus)
+moduli_parabolic_vector_bundles_rank_two(genus, alpha)
 quot_scheme_curve(genus, length, rank)
 
 fano_variety_intersection_quadrics_odd(g, i)
