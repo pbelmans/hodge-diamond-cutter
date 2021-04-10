@@ -507,6 +507,11 @@ class HochschildHomology:
         return set(self._L) == set([0])
 
 
+    def euler(self):
+        """Euler characteristic of Hochschild homology"""
+        return self.polynomial(-1)
+
+
 
     """
     Overloaded operators
