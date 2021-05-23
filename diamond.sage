@@ -951,7 +951,7 @@ def generalisedkummer(n):
         x = HodgeDiamond.x
         y = HodgeDiamond.y
 
-        return sum([gcd(a.keys())^4 * (x*y)^(n - sum(a.values())) * prod([sum([prod([1 / (j^b[j] * factorial(b[j])) * ((1-x^j) * (1-y^j))^(2*b[j]) for j in b.keys()]) for b in [b.to_exp_dict() for b in Partitions(a[i])]]) for i in a.keys()]) for a in [a.to_exp_dict() for a in Partitions(n)]])(-x, -y)
+        return sum([gcd(list(a.keys()))^4 * (x*y)^(n - sum(a.values())) * prod([sum([prod([1 / (j^b[j] * factorial(b[j])) * ((1-x^j) * (1-y^j))^(2*b[j]) for j in b.keys()]) for b in [b.to_exp_dict() for b in Partitions(a[i])]]) for i in a.keys()]) for a in [a.to_exp_dict() for a in Partitions(n)]])(-x, -y)
 
     return HodgeDiamond.from_polynomial(HodgeDiamond.R(product(n) / product(1)), from_variety=True)
 
