@@ -2033,12 +2033,13 @@ def hilbn(surface, n):
         for (p,q) in cartesian_product([range(3), range(3)]):
             series = series * (1 + (-1)**(p+q+1) * a**(p+k-1) * b**(q+k-1) * t**k)**((-1)**(p+q+1) * surface[p,q])
 
+    # convert to a polynomial which allows quick access to the coefficients
+    series = series.polynomial()
+
     # read off Hodge diamond from the (truncated) series
-    M = matrix([[0 for _ in range(2*n + 1)] for _ in range(2*n + 1)])
+    M = matrix(2*n + 1)
     for (p, q) in cartesian_product([range(2*n + 1), range(2*n + 1)]):
-        monomial = a**min(p, 2*n-q)*b**min(q, 2*n-p)*t**n # use Serre duality
-        if monomial in series.coefficients():
-            M[p,q] = series.coefficients()[monomial]
+        M[p,q] = series.coefficient([min(p, 2*n-q), min(q, 2*n-p), n]) # use Serre duality
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2065,13 +2066,12 @@ def nestedhilbn(surface, n):
                 series = series * (1 - x**(p+k-1) * y**(q+k-1) * t**k)**(-surface[p, q])
 
     series = series * R(surface.polynomial) * t / (1 - x*y*t)
+    series = series.polynomial()
 
     # read off Hodge diamond from the (truncated) series
     M = matrix(2*n + 1)
     for (p, q) in cartesian_product([range(2*n + 1), range(2*n + 1)]):
-        monomial = x**min(p, 2*n-q) * y**min(q, 2*n-p) * t**n # use Serre duality
-        if monomial in series.coefficients():
-            M[p,q] = series.coefficients()[monomial]
+        M[p,q] = series.coefficient([min(p, 2*n-q), min(q, 2*n-p), n]) # use Serre duality
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2111,11 +2111,11 @@ def complete_intersection(degrees, dimension):
     (a, b) = R.gens()
     H = 1/((1+a)*(1+b)) * (prod([((1+a)**di - (1+b)**di) / (a*(1+b)**di - b*(1+a)**di) for di in degrees]) - 1) + 1/(1-a*b)
 
-    middle = [H.coefficients()[a**i * b**(dimension-i)] if a**i * b**(dimension-i) in H.coefficients() else 0 for i in range(dimension + 1)]
+    H = H.polynomial()
 
     M = matrix.identity(dimension + 1)
     for i in range(dimension + 1):
-        M[i, dimension - i] = middle[i]
+        M[i, dimension - i] = H.coefficient([i, dimension-i])
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
