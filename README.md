@@ -9,157 +9,31 @@ If you have used this code in any way (including the interactive versions on my 
 
 ## Getting started
 
-It suffices to load ``diamond.sage`` in Sage to get started.
-
-
-# Functionality
-
-## Varieties and constructions
-
-Below is the list of currently implemented constructions. See their respective documentation if their usage is not clear. They are roughly grouped into themes.
-```
-zero
-point
-lefschetz
-Pn(n)
-
-curve(genus)
-symmetric_power(n, genus)
-jacobian(genus)
-abelian(dimension)
-moduli_vector_bundles(rank, degree, genus)
-seshadris_desingularisation(genus)
-moduli_parabolic_vector_bundles_rank_two(genus, alpha)
-quot_scheme_curve(genus, length, rank)
-
-fano_variety_intersection_quadrics_odd(g, i)
-fano_variety_intersection_quadrics_even(g, i)
-fano_variety_lines_cubic(n)
-
-hilbtwo(X)
-hilbthree(X)
-
-generalisedkummer(n)
-ogrady6
-ogrady10
-
-surface(genus, irregularity, h11)
-hilbn(surface, n)
-nestedhilbn(surface, n)
-
-complete_intersection(degrees, dimension)
-hypersurface(degree, dimension)
-
-weighted_hypersurface(degree, weights)
-cyclic_cover(ramification, cover, weights)
-
-partial_flag_variety(D, I)
-generalized_grassmannian(D, k)
-grassmannian(k, n)
-orthogonal_grassmannian(k, n)
-symplectic_grassmannian(k, n)
-
-horospherical(D, y, z)
-odd_symplectic_grassmannian(k, n)
-
-gushel_mukai(n)
-
-Mzeronbar(n)
-
-quiver_moduli(Q, d, mu)
-
-fano_threefold(rho, ID)
-```
-
-
-## The library
-Of course, Hodge diamonds are little more than collections of numbers. But to make manipulating them easy, there is a convenient `HodgeDiamond` class which has many convenient methods, so that manipulating them becomes easy. Describing the whole interface is a bit tedious, let me just give the ones which are not obvious operations.
-
-The `HodgeDiamond` class:
-```
-HodgeDiamond.betti()
-HodgeDiamond.middle()
-HodgeDiamond.euler
-HodgeDiamond.hirzebruch
-HodgeDiamond.homological_unit()
-HodgeDiamond.hochschild()
-
-HodgeDiamond.level()
-
-HodgeDiamond.blowup(other, codim)
-HodgeDiamond.bundle(rank)
-```
-
-The `HochschildHomology` class:
-```
-HochschildHomology.symmetric_power(k)
-```
-
-
-## Examples
-
-As an example of why it is interesting to consider Hodge diamonds and perform operations on them, let us consider the cubic fourfold. There is an intricate connection to K3 surfaces. Let us try and see this well-known connection.
-
-To see the Hodge diamond of a K3 surface, it suffices to do
-
-```
-print(K3)
-```
-
-because K3 surfaces are hardcoded (well, all of them have the same Hodge diamond, which is just that of a quartic surface), which is
-
-```
-          1
-      0        0
-  1       20       1
-      0        0
-          1
-```
-
-Now for the cubic fourfold we do
-
-```
-print(hypersurface(3, 4))
-```
-
-which gives
-
-```
-                  1
-              0        0
-          0       1        0
-      0       0        0       0
-  0       1       21       1       0
-      0       0        0       0
-          0       1        0
-              0        0
-                  1
-```
-
-Removing the primitive part of the middle cohomology gives you back the Hodge diamond of a K3 surface, and this is the first glimpse at a very interesting story relating the two.
-
-```
-print(hypersurface(3, 4) - K3(1))
-```
-
-gives
-
-```
-                  1
-              0       0
-          0       0       0
-      0       0       0       0
-  0       0       1       0       0
-      0       0       0       0
-          0       0       0
-              0       0
-                  1
-```
-suggesting that there is a "boring" and an "interesting" part of the cohomology of a cubic fourfold.
+It suffices to load ``diamond.py`` in Sage to get started. The documentation with lots of examples can be [read online](https://pbelmans.ncag.info/hodge-diamond-cutter/) or as [a pdf](https://pbelmans.ncag.info/hodge-diamond-cutter/hodgediamondcutter.pdf).
 
 
 ## Contributing
 
 Please feel free to make suggestions for more examples of Hodge diamonds. Preferably with a link to a closed formula, generating series or method of computation.
 
-Feature requests are also very welcome. And suggestions on improving the documentation are also welcome.
+Feature requests are also very welcome.
+
+## Instructions to myself
+
+To build the documentation:
+
+```
+sage -sh -c "make html"
+cp -r _build/html/ docs
+sage -sh -c "make latexpdf"
+cp _build/latex/hodgediamondcutter.pdf docs
+```
+
+To perform the unit tests:
+
+```
+sage -t diamond.py
+```
+
+And suggestions on improving the documentation are also welcome.
+
