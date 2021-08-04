@@ -1,0 +1,1379 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../../genindex.html" /><link rel="search" title="Search" href="../../../../search.html" />
+
+    <meta name="generator" content="sphinx-3.1.2, furo 2021.04.11.beta34"/>
+        <title>sage.rings.polynomial.laurent_polynomial_ring - Hodge diamond cutter v1.0 documentation</title>
+      <link rel="stylesheet" href="../../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
+    <link rel="stylesheet" href="../../../../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" href="../../../../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../../index.html"><div class="brand">Hodge diamond cutter v1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Hodge diamond cutter v1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <h1>Source code for sage.rings.polynomial.laurent_polynomial_ring</h1><div class="highlight"><pre>
+<span></span><span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">Ring of Laurent Polynomials</span>
+
+<span class="sd">If `R` is a commutative ring, then the ring of Laurent polynomials in `n`</span>
+<span class="sd">variables over `R` is `R[x_1^{\pm 1}, x_2^{\pm 1}, \ldots, x_n^{\pm 1}]`.</span>
+<span class="sd">We implement it as a quotient ring</span>
+
+<span class="sd">.. MATH::</span>
+
+<span class="sd">    R[x_1, y_1, x_2, y_2, \ldots, x_n, y_n] / (x_1 y_1 - 1, x_2 y_2 - 1, \ldots, x_n y_n - 1).</span>
+
+<span class="sd">TESTS::</span>
+
+<span class="sd">    sage: P.&lt;q&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">    sage: qi = q^(-1)</span>
+<span class="sd">    sage: qi in P</span>
+<span class="sd">    True</span>
+<span class="sd">    sage: P(qi)</span>
+<span class="sd">    q^-1</span>
+
+<span class="sd">    sage: A.&lt;Y&gt; = QQ[]</span>
+<span class="sd">    sage: R.&lt;X&gt; = LaurentPolynomialRing(A)</span>
+<span class="sd">    sage: matrix(R,2,2,[X,0,0,1])</span>
+<span class="sd">    [X 0]</span>
+<span class="sd">    [0 1]</span>
+
+<span class="sd">AUTHORS:</span>
+
+<span class="sd">- David Roe (2008-2-23): created</span>
+<span class="sd">- David Loeffler (2009-07-10): cleaned up docstrings</span>
+<span class="sd">"""</span>
+<span class="c1"># ****************************************************************************</span>
+<span class="c1">#       Copyright (C) 2008 David Roe &lt;roed@math.harvard.edu&gt;,</span>
+<span class="c1">#                          William Stein &lt;wstein@gmail.com&gt;,</span>
+<span class="c1">#                          Mike Hansen &lt;mhansen@gmail.com&gt;</span>
+<span class="c1">#                          Vincent Delecroix &lt;20100.delecroix@gmail.com&gt;</span>
+<span class="c1">#</span>
+<span class="c1"># This program is free software: you can redistribute it and/or modify</span>
+<span class="c1"># it under the terms of the GNU General Public License as published by</span>
+<span class="c1"># the Free Software Foundation, either version 2 of the License, or</span>
+<span class="c1"># (at your option) any later version.</span>
+<span class="c1">#                  https://www.gnu.org/licenses/</span>
+<span class="c1"># ****************************************************************************</span>
+<span class="kn">from</span> <span class="nn">__future__</span> <span class="k">import</span> <span class="n">absolute_import</span>
+
+<span class="kn">from</span> <span class="nn">sage.structure.element</span> <span class="k">import</span> <span class="n">parent</span>
+<span class="kn">from</span> <span class="nn">sage.structure.parent</span> <span class="k">import</span> <span class="n">Parent</span>
+<span class="kn">from</span> <span class="nn">sage.rings.infinity</span> <span class="k">import</span> <span class="n">infinity</span>
+<span class="kn">from</span> <span class="nn">sage.rings.polynomial.polynomial_ring_constructor</span> <span class="k">import</span> <span class="n">PolynomialRing</span>
+<span class="kn">from</span> <span class="nn">sage.misc.latex</span> <span class="k">import</span> <span class="n">latex</span>
+<span class="kn">from</span> <span class="nn">sage.rings.polynomial.laurent_polynomial</span> <span class="k">import</span> <span class="n">LaurentPolynomial_mpair</span><span class="p">,</span> <span class="n">LaurentPolynomial_univariate</span>
+<span class="kn">from</span> <span class="nn">sage.rings.ring</span> <span class="k">import</span> <span class="n">CommutativeRing</span>
+
+<span class="kn">import</span> <span class="nn">sage.rings.polynomial.laurent_polynomial_ideal</span> <span class="k">as</span> <span class="nn">lp_ideal</span>
+
+<span class="k">def</span> <span class="nf">is_LaurentPolynomialRing</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Returns True if and only if R is a Laurent polynomial ring.</span>
+
+<span class="sd">    EXAMPLES::</span>
+
+<span class="sd">        sage: from sage.rings.polynomial.laurent_polynomial_ring import is_LaurentPolynomialRing</span>
+<span class="sd">        sage: P = PolynomialRing(QQ,2,'x')</span>
+<span class="sd">        sage: is_LaurentPolynomialRing(P)</span>
+<span class="sd">        False</span>
+
+<span class="sd">        sage: R = LaurentPolynomialRing(QQ,3,'x')</span>
+<span class="sd">        sage: is_LaurentPolynomialRing(R)</span>
+<span class="sd">        True</span>
+<span class="sd">    """</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">LaurentPolynomialRing_generic</span><span class="p">)</span>
+
+<span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">def</span> <span class="nf">LaurentPolynomialRing</span><span class="p">(</span><span class="n">base_ring</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">    Return the globally unique univariate or multivariate Laurent polynomial</span>
+<span class="sd">    ring with given properties and variable name or names.</span>
+
+<span class="sd">    There are four ways to call the Laurent polynomial ring constructor:</span>
+
+<span class="sd">    1. ``LaurentPolynomialRing(base_ring, name,    sparse=False)``</span>
+<span class="sd">    2. ``LaurentPolynomialRing(base_ring, names,   order='degrevlex')``</span>
+<span class="sd">    3. ``LaurentPolynomialRing(base_ring, name, n, order='degrevlex')``</span>
+<span class="sd">    4. ``LaurentPolynomialRing(base_ring, n, name, order='degrevlex')``</span>
+
+<span class="sd">    The optional arguments sparse and order *must* be explicitly</span>
+<span class="sd">    named, and the other arguments must be given positionally.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``base_ring`` -- a commutative ring</span>
+<span class="sd">    - ``name`` -- a string</span>
+<span class="sd">    - ``names`` -- a list or tuple of names, or a comma separated string</span>
+<span class="sd">    - ``n`` -- a positive integer</span>
+<span class="sd">    - ``sparse`` -- bool (default: False), whether or not elements are sparse</span>
+<span class="sd">    - ``order`` -- string or</span>
+<span class="sd">      :class:`~sage.rings.polynomial.term_order.TermOrder`, e.g.,</span>
+
+<span class="sd">        - ``'degrevlex'`` (default) -- degree reverse lexicographic</span>
+<span class="sd">        - ``'lex'`` -- lexicographic</span>
+<span class="sd">        - ``'deglex'`` -- degree lexicographic</span>
+<span class="sd">        - ``TermOrder('deglex',3) + TermOrder('deglex',3)`` -- block ordering</span>
+
+<span class="sd">    OUTPUT:</span>
+
+<span class="sd">    ``LaurentPolynomialRing(base_ring, name, sparse=False)`` returns a</span>
+<span class="sd">    univariate Laurent polynomial ring; all other input formats return a</span>
+<span class="sd">    multivariate Laurent polynomial ring.</span>
+
+<span class="sd">    UNIQUENESS and IMMUTABILITY: In Sage there is exactly one</span>
+<span class="sd">    single-variate Laurent polynomial ring over each base ring in each choice</span>
+<span class="sd">    of variable and sparseness.  There is also exactly one multivariate</span>
+<span class="sd">    Laurent polynomial ring over each base ring for each choice of names of</span>
+<span class="sd">    variables and term order.</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        sage: R.&lt;x,y&gt; = LaurentPolynomialRing(QQ,2); R</span>
+<span class="sd">        Multivariate Laurent Polynomial Ring in x, y over Rational Field</span>
+<span class="sd">        sage: f = x^2 - 2*y^-2</span>
+
+<span class="sd">    You can't just globally change the names of those variables.</span>
+<span class="sd">    This is because objects all over Sage could have pointers to</span>
+<span class="sd">    that polynomial ring.</span>
+
+<span class="sd">    ::</span>
+
+<span class="sd">        sage: R._assign_names(['z','w'])</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        ValueError: variable names cannot be changed after object creation.</span>
+
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    1. ``LaurentPolynomialRing(base_ring, name, sparse=False)``</span>
+
+<span class="sd">       ::</span>
+
+<span class="sd">           sage: LaurentPolynomialRing(QQ, 'w')</span>
+<span class="sd">           Univariate Laurent Polynomial Ring in w over Rational Field</span>
+
+<span class="sd">       Use the diamond brackets notation to make the variable</span>
+<span class="sd">       ready for use after you define the ring::</span>
+
+<span class="sd">           sage: R.&lt;w&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">           sage: (1 + w)^3</span>
+<span class="sd">           1 + 3*w + 3*w^2 + w^3</span>
+
+<span class="sd">       You must specify a name::</span>
+
+<span class="sd">           sage: LaurentPolynomialRing(QQ)</span>
+<span class="sd">           Traceback (most recent call last):</span>
+<span class="sd">           ...</span>
+<span class="sd">           TypeError: you must specify the names of the variables</span>
+
+<span class="sd">           sage: R.&lt;abc&gt; = LaurentPolynomialRing(QQ, sparse=True); R</span>
+<span class="sd">           Univariate Laurent Polynomial Ring in abc over Rational Field</span>
+
+<span class="sd">           sage: R.&lt;w&gt; = LaurentPolynomialRing(PolynomialRing(GF(7),'k')); R</span>
+<span class="sd">           Univariate Laurent Polynomial Ring in w over Univariate Polynomial Ring in k over Finite Field of size 7</span>
+
+<span class="sd">       Rings with different variables are different::</span>
+
+<span class="sd">           sage: LaurentPolynomialRing(QQ, 'x') == LaurentPolynomialRing(QQ, 'y')</span>
+<span class="sd">           False</span>
+
+<span class="sd">    2. ``LaurentPolynomialRing(base_ring, names,   order='degrevlex')``</span>
+
+<span class="sd">       ::</span>
+
+<span class="sd">           sage: R = LaurentPolynomialRing(QQ, 'a,b,c'); R</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in a, b, c over Rational Field</span>
+
+<span class="sd">           sage: S = LaurentPolynomialRing(QQ, ['a','b','c']); S</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in a, b, c over Rational Field</span>
+
+<span class="sd">           sage: T = LaurentPolynomialRing(QQ, ('a','b','c')); T</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in a, b, c over Rational Field</span>
+
+<span class="sd">       All three rings are identical.</span>
+
+<span class="sd">       ::</span>
+
+<span class="sd">           sage: (R is S) and  (S is T)</span>
+<span class="sd">           True</span>
+
+<span class="sd">       There is a unique Laurent polynomial ring with each term order::</span>
+
+<span class="sd">           sage: R = LaurentPolynomialRing(QQ, 'x,y,z', order='degrevlex'); R</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in x, y, z over Rational Field</span>
+<span class="sd">           sage: S = LaurentPolynomialRing(QQ, 'x,y,z', order='invlex'); S</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in x, y, z over Rational Field</span>
+<span class="sd">           sage: S is LaurentPolynomialRing(QQ, 'x,y,z', order='invlex')</span>
+<span class="sd">           True</span>
+<span class="sd">           sage: R == S</span>
+<span class="sd">           False</span>
+
+
+<span class="sd">    3. ``LaurentPolynomialRing(base_ring, name, n, order='degrevlex')``</span>
+
+<span class="sd">       If you specify a single name as a string and a number of</span>
+<span class="sd">       variables, then variables labeled with numbers are created.</span>
+
+<span class="sd">       ::</span>
+
+<span class="sd">           sage: LaurentPolynomialRing(QQ, 'x', 10)</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in x0, x1, x2, x3, x4, x5, x6, x7, x8, x9 over Rational Field</span>
+
+<span class="sd">           sage: LaurentPolynomialRing(GF(7), 'y', 5)</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in y0, y1, y2, y3, y4 over Finite Field of size 7</span>
+
+<span class="sd">           sage: LaurentPolynomialRing(QQ, 'y', 3, sparse=True)</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in y0, y1, y2 over Rational Field</span>
+
+<span class="sd">       By calling the</span>
+<span class="sd">       :meth:`~sage.structure.category_object.CategoryObject.inject_variables`</span>
+<span class="sd">       method, all those variable names are available for interactive use::</span>
+
+<span class="sd">           sage: R = LaurentPolynomialRing(GF(7),15,'w'); R</span>
+<span class="sd">           Multivariate Laurent Polynomial Ring in w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14 over Finite Field of size 7</span>
+<span class="sd">           sage: R.inject_variables()</span>
+<span class="sd">           Defining w0, w1, w2, w3, w4, w5, w6, w7, w8, w9, w10, w11, w12, w13, w14</span>
+<span class="sd">           sage: (w0 + 2*w8 + w13)^2</span>
+<span class="sd">           w0^2 + 4*w0*w8 + 4*w8^2 + 2*w0*w13 + 4*w8*w13 + w13^2</span>
+<span class="sd">    """</span>
+    <span class="kn">from</span> <span class="nn">sage.rings.polynomial.polynomial_ring</span> <span class="k">import</span> <span class="n">is_PolynomialRing</span>
+    <span class="kn">from</span> <span class="nn">sage.rings.polynomial.multi_polynomial_ring_base</span> <span class="k">import</span> <span class="n">is_MPolynomialRing</span>
+
+    <span class="n">R</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">base_ring</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">R</span> <span class="ow">in</span> <span class="n">_cache</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">_cache</span><span class="p">[</span><span class="n">R</span><span class="p">]</span>   <span class="c1"># put () here to re-enable weakrefs</span>
+
+    <span class="k">if</span> <span class="n">is_PolynomialRing</span><span class="p">(</span><span class="n">R</span><span class="p">):</span>
+        <span class="c1"># univariate case</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">LaurentPolynomialRing_univariate</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">is_MPolynomialRing</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        <span class="n">P</span> <span class="o">=</span> <span class="n">LaurentPolynomialRing_mpair</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+
+    <span class="n">_cache</span><span class="p">[</span><span class="n">R</span><span class="p">]</span> <span class="o">=</span> <span class="n">P</span>
+    <span class="k">return</span> <span class="n">P</span>
+
+<span class="k">def</span> <span class="nf">_split_dict_</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">group_by</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">    Split the dictionary ``D`` by ``indices`` and ``group_by``.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``D`` -- a dictionary.</span>
+
+<span class="sd">    - ``indices`` -- a tuple or list of nonnegative integers.</span>
+
+<span class="sd">    - ``group_by`` -- a tuple or list of nonnegative integers.</span>
+<span class="sd">      If this is ``None`` (default), then no grouping is done.</span>
+
+<span class="sd">    OUTPUT:</span>
+
+<span class="sd">    A dictionary.</span>
+
+<span class="sd">    TESTS::</span>
+
+<span class="sd">        sage: from sage.rings.polynomial.laurent_polynomial_ring import _split_dict_</span>
+<span class="sd">        sage: D = {(0,0,0,0): 'a', (1,0,0,0): 'b',</span>
+<span class="sd">        ....:      (1,0,0,2): 'c', (1,2,0,3): 'd'}</span>
+<span class="sd">        sage: _split_dict_(D, [1,0,3])</span>
+<span class="sd">        {(0, 0, 0): 'a', (0, 1, 0): 'b', (0, 1, 2): 'c', (2, 1, 3): 'd'}</span>
+<span class="sd">        sage: _split_dict_(D, [2,3], [0,1])</span>
+<span class="sd">        {(0, 0): {(0, 0): 'a'},</span>
+<span class="sd">         (1, 0): {(0, 0): 'b', (0, 2): 'c'},</span>
+<span class="sd">         (1, 2): {(0, 3): 'd'}}</span>
+<span class="sd">        sage: _split_dict_(D, [3,1], [0])</span>
+<span class="sd">        {(0,): {(0, 0): 'a'}, (1,): {(0, 0): 'b', (2, 0): 'c', (3, 2): 'd'}}</span>
+
+<span class="sd">        sage: _split_dict_(D, [0,None,1,3])</span>
+<span class="sd">        {(0, 0, 0, 0): 'a', (1, 0, 0, 0): 'b',</span>
+<span class="sd">         (1, 0, 0, 2): 'c', (1, 0, 2, 3): 'd'}</span>
+<span class="sd">        sage: _split_dict_(D, [0,1], [None,3,None])</span>
+<span class="sd">        {(0, 0, 0): {(0, 0): 'a', (1, 0): 'b'},</span>
+<span class="sd">         (0, 2, 0): {(1, 0): 'c'},</span>
+<span class="sd">         (0, 3, 0): {(1, 2): 'd'}}</span>
+<span class="sd">        sage: _split_dict_(D, [None,3,1], [0,None])</span>
+<span class="sd">        {(0, 0): {(0, 0, 0): 'a'},</span>
+<span class="sd">         (1, 0): {(0, 0, 0): 'b', (0, 2, 0): 'c',</span>
+<span class="sd">                     (0, 3, 2): 'd'}}</span>
+
+<span class="sd">        sage: _split_dict_(D, [0,1])</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        SplitDictError: split not possible</span>
+<span class="sd">        sage: _split_dict_(D, [0], [1])</span>
+<span class="sd">        Traceback (most recent call last):</span>
+<span class="sd">        ...</span>
+<span class="sd">        SplitDictError: split not possible</span>
+<span class="sd">        sage: _split_dict_({}, [])</span>
+<span class="sd">        {}</span>
+<span class="sd">    """</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">D</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{}</span>
+    <span class="k">if</span> <span class="n">group_by</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">group_by</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">()</span>
+
+    <span class="k">class</span> <span class="nc">SplitDictError</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="k">return</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">if</span> <span class="n">i</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="k">def</span> <span class="nf">extract</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">indices</span><span class="p">):</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">get</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">)</span>
+
+    <span class="n">remaining</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">D</span><span class="p">)))))</span>
+                       <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span> <span class="o">-</span> <span class="nb">set</span><span class="p">(</span><span class="n">group_by</span><span class="p">))</span>
+    <span class="n">result</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="k">for</span> <span class="n">K</span><span class="p">,</span> <span class="n">V</span> <span class="ow">in</span> <span class="n">D</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="n">r</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">extract</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">remaining</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">SplitDictError</span><span class="p">(</span><span class="s1">'split not possible'</span><span class="p">)</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">extract</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">group_by</span><span class="p">)</span>
+        <span class="n">I</span> <span class="o">=</span> <span class="n">extract</span><span class="p">(</span><span class="n">K</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span>
+        <span class="n">result</span><span class="o">.</span><span class="n">setdefault</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="nb">dict</span><span class="p">())</span><span class="o">.</span><span class="n">update</span><span class="p">({</span><span class="n">I</span><span class="p">:</span> <span class="n">V</span><span class="p">})</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">group_by</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span><span class="o">.</span><span class="n">popitem</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">result</span>
+
+<span class="k">def</span> <span class="nf">_split_laurent_polynomial_dict_</span><span class="p">(</span><span class="n">P</span><span class="p">,</span> <span class="n">M</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">    Helper function for splitting a multivariate Laurent polynomial</span>
+<span class="sd">    during conversion.</span>
+
+<span class="sd">    INPUT:</span>
+
+<span class="sd">    - ``P`` -- the parent to which we want to convert.</span>
+
+<span class="sd">    - ``M`` -- the parent from which we want to convert.</span>
+
+<span class="sd">    - ``d`` -- a dictionary mapping tuples (representing the exponents)</span>
+<span class="sd">      to their coefficients. This is the dictionary corresponding to</span>
+<span class="sd">      an element of ``M``.</span>
+
+<span class="sd">    OUTPUT:</span>
+
+<span class="sd">    A dictionary corresponding to an element of ``P``.</span>
+
+<span class="sd">    TESTS::</span>
+
+<span class="sd">        sage: L.&lt;a, b, c, d&gt; = LaurentPolynomialRing(ZZ)</span>
+<span class="sd">        sage: M = LaurentPolynomialRing(ZZ, 'c, d')</span>
+<span class="sd">        sage: N = LaurentPolynomialRing(M, 'a, b')</span>
+<span class="sd">        sage: M(c/d + 1/c)  # indirect doctest</span>
+<span class="sd">        c*d^-1 + c^-1</span>
+<span class="sd">        sage: N(a + b/c/d + 1/b)  # indirect doctest</span>
+<span class="sd">        a + (c^-1*d^-1)*b + b^-1</span>
+<span class="sd">    """</span>
+    <span class="n">vars_P</span> <span class="o">=</span> <span class="n">P</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
+    <span class="n">vars_M</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="nb">set</span><span class="p">(</span><span class="n">vars_M</span><span class="p">)</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">vars_P</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s1">'no common variables'</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">index</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">value</span><span class="p">):</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">T</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">value</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="k">assert</span> <span class="n">d</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="nb">iter</span><span class="p">(</span><span class="n">d</span><span class="o">.</span><span class="n">items</span><span class="p">()))</span>
+            <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">k</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">R</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">R</span><span class="p">(</span><span class="n">M</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+
+    <span class="n">group_by</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">index</span><span class="p">(</span><span class="n">vars_M</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span> <span class="k">for</span> <span class="n">var</span> <span class="ow">in</span> <span class="n">vars_P</span><span class="p">)</span>
+    <span class="n">indices</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">vars_M</span><span class="p">)))</span>
+    <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">group_by</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">g</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">indices</span><span class="p">[</span><span class="n">g</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">D</span> <span class="o">=</span> <span class="n">_split_dict_</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">indices</span><span class="p">,</span> <span class="n">group_by</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">{</span><span class="n">k</span><span class="p">:</span> <span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">P</span><span class="o">.</span><span class="n">base_ring</span><span class="p">())</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">D</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+    <span class="k">except</span> <span class="p">(</span><span class="ne">ValueError</span><span class="p">,</span> <span class="ne">TypeError</span><span class="p">):</span>
+        <span class="k">pass</span>
+    <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span><span class="n">P</span><span class="p">({</span><span class="n">k</span><span class="p">:</span> <span class="mi">1</span><span class="p">})</span> <span class="o">*</span> <span class="n">value</span><span class="p">(</span><span class="n">v</span><span class="p">,</span> <span class="n">P</span><span class="p">)</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">D</span><span class="o">.</span><span class="n">items</span><span class="p">())</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+
+
+<span class="k">class</span> <span class="nc">LaurentPolynomialRing_generic</span><span class="p">(</span><span class="n">CommutativeRing</span><span class="p">,</span> <span class="n">Parent</span><span class="p">):</span>
+    <span class="sd">"""</span>
+<span class="sd">    Laurent polynomial ring (base class).</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    This base class inherits from :class:`~sage.rings.ring.CommutativeRing`.</span>
+<span class="sd">    Since :trac:`11900`, it is also initialised as such::</span>
+
+<span class="sd">        sage: R.&lt;x1,x2&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">        sage: R.category()</span>
+<span class="sd">        Join of Category of unique factorization domains and Category of commutative algebras over (number fields and quotient fields and metric spaces) and Category of infinite sets</span>
+<span class="sd">        sage: TestSuite(R).run()</span>
+
+<span class="sd">    """</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: R = LaurentPolynomialRing(QQ,2,'x')</span>
+<span class="sd">            sage: R == loads(dumps(R))</span>
+<span class="sd">            True</span>
+<span class="sd">        """</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">ngens</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">=</span> <span class="n">R</span>
+        <span class="n">names</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_one_element</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">one</span><span class="p">())</span>
+        <span class="n">CommutativeRing</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="o">.</span><span class="n">base_ring</span><span class="p">(),</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                                 <span class="n">category</span><span class="o">=</span><span class="n">R</span><span class="o">.</span><span class="n">category</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">ngens</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the number of generators of ``self``.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').ngens()</span>
+<span class="sd">            2</span>
+<span class="sd">            sage: LaurentPolynomialRing(QQ,1,'x').ngens()</span>
+<span class="sd">            1</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span>
+
+    <span class="k">def</span> <span class="nf">gen</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">        Returns the `i^{th}` generator of self.  If i is not specified, then</span>
+<span class="sd">        the first generator will be returned.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').gen()</span>
+<span class="sd">            x0</span>
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').gen(0)</span>
+<span class="sd">            x0</span>
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').gen(1)</span>
+<span class="sd">            x1</span>
+
+<span class="sd">        TESTS::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').gen(3)</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            ValueError: generator not defined</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">i</span> <span class="o">&gt;=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"generator not defined"</span><span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generators</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">__generators</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="o">.</span><span class="n">gens</span><span class="p">())</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__generators</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+
+
+    <span class="k">def</span> <span class="nf">variable_names_recursive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">depth</span><span class="o">=</span><span class="n">infinity</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">        Return the list of variable names of this ring and its base rings,</span>
+<span class="sd">        as if it were a single multi-variate Laurent polynomial.</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``depth`` -- an integer or :mod:`Infinity &lt;sage.rings.infinity&gt;`.</span>
+
+<span class="sd">        OUTPUT:</span>
+
+<span class="sd">        A tuple of strings.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: T = LaurentPolynomialRing(QQ, 'x')</span>
+<span class="sd">            sage: S = LaurentPolynomialRing(T, 'y')</span>
+<span class="sd">            sage: R = LaurentPolynomialRing(S, 'z')</span>
+<span class="sd">            sage: R.variable_names_recursive()</span>
+<span class="sd">            ('x', 'y', 'z')</span>
+<span class="sd">            sage: R.variable_names_recursive(2)</span>
+<span class="sd">            ('y', 'z')</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">depth</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">()</span>
+        <span class="k">elif</span> <span class="n">depth</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">my_vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
+            <span class="k">try</span><span class="p">:</span>
+               <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()</span><span class="o">.</span><span class="n">variable_names_recursive</span><span class="p">(</span><span class="n">depth</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">my_vars</span><span class="p">))</span> <span class="o">+</span> <span class="n">my_vars</span>
+            <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">my_vars</span>
+
+
+    <span class="k">def</span> <span class="nf">is_integral_domain</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proof</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns True if self is an integral domain.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').is_integral_domain()</span>
+<span class="sd">            True</span>
+
+<span class="sd">        The following used to fail; see :trac:`7530`::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(ZZ, 'X')</span>
+<span class="sd">            sage: L['Y']</span>
+<span class="sd">            Univariate Polynomial Ring in Y over Univariate Laurent Polynomial Ring in X over Integer Ring</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()</span><span class="o">.</span><span class="n">is_integral_domain</span><span class="p">(</span><span class="n">proof</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_noetherian</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns True if self is Noetherian.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').is_noetherian()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">construction</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the construction of ``self``.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x,y').construction()</span>
+<span class="sd">            (LaurentPolynomialFunctor,</span>
+<span class="sd">            Univariate Laurent Polynomial Ring in x over Rational Field)</span>
+
+<span class="sd">        """</span>
+        <span class="kn">from</span> <span class="nn">sage.categories.pushout</span> <span class="k">import</span> <span class="n">LaurentPolynomialFunctor</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">vars</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LaurentPolynomialFunctor</span><span class="p">(</span><span class="nb">vars</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">False</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">LaurentPolynomialFunctor</span><span class="p">(</span><span class="nb">vars</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="kc">True</span><span class="p">),</span> <span class="n">LaurentPolynomialRing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">(),</span> <span class="nb">vars</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">completion</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">,</span> <span class="n">prec</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">extras</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: P.&lt;x&gt;=LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: P</span>
+<span class="sd">            Univariate Laurent Polynomial Ring in x over Rational Field</span>
+<span class="sd">            sage: PP=P.completion(x)</span>
+<span class="sd">            sage: PP</span>
+<span class="sd">            Laurent Series Ring in x over Rational Field</span>
+<span class="sd">            sage: f=1-1/x</span>
+<span class="sd">            sage: PP(f)</span>
+<span class="sd">            -x^-1 + 1</span>
+<span class="sd">            sage: 1/PP(f)</span>
+<span class="sd">            -x - x^2 - x^3 - x^4 - x^5 - x^6 - x^7 - x^8 - x^9 - x^10 - x^11 - x^12 - x^13 - x^14 - x^15 - x^16 - x^17 - x^18 - x^19 - x^20 + O(x^21)</span>
+
+<span class="sd">        TESTS:</span>
+
+<span class="sd">        Check that the precision is taken into account (:trac:`24431`)::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ, 'x')</span>
+<span class="sd">            sage: L.completion('x', 100).default_prec()</span>
+<span class="sd">            100</span>
+<span class="sd">            sage: L.completion('x', 20).default_prec()</span>
+<span class="sd">            20</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">str</span><span class="p">(</span><span class="n">p</span><span class="p">)</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">sage.rings.laurent_series_ring</span> <span class="k">import</span> <span class="n">LaurentSeriesRing</span>
+            <span class="n">R</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polynomial_ring</span><span class="p">()</span><span class="o">.</span><span class="n">completion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">prec</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">LaurentSeriesRing</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"Cannot complete </span><span class="si">%s</span><span class="s2"> with respect to </span><span class="si">%s</span><span class="s2">"</span> <span class="o">%</span> <span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">remove_var</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: R = LaurentPolynomialRing(QQ,'x,y,z')</span>
+<span class="sd">            sage: R.remove_var('x')</span>
+<span class="sd">            Multivariate Laurent Polynomial Ring in y, z over Rational Field</span>
+<span class="sd">            sage: R.remove_var('x').remove_var('y')</span>
+<span class="sd">            Univariate Laurent Polynomial Ring in z over Rational Field</span>
+<span class="sd">        """</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">())</span>
+        <span class="nb">vars</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">var</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">LaurentPolynomialRing</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">(),</span> <span class="nb">vars</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_coerce_map_from_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L.&lt;x,y&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: L.coerce_map_from(QQ)</span>
+<span class="sd">            Generic morphism:</span>
+<span class="sd">              From: Rational Field</span>
+<span class="sd">              To:   Multivariate Laurent Polynomial Ring in x, y over Rational Field</span>
+
+<span class="sd">        Let us check that coercion between Laurent Polynomials over</span>
+<span class="sd">        different base rings works (:trac:`15345`)::</span>
+
+<span class="sd">            sage: R = LaurentPolynomialRing(ZZ, 'x')</span>
+<span class="sd">            sage: T = LaurentPolynomialRing(QQ, 'x')</span>
+<span class="sd">            sage: R.gen() + 3*T.gen()</span>
+<span class="sd">            4*x</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">R</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_coerce_map</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_coerce_map_via</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">],</span> <span class="n">R</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">f</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">f</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">R</span><span class="p">,</span> <span class="n">LaurentPolynomialRing_generic</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="o">.</span><span class="n">has_coerce_map_from</span><span class="p">(</span><span class="n">R</span><span class="o">.</span><span class="n">_R</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_generic_coerce_map</span><span class="p">(</span><span class="n">R</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">right</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Check whether ``self`` is equal to ``right``.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: R = LaurentPolynomialRing(QQ,'x,y,z')</span>
+<span class="sd">            sage: P = LaurentPolynomialRing(ZZ,'x,y,z')</span>
+<span class="sd">            sage: Q = LaurentPolynomialRing(QQ,'x,y')</span>
+
+<span class="sd">            sage: R == R</span>
+<span class="sd">            True</span>
+<span class="sd">            sage: R == Q</span>
+<span class="sd">            False</span>
+<span class="sd">            sage: Q == P</span>
+<span class="sd">            False</span>
+<span class="sd">            sage: P == R</span>
+<span class="sd">            False</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">type</span><span class="p">(</span><span class="n">right</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span> <span class="o">==</span> <span class="n">right</span><span class="o">.</span><span class="n">_R</span>
+
+    <span class="k">def</span> <span class="nf">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Check whether ``self`` is not equal to ``other``.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: R = LaurentPolynomialRing(QQ,'x,y,z')</span>
+<span class="sd">            sage: P = LaurentPolynomialRing(ZZ,'x,y,z')</span>
+<span class="sd">            sage: Q = LaurentPolynomialRing(QQ,'x,y')</span>
+
+<span class="sd">            sage: R != R</span>
+<span class="sd">            False</span>
+<span class="sd">            sage: R != Q</span>
+<span class="sd">            True</span>
+<span class="sd">            sage: Q != P</span>
+<span class="sd">            True</span>
+<span class="sd">            sage: P != R</span>
+<span class="sd">            True</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span> <span class="o">==</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Return the hash of ``self``.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: h1 = hash(LaurentPolynomialRing(ZZ,'x,y,z'))</span>
+<span class="sd">            sage: h2 = hash(LaurentPolynomialRing(ZZ,'x,y,z'))</span>
+<span class="sd">            sage: h3 = hash(LaurentPolynomialRing(QQ,'x,y,z'))</span>
+<span class="sd">            sage: h4 = hash(LaurentPolynomialRing(ZZ,'x,y'))</span>
+<span class="sd">            sage: h1 == h2 and h1 != h3 and h1 != h4</span>
+<span class="sd">            True</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="nb">hash</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">)</span> <span class="o">^</span> <span class="mi">12059065606945654693</span>
+
+    <span class="k">def</span> <span class="nf">_latex_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: latex(LaurentPolynomialRing(QQ,2,'x'))</span>
+<span class="sd">            \Bold{Q}[x_{0}^{\pm 1}, x_{1}^{\pm 1}]</span>
+<span class="sd">        """</span>
+        <span class="nb">vars</span> <span class="o">=</span> <span class="s1">', '</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">a</span> <span class="o">+</span> <span class="sa">r</span><span class="s1">'^{\pm 1}'</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">latex_variable_names</span><span class="p">())</span>
+        <span class="k">return</span> <span class="s2">"</span><span class="si">%s</span><span class="s2">[</span><span class="si">%s</span><span class="s2">]"</span> <span class="o">%</span> <span class="p">(</span><span class="n">latex</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()),</span> <span class="nb">vars</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_ideal_class_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x')._ideal_class_()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
+<span class="sd">        """</span>
+        <span class="c1"># One may eventually want ideal classes in these guys.</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">ideal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').ideal([1])</span>
+<span class="sd">            Ideal (1) of Multivariate Laurent Polynomial Ring in x0, x1 over Rational Field</span>
+
+<span class="sd">        TESTS:</span>
+<span class="sd"> </span>
+<span class="sd">        check that :trac:`26421` is fixed:</span>
+
+<span class="sd">            sage: R.&lt;t&gt; = LaurentPolynomialRing(ZZ)</span>
+<span class="sd">            sage: P.&lt;x&gt; = PolynomialRing(R)</span>
+<span class="sd">            sage: p = x-t</span>
+<span class="sd">            sage: p.content_ideal()    # indirect doctest</span>
+<span class="sd">            Ideal (-t, 1) of Univariate Laurent Polynomial Ring in t over Integer Ring</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">lp_ideal</span><span class="o">.</span><span class="n">LaurentPolynomialIdeal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_is_valid_homomorphism_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">codomain</span><span class="p">,</span> <span class="n">im_gens</span><span class="p">,</span> <span class="n">base_map</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: T.&lt;t&gt; = ZZ[]</span>
+<span class="sd">            sage: K.&lt;i&gt; = NumberField(t^2 + 1)</span>
+<span class="sd">            sage: L.&lt;x,y&gt; = LaurentPolynomialRing(K)</span>
+<span class="sd">            sage: L._is_valid_homomorphism_(K, (K(1/2), K(3/2)))</span>
+<span class="sd">            True</span>
+<span class="sd">            sage: Q5 = Qp(5); i5 = Q5(-1).sqrt()</span>
+<span class="sd">            sage: L._is_valid_homomorphism_(Q5, (Q5(1/2), Q5(3/2))) # no coercion</span>
+<span class="sd">            False</span>
+<span class="sd">            sage: L._is_valid_homomorphism_(Q5, (Q5(1/2), Q5(3/2)), base_map=K.hom([i5]))</span>
+<span class="sd">            True</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">base_map</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">codomain</span><span class="o">.</span><span class="n">has_coerce_map_from</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()):</span>
+            <span class="c1"># we need that elements of the base ring</span>
+            <span class="c1"># canonically coerce into codomain.</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">im_gens</span><span class="p">:</span>
+            <span class="c1"># in addition, the image of each generator must be invertible.</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">a</span><span class="o">.</span><span class="n">is_unit</span><span class="p">():</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+    <span class="k">def</span> <span class="nf">term_order</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the term order of self.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').term_order()</span>
+<span class="sd">            Degree reverse lexicographic term order</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="o">.</span><span class="n">term_order</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">is_finite</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').is_finite()</span>
+<span class="sd">            False</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">is_field</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">proof</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').is_field()</span>
+<span class="sd">            False</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">def</span> <span class="nf">polynomial_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the polynomial ring associated with self.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').polynomial_ring()</span>
+<span class="sd">            Multivariate Polynomial Ring in x0, x1 over Rational Field</span>
+<span class="sd">            sage: LaurentPolynomialRing(QQ,1,'x').polynomial_ring()</span>
+<span class="sd">            Multivariate Polynomial Ring in x over Rational Field</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span>
+
+    <span class="k">def</span> <span class="nf">characteristic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns the characteristic of the base ring.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').characteristic()</span>
+<span class="sd">            0</span>
+<span class="sd">            sage: LaurentPolynomialRing(GF(3),2,'x').characteristic()</span>
+<span class="sd">            3</span>
+
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()</span><span class="o">.</span><span class="n">characteristic</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">krull_dimension</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').krull_dimension()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">random_element</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">low_degree</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="n">high_degree</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">terms</span> <span class="o">=</span> <span class="mi">5</span><span class="p">,</span> <span class="n">choose_degree</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwds</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').random_element()</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            NotImplementedError</span>
+<span class="sd">        """</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span>
+
+    <span class="k">def</span> <span class="nf">is_exact</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Returns True if the base ring is exact.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').is_exact()</span>
+<span class="sd">            True</span>
+<span class="sd">            sage: LaurentPolynomialRing(RDF,2,'x').is_exact()</span>
+<span class="sd">            False</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()</span><span class="o">.</span><span class="n">is_exact</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">change_ring</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">base_ring</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sparse</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: R = LaurentPolynomialRing(QQ,2,'x')</span>
+<span class="sd">            sage: R.change_ring(ZZ)</span>
+<span class="sd">            Multivariate Laurent Polynomial Ring in x0, x1 over Integer Ring</span>
+
+<span class="sd">        Check that the distinction between a univariate ring and a multivariate ring with one</span>
+<span class="sd">        generator is preserved::</span>
+
+<span class="sd">            sage: P.&lt;x&gt; = LaurentPolynomialRing(QQ, 1)</span>
+<span class="sd">            sage: P</span>
+<span class="sd">            Multivariate Laurent Polynomial Ring in x over Rational Field</span>
+<span class="sd">            sage: K.&lt;i&gt; = CyclotomicField(4)</span>
+<span class="sd">            sage: P.change_ring(K)</span>
+<span class="sd">            Multivariate Laurent Polynomial Ring in x over Cyclotomic Field of order 4 and degree 2</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">base_ring</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">base_ring</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">names</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">names</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">LaurentPolynomialRing_univariate</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">LaurentPolynomialRing</span><span class="p">(</span><span class="n">base_ring</span><span class="p">,</span> <span class="n">names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sparse</span> <span class="o">=</span> <span class="n">sparse</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">order</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">order</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">polynomial_ring</span><span class="p">()</span><span class="o">.</span><span class="n">term_order</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">LaurentPolynomialRing</span><span class="p">(</span><span class="n">base_ring</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_n</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">order</span> <span class="o">=</span> <span class="n">order</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">fraction_field</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        The fraction field is the same as the fraction field of the</span>
+<span class="sd">        polynomial ring.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L.&lt;x&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: L.fraction_field()</span>
+<span class="sd">            Fraction Field of Univariate Polynomial Ring in x over Rational Field</span>
+<span class="sd">            sage: (x^-1 + 2) / (x - 1)</span>
+<span class="sd">            (2*x + 1)/(x^2 - x)</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">polynomial_ring</span><span class="p">()</span><span class="o">.</span><span class="n">fraction_field</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">LaurentPolynomialRing_univariate</span><span class="p">(</span><span class="n">LaurentPolynomialRing_generic</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ,'x')</span>
+<span class="sd">            sage: type(L)</span>
+<span class="sd">            &lt;class 'sage.rings.polynomial.laurent_polynomial_ring.LaurentPolynomialRing_univariate_with_category'&gt;</span>
+<span class="sd">            sage: L == loads(dumps(L))</span>
+<span class="sd">            True</span>
+
+
+<span class="sd">        TESTS::</span>
+
+<span class="sd">            sage: TestSuite(LaurentPolynomialRing(Zmod(4), 'y')).run()</span>
+<span class="sd">            sage: TestSuite(LaurentPolynomialRing(ZZ, 'u')).run()</span>
+<span class="sd">            sage: TestSuite(LaurentPolynomialRing(Zmod(4)['T'], 'u')).run()</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">R</span><span class="o">.</span><span class="n">ngens</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"must be 1 generator"</span><span class="p">)</span>
+        <span class="n">LaurentPolynomialRing_generic</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+    <span class="n">Element</span> <span class="o">=</span> <span class="n">LaurentPolynomial_univariate</span>
+
+    <span class="k">def</span> <span class="nf">_repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        TESTS::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,'x')  # indirect doctest</span>
+<span class="sd">            Univariate Laurent Polynomial Ring in x over Rational Field</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"Univariate Laurent Polynomial Ring in </span><span class="si">%s</span><span class="s2"> over </span><span class="si">%s</span><span class="s2">"</span><span class="o">%</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="o">.</span><span class="n">variable_name</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="o">.</span><span class="n">base_ring</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">_element_constructor_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ, 'x')</span>
+<span class="sd">            sage: L(1/2)</span>
+<span class="sd">            1/2</span>
+
+<span class="sd">            sage: L(x + 3/x)</span>
+<span class="sd">            3*x^-1 + x</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            sage: L(exp(x))</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            TypeError: unable to convert e^x to a rational</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            sage: U = LaurentPolynomialRing(QQ, 'a')</span>
+<span class="sd">            sage: V = LaurentPolynomialRing(QQ, 'c')</span>
+<span class="sd">            sage: L.&lt;a, b, c, d&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: M = LaurentPolynomialRing(QQ, 'c, d')</span>
+<span class="sd">            sage: Mc, Md = M.gens()</span>
+<span class="sd">            sage: N = LaurentPolynomialRing(M, 'a, b')</span>
+<span class="sd">            sage: Na, Nb = N.gens()</span>
+<span class="sd">            sage: U(Na)</span>
+<span class="sd">            a</span>
+<span class="sd">            sage: V(Mc)</span>
+<span class="sd">            c</span>
+
+<span class="sd">            sage: M(L(0))</span>
+<span class="sd">            0</span>
+<span class="sd">            sage: N(L(0))</span>
+<span class="sd">            0</span>
+<span class="sd">            sage: L(M(0))</span>
+<span class="sd">            0</span>
+<span class="sd">            sage: L(N(0))</span>
+<span class="sd">            0</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            sage: A.&lt;a&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: B.&lt;b&gt; = LaurentPolynomialRing(A)</span>
+<span class="sd">            sage: B(a)</span>
+<span class="sd">            a</span>
+<span class="sd">            sage: C.&lt;c&gt; = LaurentPolynomialRing(B)</span>
+<span class="sd">            sage: B(C(b))</span>
+<span class="sd">            b</span>
+<span class="sd">            sage: D.&lt;d, e&gt; = LaurentPolynomialRing(B)</span>
+<span class="sd">            sage: B(D(b))</span>
+<span class="sd">            b</span>
+
+<span class="sd">        TESTS:</span>
+
+<span class="sd">        Check that conversion back from fraction field does work (:trac:`26425`)::</span>
+
+<span class="sd">            sage: R.&lt;t&gt; = LaurentPolynomialRing(ZZ)</span>
+<span class="sd">            sage: F = FractionField(R)</span>
+<span class="sd">            sage: R(F(25/(5*t**2)))</span>
+<span class="sd">            5*t^-2</span>
+<span class="sd">            sage: R(F(1/(1+t**2)))</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            TypeError: fraction must have unit denominator</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span> <span class="nn">sage.symbolic.expression</span> <span class="k">import</span> <span class="n">Expression</span>
+        <span class="kn">from</span> <span class="nn">sage.rings.fraction_field_element</span> <span class="k">import</span> <span class="n">FractionFieldElement</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Expression</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">laurent_polynomial</span><span class="p">(</span><span class="n">ring</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">LaurentPolynomial_univariate</span><span class="p">,</span> <span class="n">LaurentPolynomial_mpair</span><span class="p">)):</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">LaurentPolynomial_univariate</span><span class="p">):</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="p">{(</span><span class="n">k</span><span class="p">,):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">_split_laurent_polynomial_dict_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="p">{</span><span class="n">k</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">elif</span> <span class="n">P</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">():</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">:</span> <span class="n">x</span><span class="p">}</span>
+            <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">is_constant</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_coerce_map_from</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">constant_coefficient</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">())</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">FractionFieldElement</span><span class="p">):</span>
+            <span class="c1"># since the field of fraction of self is defined corresponding to the polynomial ring of self</span>
+            <span class="c1"># the conversion of its elements back must be treated separately (:trac:`26425`).</span>
+            <span class="n">P</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">denominator</span><span class="p">())</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">d</span><span class="o">.</span><span class="n">is_unit</span><span class="p">():</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"fraction must have unit denominator"</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">numerator</span><span class="p">())</span> <span class="o">*</span> <span class="n">d</span><span class="o">.</span><span class="n">inverse_of_unit</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Used in pickling.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ, 'x')</span>
+<span class="sd">            sage: loads(dumps(L)) == L</span>
+<span class="sd">            True</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">LaurentPolynomialRing_univariate</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">,)</span>
+
+<span class="k">class</span> <span class="nc">LaurentPolynomialRing_mpair</span><span class="p">(</span><span class="n">LaurentPolynomialRing_generic</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ,2,'x')</span>
+<span class="sd">            sage: type(L)</span>
+<span class="sd">            &lt;class</span>
+<span class="sd">            'sage.rings.polynomial.laurent_polynomial_ring.LaurentPolynomialRing_mpair_with_category'&gt;</span>
+<span class="sd">            sage: L == loads(dumps(L))</span>
+<span class="sd">            True</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="n">R</span><span class="o">.</span><span class="n">ngens</span><span class="p">()</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"n must be positive"</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">R</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()</span><span class="o">.</span><span class="n">is_integral_domain</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">"base ring must be an integral domain"</span><span class="p">)</span>
+        <span class="n">LaurentPolynomialRing_generic</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">R</span><span class="p">)</span>
+
+    <span class="n">Element</span> <span class="o">=</span> <span class="n">LaurentPolynomial_mpair</span>
+
+    <span class="k">def</span> <span class="nf">_repr_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        TESTS::</span>
+
+<span class="sd">            sage: LaurentPolynomialRing(QQ,2,'x').__repr__()</span>
+<span class="sd">            'Multivariate Laurent Polynomial Ring in x0, x1 over Rational Field'</span>
+<span class="sd">            sage: LaurentPolynomialRing(QQ,1,'x').__repr__()</span>
+<span class="sd">            'Multivariate Laurent Polynomial Ring in x over Rational Field'</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="s2">"Multivariate Laurent Polynomial Ring in </span><span class="si">%s</span><span class="s2"> over </span><span class="si">%s</span><span class="s2">"</span><span class="o">%</span><span class="p">(</span><span class="s2">", "</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()),</span> <span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="o">.</span><span class="n">base_ring</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">monomial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">"""</span>
+<span class="sd">        Return the monomial whose exponents are given in argument.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ, 'x', 2)</span>
+<span class="sd">            sage: L.monomial(-3, 5)</span>
+<span class="sd">            x0^-3*x1^5</span>
+<span class="sd">            sage: L.monomial(1, 1)</span>
+<span class="sd">            x0*x1</span>
+<span class="sd">            sage: L.monomial(0, 0)</span>
+<span class="sd">            1</span>
+<span class="sd">            sage: L.monomial(-2, -3)</span>
+<span class="sd">            x0^-2*x1^-3</span>
+
+<span class="sd">            sage: x0, x1 = L.gens()</span>
+<span class="sd">            sage: L.monomial(-1, 2) == x0^-1 * x1^2</span>
+<span class="sd">            True</span>
+
+<span class="sd">            sage: L.monomial(1, 2, 3)</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            TypeError: tuple key must have same length as ngens</span>
+<span class="sd">        """</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ngens</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">"tuple key must have same length as ngens"</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">sage.rings.polynomial.polydict</span> <span class="k">import</span> <span class="n">ETuple</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">ETuple</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngens</span><span class="p">()))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">polynomial_ring</span><span class="p">()</span><span class="o">.</span><span class="n">one</span><span class="p">(),</span> <span class="n">m</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_element_constructor_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mon</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ,2,'x')</span>
+<span class="sd">            sage: L(1/2)</span>
+<span class="sd">            1/2</span>
+
+<span class="sd">            sage: M = LaurentPolynomialRing(QQ, 'x, y')</span>
+<span class="sd">            sage: var('x, y')</span>
+<span class="sd">            (x, y)</span>
+<span class="sd">            sage: M(x/y + 3/x)</span>
+<span class="sd">            x*y^-1 + 3*x^-1</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            sage: M(exp(x))</span>
+<span class="sd">            Traceback (most recent call last):</span>
+<span class="sd">            ...</span>
+<span class="sd">            TypeError: unable to convert e^x to a rational</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            sage: L.&lt;a, b, c, d&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: M = LaurentPolynomialRing(QQ, 'c, d')</span>
+<span class="sd">            sage: Mc, Md = M.gens()</span>
+<span class="sd">            sage: N = LaurentPolynomialRing(M, 'a, b')</span>
+<span class="sd">            sage: Na, Nb = N.gens()</span>
+<span class="sd">            sage: M(c/d)</span>
+<span class="sd">            c*d^-1</span>
+<span class="sd">            sage: N(a*b/c/d)</span>
+<span class="sd">            (c^-1*d^-1)*a*b</span>
+<span class="sd">            sage: N(c/d)</span>
+<span class="sd">            c*d^-1</span>
+<span class="sd">            sage: L(Mc)</span>
+<span class="sd">            c</span>
+<span class="sd">            sage: L(Nb)</span>
+<span class="sd">            b</span>
+
+<span class="sd">            sage: M(L(0))</span>
+<span class="sd">            0</span>
+<span class="sd">            sage: N(L(0))</span>
+<span class="sd">            0</span>
+<span class="sd">            sage: L(M(0))</span>
+<span class="sd">            0</span>
+<span class="sd">            sage: L(N(0))</span>
+<span class="sd">            0</span>
+
+<span class="sd">            sage: U = LaurentPolynomialRing(QQ, 'a')</span>
+<span class="sd">            sage: Ua = U.gen()</span>
+<span class="sd">            sage: V = LaurentPolynomialRing(QQ, 'c')</span>
+<span class="sd">            sage: Vc = V.gen()</span>
+<span class="sd">            sage: L(Ua)</span>
+<span class="sd">            a</span>
+<span class="sd">            sage: L(Vc)</span>
+<span class="sd">            c</span>
+<span class="sd">            sage: N(Ua)</span>
+<span class="sd">            a</span>
+<span class="sd">            sage: M(Vc)</span>
+<span class="sd">            c</span>
+
+<span class="sd">            sage: P = LaurentPolynomialRing(QQ, 'a, b')</span>
+<span class="sd">            sage: Q = LaurentPolynomialRing(P, 'c, d')</span>
+<span class="sd">            sage: Q(P.0)</span>
+<span class="sd">            a</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            sage: A.&lt;a&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: B.&lt;b&gt; = LaurentPolynomialRing(A)</span>
+<span class="sd">            sage: C = LaurentPolynomialRing(QQ, 'a, b')</span>
+<span class="sd">            sage: C(B({1: a}))</span>
+<span class="sd">            a*b</span>
+<span class="sd">            sage: D.&lt;d, e&gt; = LaurentPolynomialRing(B)</span>
+<span class="sd">            sage: F.&lt;f, g&gt; = LaurentPolynomialRing(D)</span>
+<span class="sd">            sage: D(F(d*e))</span>
+<span class="sd">            d*e</span>
+
+<span class="sd">        ::</span>
+
+<span class="sd">            sage: from sage.rings.polynomial.polydict import ETuple</span>
+<span class="sd">            sage: R.&lt;x,y,z&gt; = LaurentPolynomialRing(QQ)</span>
+<span class="sd">            sage: mon = ETuple({}, int(3))</span>
+<span class="sd">            sage: P = R.polynomial_ring()</span>
+<span class="sd">            sage: R(sum(P.gens()), mon)</span>
+<span class="sd">            x + y + z</span>
+<span class="sd">            sage: R(sum(P.gens()), (-1,-1,-1))</span>
+<span class="sd">            y^-1*z^-1 + x^-1*z^-1 + x^-1*y^-1</span>
+<span class="sd">        """</span>
+        <span class="kn">from</span> <span class="nn">sage.symbolic.expression</span> <span class="k">import</span> <span class="n">Expression</span>
+
+        <span class="k">if</span> <span class="n">mon</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mon</span><span class="p">)</span>
+
+        <span class="n">P</span> <span class="o">=</span> <span class="n">parent</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">P</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">polynomial_ring</span><span class="p">():</span>
+            <span class="kn">from</span> <span class="nn">sage.rings.polynomial.polydict</span> <span class="k">import</span> <span class="n">ETuple</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_class</span><span class="p">(</span> <span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">mon</span><span class="o">=</span><span class="n">ETuple</span><span class="p">({},</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngens</span><span class="p">()))</span> <span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">Expression</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">x</span><span class="o">.</span><span class="n">laurent_polynomial</span><span class="p">(</span><span class="n">ring</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="p">(</span><span class="n">LaurentPolynomial_univariate</span><span class="p">,</span> <span class="n">LaurentPolynomial_mpair</span><span class="p">)):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()</span> <span class="o">==</span> <span class="n">P</span><span class="o">.</span><span class="n">variable_names</span><span class="p">():</span>
+                <span class="c1"># No special processing needed here;</span>
+                <span class="c1">#   handled by LaurentPolynomial_mpair.__init__</span>
+                <span class="k">pass</span>
+            <span class="k">elif</span> <span class="nb">set</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">())</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">LaurentPolynomial_univariate</span><span class="p">):</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="p">{(</span><span class="n">k</span><span class="p">,):</span> <span class="n">v</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">x</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">d</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">_split_laurent_polynomial_dict_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">P</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">P</span> <span class="ow">is</span> <span class="bp">self</span><span class="o">.</span><span class="n">base_ring</span><span class="p">():</span>
+                <span class="kn">from</span> <span class="nn">sage.rings.polynomial.polydict</span> <span class="k">import</span> <span class="n">ETuple</span>
+                <span class="n">mz</span> <span class="o">=</span> <span class="n">ETuple</span><span class="p">({},</span> <span class="nb">int</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">ngens</span><span class="p">()))</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="p">{</span><span class="n">mz</span><span class="p">:</span> <span class="n">x</span><span class="p">},</span> <span class="n">mz</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">x</span><span class="o">.</span><span class="n">is_constant</span><span class="p">()</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">has_coerce_map_from</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">base_ring</span><span class="p">()):</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">constant_coefficient</span><span class="p">())</span>
+            <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">variable_names</span><span class="p">())</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">P</span><span class="o">.</span><span class="n">variable_names</span><span class="p">()):</span>
+                <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">dict</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">element_class</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">__reduce__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">"""</span>
+<span class="sd">        Used in pickling.</span>
+
+<span class="sd">        EXAMPLES::</span>
+
+<span class="sd">            sage: L = LaurentPolynomialRing(QQ, 2, 'x')</span>
+<span class="sd">            sage: loads(dumps(L)) == L</span>
+<span class="sd">            True</span>
+<span class="sd">        """</span>
+        <span class="k">return</span> <span class="n">LaurentPolynomialRing_mpair</span><span class="p">,</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_R</span><span class="p">,)</span>
+
+
+</pre></div>
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Pieter Belmans
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../../../../" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensionsr": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"]], "displayMath": [["$$", "$$"], ["\\[", "\\]"]]}})</script>
+    <script src="../../../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>

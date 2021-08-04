@@ -1,0 +1,1775 @@
+<!doctype html>
+<html class="no-js">
+  <head><meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width,initial-scale=1"/>
+    <meta name="color-scheme" content="light dark"><link rel="index" title="Index" href="../../../genindex.html" /><link rel="search" title="Search" href="../../../search.html" />
+
+    <meta name="generator" content="sphinx-3.1.2, furo 2021.04.11.beta34"/>
+        <title>Docs for file /Users/pbelmans/Documents/Projects/hodge-diamond-cutter/diamond.py - Hodge diamond cutter v1.0 documentation</title>
+      <link rel="stylesheet" href="../../../_static/styles/furo.css?digest=59ab60ac09ea94ccfe6deddff6d715cce948a6fc">
+    <link rel="stylesheet" href="../../../_static/pygments.css">
+    <link media="(prefers-color-scheme: dark)" rel="stylesheet" href="../../../_static/pygments_dark.css">
+    
+
+
+<style>
+  :root {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+    }
+  }
+
+  /* For allowing end-user-specific overrides */
+  .override-light {
+    --color-code-background: #f8f8f8;
+  --color-code-foreground: black;
+  
+  }
+  .override-dark {
+    --color-code-background: #202020;
+  --color-code-foreground: #d0d0d0;
+  
+  }
+</style><link rel="stylesheet" href="../../../_static/styles/furo-extensions.css?digest=d391b54134226e4196576da3bdb6dddb7e05ba2b"></head>
+  <body dir="">
+    
+<svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
+  <symbol id="svg-toc" viewBox="0 0 24 24">
+    <title>Contents</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke-width="1.5" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path stroke="none" d="M0 0h24v24H0z"/>
+      <line x1="4" y1="6" x2="20" y2="6" />
+      <line x1="10" y1="12" x2="20" y2="12" />
+      <line x1="6" y1="18" x2="20" y2="18" />
+    </svg>
+  </symbol>
+  <symbol id="svg-menu" viewBox="0 0 24 24">
+    <title>Menu</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-menu">
+      <line x1="3" y1="12" x2="21" y2="12"></line>
+      <line x1="3" y1="6" x2="21" y2="6"></line>
+      <line x1="3" y1="18" x2="21" y2="18"></line>
+    </svg>
+  </symbol>
+  <symbol id="svg-arrow-right" viewBox="0 0 24 24">
+    <title>Expand</title>
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+      stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+      class="feather feather-chevron-right">
+      <polyline points="9 18 15 12 9 6"></polyline>
+    </svg>
+  </symbol>
+</svg>
+
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation">
+<input type="checkbox" class="sidebar-toggle" name="__toc" id="__toc">
+<label class="overlay sidebar-overlay" for="__navigation"></label>
+<label class="overlay toc-overlay" for="__toc"></label>
+
+
+
+<div class="page">
+  <header class="mobile-header">
+    <div class="header-left">
+      <label class="nav-overlay-icon" for="__navigation">
+        <i class="icon"><svg><use href="#svg-menu"></use></svg></i>
+      </label>
+    </div>
+    <div class="header-center">
+      <a href="../../../index.html"><div class="brand">Hodge diamond cutter v1.0 documentation</div></a>
+    </div>
+    <div class="header-right">
+      <label class="toc-overlay-icon toc-header-icon no-toc" for="__toc">
+        <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+      </label>
+    </div>
+  </header>
+  <aside class="sidebar-drawer">
+    <div class="sidebar-container">
+      
+      <div class="sidebar-sticky"><a class="sidebar-brand" href="../../../index.html">
+  
+  
+  <span class="sidebar-brand-text">Hodge diamond cutter v1.0 documentation</span>
+  
+</a><form class="sidebar-search-container" method="get" action="../../../search.html">
+  <input class="sidebar-search" placeholder=Search name="q">
+  <input type="hidden" name="check_keywords" value="yes">
+  <input type="hidden" name="area" value="default">
+</form><div class="sidebar-scroll"><div class="sidebar-tree">
+  
+</div>
+</div>
+      </div>
+      
+    </div>
+  </aside>
+  <main class="main">
+    <div class="content">
+      <article role="main">
+        <label class="toc-overlay-icon toc-content-icon no-toc" for="__toc">
+          <i class="icon"><svg><use href="#svg-toc"></use></svg></i>
+        </label>
+        <div class="section" id="docs-for-file-users-pbelmans-documents-projects-hodge-diamond-cutter-diamond-py">
+<h1>Docs for file /Users/pbelmans/Documents/Projects/hodge-diamond-cutter/diamond.py<a class="headerlink" href="#docs-for-file-users-pbelmans-documents-projects-hodge-diamond-cutter-diamond-py" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="module-diamond"></span><p>A tool to work with Hodge diamonds, comes with many varieties and constructions
+built into it.</p>
+<p>Hodge diamonds encode the Hodge numbers of a variety, and provide interesting
+information about its structure. They provide a numerical incarnation of many
+operations one can perform in algebraic geometry, such as blowups, projective
+bundles, products. They are also computed for many more specific constructions
+such as certain moduli spaces of sheaves, or flag varieties, …</p>
+<p>These Hodge numbers are defined as the dimensions of the sheaf cohomology of
+exterior powers of the cotangent bundle, i.e.</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\mathrm{h}^{p,q}(X)=\dim\mathrm{H}^q(X,\Omega_X^p)\]</div></div>
+<p>Here $p$ and $q$ range from $0$ to $n=\dim X$. These numbers satisfy additional
+symmetry properties:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>Hodge symmetry: $\mathrm{h}^{p,q}(X)=\mathrm{h}^{q,p}(X)$</p></li>
+<li><p>Serre duality: $\mathrm{h}^{p,q}(X)=\mathrm{h}^{n-p,n-q}(X)$</p></li>
+</ul>
+</div></blockquote>
+<p>Because of these symmetries they are usually displayed as a diamond (it’s
+really just a square tilted 45 degrees), so that for a surface it would be:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>                <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">}</span>
+        <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span>         <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">}</span>
+<span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">2</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span>         <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span>         <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">2</span><span class="p">}</span>
+        <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span>         <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">}</span>
+                <span class="n">h</span><span class="o">^</span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">}</span>
+</pre></div>
+</div>
+<p>One of their famous applications is the mirror symmetry prediction that every
+Calabi-Yau 3-fold has a mirror Calabi-Yau threefold, which should imply that
+their Hodge diamonds are transpositions. The first instance of this is the
+quintic 3-fold and its mirror, whose Hodge diamonds are:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>              <span class="mi">1</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mi">0</span>         <span class="mi">1</span>         <span class="mi">0</span>
+<span class="mi">1</span>       <span class="mi">101</span>       <span class="mi">101</span>       <span class="mi">1</span>
+    <span class="mi">0</span>         <span class="mi">1</span>         <span class="mi">0</span>
+         <span class="mi">0</span>         <span class="mi">0</span>
+              <span class="mi">1</span>
+</pre></div>
+</div>
+<p>and:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>             <span class="mi">1</span>
+        <span class="mi">0</span>         <span class="mi">0</span>
+    <span class="mi">0</span>       <span class="mi">101</span>       <span class="mi">0</span>
+<span class="mi">1</span>       <span class="mi">1</span>         <span class="mi">1</span>       <span class="mi">1</span>
+    <span class="mi">0</span>       <span class="mi">101</span>       <span class="mi">0</span>
+        <span class="mi">0</span>         <span class="mi">0</span>
+             <span class="mi">1</span>
+</pre></div>
+</div>
+<p>The following are some very basic examples of operations and constructions one
+can use within the Hodge diamond cutter. To get started we do:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>after starting Sage.</p>
+<p>Pretty print the Hodge diamond of a genus 2 curve:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">X</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+      <span class="mi">1</span>
+  <span class="mi">2</span>       <span class="mi">2</span>
+      <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Compute the Euler characteristic of the product of <cite>X</cite> with itself:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">((</span><span class="n">X</span><span class="o">*</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">euler</span><span class="p">())</span>
+<span class="mi">4</span>
+</pre></div>
+</div>
+<p>Pretty print the Hodge diamond of the Hilbert square of a K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">S</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">hilbn</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+                    <span class="mi">1</span>
+               <span class="mi">0</span>         <span class="mi">0</span>
+          <span class="mi">1</span>        <span class="mi">21</span>        <span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>         <span class="mi">0</span>        <span class="mi">0</span>
+  <span class="mi">1</span>       <span class="mi">21</span>       <span class="mi">232</span>       <span class="mi">21</span>       <span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>         <span class="mi">0</span>        <span class="mi">0</span>
+          <span class="mi">1</span>        <span class="mi">21</span>        <span class="mi">1</span>
+               <span class="mi">0</span>         <span class="mi">0</span>
+                    <span class="mi">1</span>
+</pre></div>
+</div>
+<p>There are many varieties built in, e.g. the previously defined K3 surface can
+be compared to the built-in one:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">S</span> <span class="o">==</span> <span class="n">K3</span><span class="p">())</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>AUTHORS:</p>
+<ul class="simple">
+<li><p>Pieter Belmans (2019-01-27): initial version</p></li>
+<li><p>Pieter Belmans (2020-06-16): the version which got assigned a DOI</p></li>
+<li><p>Pieter Belmans (2021-08-04): various additions, added unit tests and proper documentation</p></li>
+</ul>
+<dl class="py class">
+<dt id="diamond.HochschildHomology">
+<em class="property">class </em><code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">HochschildHomology</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">L</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class implements some methods to work with (the dimensions of)
+Hochschild homology spaces, associated to the <a class="reference internal" href="../../../index.html#diamond.HodgeDiamond" title="diamond.HodgeDiamond"><code class="xref py py-class docutils literal notranslate"><span class="pre">HodgeDiamond</span></code></a> class.</p>
+<p>The documentation is not intended to be complete, as this is mostly for my own sake.</p>
+<dl class="py attribute">
+<dt id="diamond.HochschildHomology.R">
+<code class="sig-name descname">R</code><em class="property"> = Univariate Laurent Polynomial Ring in t over Integer Ring</em><a class="headerlink" href="#diamond.HochschildHomology.R" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.dimension">
+<code class="sig-name descname">dimension</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.dimension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.dimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Largest index <code class="docutils literal notranslate"><span class="pre">i</span></code> such that $\mathrm{HH}_i\neq 0$</p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.euler">
+<code class="sig-name descname">euler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.euler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Euler characteristic of Hochschild homology</p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.from_list">
+<em class="property">classmethod </em><code class="sig-name descname">from_list</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">L</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.from_list"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.from_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor for Hochschild homology dimensions from a list.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span></code> – a list of integers representing $\mathrm{HH}_{-n}$ to $\mathrm{HH}_n$</p></li>
+</ul>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.from_polynomial">
+<em class="property">classmethod </em><code class="sig-name descname">from_polynomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.from_polynomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.from_polynomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor for Hochschild homology dimensions from Hochschild–Poincaré Laurent polynomial</p>
+<p>INPUT</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">f</span></code> – the Hochschild–Poincaré Laurent polynomial</p></li>
+</ul>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.from_positive">
+<em class="property">classmethod </em><code class="sig-name descname">from_positive</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">L</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.from_positive"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.from_positive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Constructor for Hochschild homology dimensions from a list when only the positive part is given.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">L</span></code> – a list of integers representing $\mathrm{HH}_0$ to $\mathrm{HH}_n$</p></li>
+</ul>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.is_zero">
+<code class="sig-name descname">is_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.is_zero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.is_zero" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.polynomial">
+<em class="property">property </em><code class="sig-name descname">polynomial</code><a class="headerlink" href="#diamond.HochschildHomology.polynomial" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.pprint">
+<code class="sig-name descname">pprint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output</span><span class="o">=</span><span class="default_value">'table'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.pprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.pprint" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.sym">
+<code class="sig-name descname">sym</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.sym"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.sym" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for <code class="docutils literal notranslate"><span class="pre">`HochschildHomology.symmetric_power`</span></code></p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HochschildHomology.symmetric_power">
+<code class="sig-name descname">symmetric_power</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HochschildHomology.symmetric_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HochschildHomology.symmetric_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hochschild homology of the Ganter–Kapranov symmetric power of a smooth and proper dg category</p>
+<p>This is possibly only a heuristic (I didn’t check for proofs in the literature) based on the decomposition of Hochschild homology for a quotient stack, as discussed in the paper of Polishchuk–Van den Bergh</p>
+</dd></dl>
+<dl class="py attribute">
+<dt id="diamond.HochschildHomology.t">
+<code class="sig-name descname">t</code><em class="property"> = t</em><a class="headerlink" href="#diamond.HochschildHomology.t" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+</dd></dl>
+<dl class="py class">
+<dt id="diamond.HodgeDiamond">
+<em class="property">class </em><code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">HodgeDiamond</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>This class implements some methods to work with Hodge diamonds.</p>
+<dl class="py attribute">
+<dt id="diamond.HodgeDiamond.R">
+<code class="sig-name descname">R</code><em class="property"> = Multivariate Polynomial Ring in x, y over Integer Ring</em><a class="headerlink" href="#diamond.HodgeDiamond.R" title="Permalink to this definition">¶</a></dt>
+<dd><p>polynomial ring used internally for the Hodge-Poincaré polynomial
+and can be used externally to create new polynomials (and thus diamonds)</p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.arises_from_variety">
+<code class="sig-name descname">arises_from_variety</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.arises_from_variety"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.arises_from_variety" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the Hodge diamond can arise from a smooth projective variety</p>
+<p>The constraints are:</p>
+<ul class="simple">
+<li><p>satisfy Hodge symmetry</p></li>
+<li><p>satisfy Serre symmetry</p></li>
+<li><p>there is no Lefschetz twist</p></li>
+</ul>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.betti">
+<code class="sig-name descname">betti</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.betti"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.betti" title="Permalink to this definition">¶</a></dt>
+<dd><p>Betti numbers of the Hodge diamond</p>
+<p>This gives an integer vector.</p>
+<p>EXAMPLES:</p>
+<p>Betti numbers of a K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">K3</span><span class="p">()</span><span class="o">.</span><span class="n">betti</span><span class="p">()</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">22</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>The second Betti number of the Hilbert scheme of points on a K3 surface
+is 23, not 22:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="p">[</span><span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">betti</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]</span>
+<span class="p">[</span><span class="mi">23</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">23</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.blowup">
+<code class="sig-name descname">blowup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">other</span></em>, <em class="sig-param"><span class="n">codim</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.blowup"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.blowup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute Hodge diamond of blowup</p>
+<p>No consistency checks are performed, this just naively applies the blowup
+formula from Hodge theory.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">other</span></code> – Hodge diamond of the center of the blowup</p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">codim</span></code> – codimension of the center (optional), in case it is not</dt><dd><p>the Hodge diamond of an honest variety</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>EXAMPLES:</p>
+<p>A cubic surface is the blowup of $\mathbb{P}^2$ in 6 points:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">blowup</span><span class="p">(</span><span class="mi">6</span><span class="o">*</span><span class="n">point</span><span class="p">())</span> <span class="o">==</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.bundle">
+<code class="sig-name descname">bundle</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rank</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.bundle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.bundle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the Hodge diamond of a projective bundle</p>
+<p>This applies the bundle formula from Hodge theory without any consistency checks.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rank</span></code>: rank of the vector bundle on <code class="docutils literal notranslate"><span class="pre">self</span></code></p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>A projective bundle on a point is a projective space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">point</span><span class="p">()</span><span class="o">.</span><span class="n">bundle</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>A quadric surface is a $\mathbb{P}^1$-bundle on $\mathbb{P}^1$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">bundle</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.dimension">
+<code class="sig-name descname">dimension</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.dimension"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.dimension" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimension of the Hodge diamond</p>
+<p>This takes twists by the Lefschetz class into account: we untwist by
+the maximal power and ony then determine how big the diamond is.</p>
+<p>EXAMPLES:</p>
+<p>A point is 0-dimensional:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">point</span><span class="p">()</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span>
+<span class="mi">0</span>
+</pre></div>
+</div>
+<p>The Lefschetz diamond is also 0-dimensional:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">lefschetz</span><span class="p">())</span>
+      <span class="mi">0</span>
+  <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">1</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">lefschetz</span><span class="p">()</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span>
+<span class="mi">0</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.euler">
+<code class="sig-name descname">euler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.euler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>The topological Euler characteristic of the Hodge diamond</p>
+<p>This is the alternating sum of the Betti numbers, so that</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\chi_{\mathrm{top}}=\sum_{p,q=0}^{\dim X}(-1)^{p+q}\mathrm{h}^{p,q}\]</div></div>
+<p>EXAMPLES:</p>
+<p>The Euler characteristic of projective space grows linearly:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">[</span><span class="n">Pn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">euler</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>For Hilbert schemes of points of K3 surfaces these are the
+coefficients of the series expansion of the Dedekind eta-function,
+see A006922 in the OEIS:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="p">[</span><span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">euler</span><span class="p">()</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)]</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">,</span> <span class="mi">324</span><span class="p">,</span> <span class="mi">3200</span><span class="p">,</span> <span class="mi">25650</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.from_matrix">
+<em class="property">classmethod </em><code class="sig-name descname">from_matrix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">m</span></em>, <em class="sig-param"><span class="n">from_variety</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.from_matrix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.from_matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a Hodge diamond from a matrix</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">m</span></code> – square integer matrix representing a Hodge diamond</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from_variety</span></code> (default: False) – whether a check should be
+performed that it comes from a variety</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>Hodge diamond of a K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">S</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">S</span> <span class="o">==</span> <span class="n">K3</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The following fails as the lack of symmetry prevents a geometric origin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">from_variety</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="o">...</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="n">The</span> <span class="n">matrix</span> <span class="n">does</span> <span class="ow">not</span>
+                <span class="n">satisfy</span> <span class="n">the</span> <span class="n">conditions</span> <span class="n">satisfied</span> <span class="n">by</span> <span class="n">the</span> <span class="n">Hodge</span> <span class="n">diamond</span> <span class="n">of</span> <span class="n">a</span>
+                <span class="n">smooth</span> <span class="n">projective</span> <span class="n">variety</span><span class="o">.</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.from_polynomial">
+<em class="property">classmethod </em><code class="sig-name descname">from_polynomial</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">f</span></em>, <em class="sig-param"><span class="n">from_variety</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.from_polynomial"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.from_polynomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct a Hodge diamond from a Hodge–Poincaré polynomial</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">f</span></code> – an integer polynomial in the ring <code class="docutils literal notranslate"><span class="pre">HodgeDiamond.R</span></code>
+representing the Hodge–Poincaré polynomial</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">from_variety</span></code> (default: False) – whether a check should be
+performed that it comes from a variety</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>Hodge diamond of a K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">S</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_polynomial</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">20</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">S</span> <span class="o">==</span> <span class="n">K3</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The following fails as the lack of symmetry prevents a geometric origin:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_polynomial</span><span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">x</span><span class="p">,</span> <span class="n">from_variety</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+<span class="o">...</span>
+<span class="ne">AssertionError</span><span class="p">:</span> <span class="n">The</span> <span class="n">matrix</span> <span class="n">does</span> <span class="ow">not</span>
+                <span class="n">satisfy</span> <span class="n">the</span> <span class="n">conditions</span> <span class="n">satisfied</span> <span class="n">by</span> <span class="n">the</span> <span class="n">Hodge</span> <span class="n">diamond</span> <span class="n">of</span> <span class="n">a</span>
+                <span class="n">smooth</span> <span class="n">projective</span> <span class="n">variety</span><span class="o">.</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.hh">
+<code class="sig-name descname">hh</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.hh"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.hh" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for <a class="reference internal" href="../../../index.html#diamond.HodgeDiamond.hochschild" title="diamond.HodgeDiamond.hochschild"><code class="xref py py-meth docutils literal notranslate"><span class="pre">HodgeDiamond.hochschild()</span></code></a></p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.hirzebruch">
+<code class="sig-name descname">hirzebruch</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.hirzebruch"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.hirzebruch" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hirzebruch’s chi_y genus</p>
+<p>For a smooth projective variety $X$ Hirzebruch’s $\chi_y$-genus is
+defined as</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\chi_y(X)=\sum_{p,q=0}^{\dim X}(-1)^{p+q}\mathrm{h}^{p,q}(X)y^p\]</div></div>
+<p>which shows it is the specialisation of the Hodge-Poincaré polynomial
+for $x=-1$. A further specialisation to $y=-1$ gives the Euler characteristic.</p>
+<p>EXAMPLES:</p>
+<p>For a K3 surface we have:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">K3</span><span class="p">()</span><span class="o">.</span><span class="n">hirzebruch</span><span class="p">()</span>
+<span class="mi">2</span><span class="o">*</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">20</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">K3</span><span class="p">()</span><span class="o">.</span><span class="n">hirzebruch</span><span class="p">()</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">K3</span><span class="p">()</span><span class="o">.</span><span class="n">euler</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For the Hilbert square of a K3 surface we get:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">hirzebruch</span><span class="p">()</span>
+<span class="mi">3</span><span class="o">*</span><span class="n">y</span><span class="o">^</span><span class="mi">4</span> <span class="o">-</span> <span class="mi">42</span><span class="o">*</span><span class="n">y</span><span class="o">^</span><span class="mi">3</span> <span class="o">+</span> <span class="mi">234</span><span class="o">*</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span> <span class="o">-</span> <span class="mi">42</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="mi">3</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">hirzebruch</span><span class="p">()</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">y</span><span class="o">=-</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">euler</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.hochschild">
+<code class="sig-name descname">hochschild</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.hochschild"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.hochschild" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimensions of the Hochschild homology</p>
+<p>Columns of the Hodge diamond are Hochschild homology, by the Hochschild-
+Kostant-Rosenberg theorem.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.holomorphic_euler">
+<code class="sig-name descname">holomorphic_euler</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.holomorphic_euler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.holomorphic_euler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Holomorphic Euler characteristic</p>
+<p>This is the Euler characteristic of the structure sheaf, so</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\chi(X)=\sum_{i=0}^{\dim X}(-1)^i\mathrm{h}^{0,i}(X)\]</div></div>
+<p>EXAMPLES:</p>
+<p>For projective space it is 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">Pn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">holomorphic_euler</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For a hyperkähler variety of dimension $2n$ this number is $n+1$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">K3n</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">holomorphic_euler</span><span class="p">()</span> <span class="o">==</span> <span class="n">n</span><span class="o">+</span><span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.homological_unit">
+<code class="sig-name descname">homological_unit</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.homological_unit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.homological_unit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dimensions of $\mathrm{H}^bullet(X,O_X)$</p>
+<p>A notion intorduced by Abuaf.</p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.is_hodge_symmetric">
+<code class="sig-name descname">is_hodge_symmetric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.is_hodge_symmetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.is_hodge_symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the Hodge diamond satisfies Hodge symmetry</p>
+<p>This checks the equality</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\mathrm{h}^{p,q}(X)=\mathrm{h}^{q,p}(X)\]</div></div>
+<p>for $p,q=0,\ldots,\dim X$.</p>
+<p>Almost all of the constructions provided with the library satisfy Hodge
+symmetry, because we (somewhat implicitly) work with things which are
+(or behave like) smooth projective varieties over a field of
+characteristic zero.</p>
+<p>Over the complex numbers this can fail for non-Kähler manifolds, such
+as the Hopf surface.</p>
+<p>In positive characteristic this can fail too, with an example given by
+classical and singular Enriques surfaces in characteristic 2, see [MR0491720]
+and Proposition 1.4.2 in [MR0986969]</p>
+<ul class="simple">
+<li><p>[MR0491720] Bombieri–Mumford, Enriques’ classification of surfaces in char. p. III.</p></li>
+<li><p>[MR0986969] Cossec–Dolgachev, Enriques surfaces I, Progress in Mathematics, 1989</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>Constructions satisfy this property:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span><span class="o">.</span><span class="n">is_hodge_symmetric</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The Hopf surface over the complex numbers:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">S</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_matrix</span><span class="p">([[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]])</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+          <span class="mi">1</span>
+      <span class="mi">0</span>       <span class="mi">1</span>
+  <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">1</span>       <span class="mi">0</span>
+          <span class="mi">1</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">S</span><span class="o">.</span><span class="n">is_hodge_symmetric</span><span class="p">()</span>
+<span class="kc">False</span>
+</pre></div>
+</div>
+<p>Classical and singular Enriques surfaces in characteristic 2
+(which are smooth, despite their name) also have a Hodge diamond
+violating Hodge symmetry:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">enriques</span><span class="p">(</span><span class="n">two</span><span class="o">=</span><span class="s2">"classical"</span><span class="p">)</span><span class="o">.</span><span class="n">is_hodge_symmetric</span><span class="p">()</span>
+<span class="kc">False</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">enriques</span><span class="p">(</span><span class="n">two</span><span class="o">=</span><span class="s2">"singular"</span><span class="p">)</span><span class="o">.</span><span class="n">is_hodge_symmetric</span><span class="p">()</span>
+<span class="kc">False</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">enriques</span><span class="p">(</span><span class="n">two</span><span class="o">=</span><span class="s2">"supersingular"</span><span class="p">)</span><span class="o">.</span><span class="n">is_hodge_symmetric</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.is_serre_symmetric">
+<code class="sig-name descname">is_serre_symmetric</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.is_serre_symmetric"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.is_serre_symmetric" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the Hodge diamond satisfies Serre symmetry</p>
+<p>This checks the equality</p>
+<div class="math-wrapper"><div class="math notranslate nohighlight">
+\[\mathrm{h}^{p,q}(X)=\mathrm{h}^{\dim X-p,\dim X-q}(X)\]</div></div>
+<p>for $p,q=0,\ldots,\dim X$.</p>
+<p>Because Serre duality holds for all smooth projective varieties,
+independent of the characteristic, and also for non-Kähler varieties
+there are no examples where this condition fails. It can of course fail
+for motivic pieces, for silly reasons.</p>
+<p>EXAMPLES:</p>
+<p>The Hilbert scheme of 4 points on a K3 surface satisfies the symmetry:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">is_serre_symmetric</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The Lefschetz diamond fails it for silly reasons:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">lefschetz</span><span class="p">()</span><span class="o">.</span><span class="n">is_serre_symmetric</span><span class="p">()</span>
+<span class="kc">False</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.is_zero">
+<code class="sig-name descname">is_zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.is_zero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.is_zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Check whether the Hodge diamond is identically zero</p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.lefschetz_power">
+<code class="sig-name descname">lefschetz_power</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.lefschetz_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.lefschetz_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the twist by the Lefschetz motive that is present</p>
+<p>In other words, we see how divisible the Hodge–Poincaré polynomial is
+with respect to the monomial $x^iy^i$</p>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.level">
+<code class="sig-name descname">level</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.level"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the level (or complexity) of the Hodge diamond</p>
+<p>This is a measure of the width of the non-zero part of the Hodge diamond.</p>
+<p>EXAMPLES:</p>
+<p>The simplest case is projective space, with level zero:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">Pn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">level</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For intersections of 2 quadrics it alternates between zero and one:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">level</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">level</span><span class="p">()</span> <span class="o">==</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>A Calabi-Yau variety (e.g. a hypersurface of degree $n+1$ in $\mathbb{P}^n$) has maximal level:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">hypersurface</span><span class="p">(</span><span class="n">n</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">level</span><span class="p">()</span> <span class="o">==</span> <span class="n">n</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.matrix">
+<em class="property">property </em><code class="sig-name descname">matrix</code><a class="headerlink" href="#diamond.HodgeDiamond.matrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>The matrix describing the Hodge diamond</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>returns the matrix</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>sets the Hodge diamond using a matrix</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>square matrix of integers</p>
+</dd>
+</dl>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.middle">
+<code class="sig-name descname">middle</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.middle"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.middle" title="Permalink to this definition">¶</a></dt>
+<dd><p>Middle cohomology of the Hodge diamond</p>
+<p>For smooth projective varieties the middle cohomology sits in degree
+equal to the dimension.</p>
+<p>EXAMPLES:</p>
+<p>There is an interesting link between K3 surfaces and cubic fourfolds
+which can be seen on the level of middle cohomology:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">(</span><span class="n">hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">-</span> <span class="n">lefschetz</span><span class="p">()</span><span class="o">**</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">middle</span><span class="p">()</span>
+<span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">K3</span><span class="p">()</span><span class="o">.</span><span class="n">middle</span><span class="p">()</span>
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.mirror">
+<code class="sig-name descname">mirror</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.mirror"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.mirror" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the mirror Hodge diamond</p>
+<p>EXAMPLES:</p>
+<p>The mirror to a quintic 3-fold is the following:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">hypersurface</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">mirror</span><span class="p">())</span>
+                 <span class="mi">1</span>
+            <span class="mi">0</span>         <span class="mi">0</span>
+        <span class="mi">0</span>       <span class="mi">101</span>       <span class="mi">0</span>
+    <span class="mi">1</span>       <span class="mi">1</span>         <span class="mi">1</span>       <span class="mi">1</span>
+        <span class="mi">0</span>       <span class="mi">101</span>       <span class="mi">0</span>
+            <span class="mi">0</span>         <span class="mi">0</span>
+                 <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.polynomial">
+<em class="property">property </em><code class="sig-name descname">polynomial</code><a class="headerlink" href="#diamond.HodgeDiamond.polynomial" title="Permalink to this definition">¶</a></dt>
+<dd><p>The Hodge–Poincaré polynomial describing the Hodge diamond</p>
+<dl class="field-list simple">
+<dt class="field-odd">Getter</dt>
+<dd class="field-odd"><p>returns the Hodge–Poincaré polynomial</p>
+</dd>
+<dt class="field-even">Setter</dt>
+<dd class="field-even"><p>sets the Hodge diamond using a Hodge–Poincaré polynomial</p>
+</dd>
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>element of <a class="reference internal" href="../../../index.html#diamond.HodgeDiamond.R" title="diamond.HodgeDiamond.R"><code class="xref py py-attr docutils literal notranslate"><span class="pre">HodgeDiamond.R</span></code></a></p>
+</dd>
+</dl>
+<p>EXAMPLES:</p>
+<p>The Hodge–Poincaré polynomial of a K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">K3</span><span class="p">()</span><span class="o">.</span><span class="n">polynomial</span><span class="p">)</span>
+<span class="n">x</span><span class="o">^</span><span class="mi">2</span><span class="o">*</span><span class="n">y</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="n">x</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">20</span><span class="o">*</span><span class="n">x</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="n">y</span><span class="o">^</span><span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Modifying the Hodge diamond of the projective plane:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">X</span> <span class="o">=</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">X</span><span class="o">.</span><span class="n">polynomial</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">polynomial</span> <span class="o">+</span> <span class="n">X</span><span class="o">.</span><span class="n">x</span> <span class="o">*</span> <span class="n">X</span><span class="o">.</span><span class="n">y</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+          <span class="mi">1</span>
+      <span class="mi">0</span>       <span class="mi">0</span>
+  <span class="mi">0</span>       <span class="mi">2</span>       <span class="mi">0</span>
+      <span class="mi">0</span>       <span class="mi">0</span>
+          <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py method">
+<dt id="diamond.HodgeDiamond.pprint">
+<code class="sig-name descname">pprint</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">format</span><span class="o">=</span><span class="default_value">'table'</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#HodgeDiamond.pprint"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.HodgeDiamond.pprint" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pretty print the Hodge diamond</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">format</span></code> – output format (default: <cite>“table”</cite>), if table it pretty prints</dt><dd><p>a Hodge diamond; all else defaults to the polynomial</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The projective line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">pprint</span><span class="p">()</span>
+      <span class="mi">1</span>
+  <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">1</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">"polynomial"</span><span class="p">)</span>
+<span class="n">x</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py attribute">
+<dt id="diamond.HodgeDiamond.x">
+<code class="sig-name descname">x</code><em class="property"> = x</em><a class="headerlink" href="#diamond.HodgeDiamond.x" title="Permalink to this definition">¶</a></dt>
+<dd><p>variables in the polynomial ring for Hodge-Poincaré polynomials</p>
+</dd></dl>
+<dl class="py attribute">
+<dt id="diamond.HodgeDiamond.y">
+<code class="sig-name descname">y</code><em class="property"> = y</em><a class="headerlink" href="#diamond.HodgeDiamond.y" title="Permalink to this definition">¶</a></dt>
+<dd><p>variables in the polynomial ring for Hodge-Poincaré polynomials</p>
+</dd></dl>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.K3">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">K3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#K3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.K3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for a K3 surface</p>
+<p>EXAMPLES:</p>
+<p>The K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">K3</span><span class="p">())</span>
+          <span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>
+  <span class="mi">1</span>       <span class="mi">20</span>       <span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>
+          <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.K3n">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">K3n</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#K3n"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.K3n" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the Hilbert scheme of $n$ points on a K3 surface</p>
+<p>This is the first family of hyperkähler varieties, constructed by Beauville.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> – number of points</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>For $n=1$ we have a K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">K3n</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">K3</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For $n\geq 2$ we have second Betti number 23:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">K3n</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">betti</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">23</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">5</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.Mzeronbar">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">Mzeronbar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#Mzeronbar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.Mzeronbar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the moduli space of $n$-pointed stable curves of genus 0</p>
+<p>Taken from (0.12) in [MR1363064]. Keel’s original paper has a recursion
+on page 550, but that seems to not work.</p>
+<ul class="simple">
+<li><p>[MR1363064] Manin, Generating functions in algebraic geometry and sums
+over trees</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The first few cases are a point, the projective line, and the blowup
+of $\mathbb{P}^2$ in 4 points:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Mzeronbar</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">point</span><span class="p">()</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Mzeronbar</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Mzeronbar</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">blowup</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">point</span><span class="p">())</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.Pn">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">Pn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#Pn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.Pn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for projective space of dimension $n$</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code>: dimension, non-negative integer</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The zero-dimensional case is a point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">point</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>In general projective space is the sum of powers of the Lefschetz class:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">Pn</span><span class="p">(</span><span class="n">n</span><span class="p">)</span> <span class="o">==</span> <span class="nb">sum</span><span class="p">([</span><span class="n">lefschetz</span><span class="p">()</span><span class="o">**</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.abelian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">abelian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dimension</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#abelian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.abelian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for an abelian variety of a given dimension.</p>
+<p>This description is standard, and follows from the fact that the cohomology
+is the exterior power of the first cohomology, as graded algebra.</p>
+<p>See e.g. Proposition 7.27 in the Edixhoven–van der Geer–Moonen book-in-progress
+on abelian varieties.</p>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.complete_intersection">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">complete_intersection</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">degrees</span></em>, <em class="sig-param"><span class="n">dimension</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#complete_intersection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.complete_intersection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for a complete intersection of multidegree $(d_1,\ldots,d_k)$ in $\mathbb{P}^{n+k}$</p>
+<p>For a proof, see théorème 2.3 of exposé XI in SGA7.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">degrees</span></code> – the multidegree, if it is an integer we interpret it as a hypersurface</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">dimension</span></code> – the dimension of the complete intersection (not of the ambient space)</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>For multidegrees $(1,\ldots,1) we get a lower-dimension projective space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">complete_intersection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.curve">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">curve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genus</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for a curve of a given genus.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">genus</span></code>: the genus of the curve, non-negative integer</p></li>
+</ul>
+<p>EXAMPLE:</p>
+<p>A curve of genus 0 is the 1-dimensional projective space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">curve</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>A curve of genus 1 is an abelian variety of dimension 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">curve</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">abelian</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>A curve of genus 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">curve</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+      <span class="mi">1</span>
+  <span class="mi">2</span>       <span class="mi">2</span>
+      <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.cyclic_cover">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">cyclic_cover</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ramification_degree</span></em>, <em class="sig-param"><span class="n">cover_degree</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#cyclic_cover"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.cyclic_cover" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of a cyclic cover of weighted projective space</p>
+<p>Implementation taken from
+<a class="reference external" href="https://github.com/jxxcarlson/math_research/blob/master/hodge.sage">https://github.com/jxxcarlson/math_research/blob/master/hodge.sage</a>.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ramification_degree</span></code> – degree of the ramification divisor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cover_degree</span></code> – size of the cover</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weights</span></code> – the weights of the weighted projective space, if it is an
+integer we interpret it as the dimension of <code class="docutils literal notranslate"><span class="pre">P^n</span></code></p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>Some K3 surfaces are double covers of $\mathbb{P}^2$ in a sextic curve:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">cyclic_cover</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">K3</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The Fano 3-fold 1.1 is a double cover of $\mathbb{P}^3$ in a sextic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">cyclic_cover</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_threefold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.enriques">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">enriques</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">two</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#enriques"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.enriques" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for an Enriques surface</p>
+<p>It is possible to ask for the Hodge diamond of a classical or (super)singular
+Enriques surface in characteristic 2.</p>
+<p>In characteristic 2 the invariants are given in Proposition 1.4.2 of [MR0986969].</p>
+<ul class="simple">
+<li><p>[MR0986969] Cossec–Dolgachev, Enriques surfaces I, Progress in Mathematics, 1989</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">two</span></code> – optional parameter to indicate the type of surface in characteristic 2</dt><dd><p>possible values are <cite>“classical”</cite>, <cite>“singular”</cite>, <cite>“supersingular”</cite></p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>EXAMPLES:</p>
+<p>An ordinary Enriques surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">enriques</span><span class="p">())</span>
+          <span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">0</span>
+  <span class="mi">0</span>       <span class="mi">10</span>       <span class="mi">0</span>
+      <span class="mi">0</span>        <span class="mi">0</span>
+          <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Enriques surfaces in characteristic 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">enriques</span><span class="p">(</span><span class="n">two</span><span class="o">=</span><span class="s2">"classical"</span><span class="p">))</span>
+          <span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">1</span>
+  <span class="mi">0</span>       <span class="mi">12</span>       <span class="mi">0</span>
+      <span class="mi">1</span>        <span class="mi">0</span>
+          <span class="mi">1</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">enriques</span><span class="p">(</span><span class="n">two</span><span class="o">=</span><span class="s2">"singular"</span><span class="p">))</span>
+          <span class="mi">1</span>
+      <span class="mi">1</span>        <span class="mi">0</span>
+  <span class="mi">1</span>       <span class="mi">10</span>       <span class="mi">1</span>
+      <span class="mi">0</span>        <span class="mi">1</span>
+          <span class="mi">1</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">enriques</span><span class="p">(</span><span class="n">two</span><span class="o">=</span><span class="s2">"supersingular"</span><span class="p">))</span>
+          <span class="mi">1</span>
+      <span class="mi">1</span>        <span class="mi">1</span>
+  <span class="mi">1</span>       <span class="mi">12</span>       <span class="mi">1</span>
+      <span class="mi">1</span>        <span class="mi">1</span>
+          <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.fano_threefold">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">fano_threefold</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rho</span></em>, <em class="sig-param"><span class="n">ID</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#fano_threefold"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.fano_threefold" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of a Fano threefold</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rho</span></code> - Picard rank</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ID</span></code> - numbering from the Mori-Mukai classification</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The 17th Fano 3-fold of rank 1 is projective threespace:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">fano_threefold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">17</span><span class="p">))</span>
+              <span class="mi">1</span>
+          <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">0</span>       <span class="mi">1</span>       <span class="mi">0</span>
+  <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">0</span>       <span class="mi">1</span>       <span class="mi">0</span>
+          <span class="mi">0</span>       <span class="mi">0</span>
+              <span class="mi">1</span>
+</pre></div>
+</div>
+<p>The 4th Fano 3-fold of rank 1 is an intersection of 3 quadrics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">fano_threefold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">complete_intersection</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The 27th Fano 3-fold of rank 3 is the triple product of projective lines:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">fano_threefold</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">27</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">**</span><span class="mi">3</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.fano_variety_intersection_quadrics_even">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">fano_variety_intersection_quadrics_even</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">g</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#fano_variety_intersection_quadrics_even"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.fano_variety_intersection_quadrics_even" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the Fano variety of $i-1$-planes on the intersection of
+two quadrics in $\mathbb{P}^{2g}$, using [1510.05986v3].</p>
+<ul class="simple">
+<li><p>[1510.05986v3] Chen–Vilonen–Xue, Springer correspondence, hyperelliptic curves, and cohomology of Fano varieties</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">g</span></code> – half of the dimension of the ambient projective space</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code> – affine dimension of the linear subspaces on the intersection of quadrics</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>We have that for i = g-1 we get the moduli space of parabolic bundles on
+$\mathbb{P}^1$ with weight $1/2$ in $2g+3$ points:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_parabolic_vector_bundles_rank_two</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_parabolic_vector_bundles_rank_two</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">7</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.fano_variety_intersection_quadrics_odd">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">fano_variety_intersection_quadrics_odd</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">g</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#fano_variety_intersection_quadrics_odd"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.fano_variety_intersection_quadrics_odd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the Fano variety of $g-i$-planes on the intersection of
+two quadrics in $\mathbb{P}^{2g+1}$, using [MR3689749].</p>
+<p>We have that for i = 2 we get M_C(2,L) as above, for deg L odd.</p>
+<ul class="simple">
+<li><p>[MR3689749] Chen–Vilonen–Xue, On the cohomology of Fano varieties and the Springer correspondence, Adv. Math. 318 (2017), 515–533.</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>For $i=2$ we recover the moduli space of rank 2 bundles with odd determinant
+on a curve of genus $g$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">moduli_vector_bundles</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.fano_variety_lines_cubic">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">fano_variety_lines_cubic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#fano_variety_lines_cubic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.fano_variety_lines_cubic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the Fano variety of lines on a smooth $n$-dimensional
+cubic hypersurface.</p>
+<p>This follows from the “beautiful formula” or X-F(X)-relation due to
+Galkin–Shinder, Theorem 5.1 of [1405.5154v2].</p>
+<ul class="simple">
+<li><p>[1405.5154v2] Galkin–Shinder, The Fano variety of lines and rationality
+problem for a cubic hypersurface</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> – the dimension, where <code class="docutils literal notranslate"><span class="pre">n</span></code> is at least 2</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>There are 27 lines on a cubic surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_lines_cubic</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="mi">27</span><span class="o">*</span><span class="n">point</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The Fano surface of lines on a cubic threefold is a surface of general type:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_lines_cubic</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">surface</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">25</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The Fano fourfold of lines on a cubic fourfold is deformation equivalent
+to the Hilbert square on a K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_lines_cubic</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.generalised_grassmannian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">generalised_grassmannian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span></em>, <em class="sig-param"><span class="n">k</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#generalised_grassmannian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.generalised_grassmannian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the generalised Grassmannian of type D modulo the maximal parabolic subgroup $P_k$.</p>
+<p>This is just shorthand for <code class="xref py py-func docutils literal notranslate"><span class="pre">partial_flag_variety(D,</span> <span class="pre">I)()</span></code> where <code class="docutils literal notranslate"><span class="pre">I</span></code> is the complement of a singleton.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">D</span></code> – Dynkin type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> – the vertex in the Dynkin diagram defining the maximal parabolic</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.generalised_kummer">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">generalised_kummer</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#generalised_kummer"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.generalised_kummer" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the $n$th generalised Kummer variety</p>
+<p>For the proof, see Corollary 1 of [MR1219901].</p>
+<ul class="simple">
+<li><p>[MR1219901] Göttsche–Soergel, Perverse sheaves and the cohomology of Hilbert schemes of smooth algebraic surfaces. Math. Ann. 296 (1993), no. 2, 235–245.</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The first generalised Kummer is just a point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">generalised_kummer</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">point</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The second generalised Kummer is the Kummer K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">generalised_kummer</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">K3</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The higher generalised Kummers are hyperkähler varieties with second Betti number 7:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">generalised_kummer</span><span class="p">(</span><span class="n">n</span><span class="p">)</span><span class="o">.</span><span class="n">betti</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">7</span> <span class="k">for</span> <span class="n">n</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.grassmannian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">grassmannian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#grassmannian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.grassmannian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the Grassmannian $\operatorname{Gr}(k,n)$ of $k$-dimensional subspaces in
+an $n$-dimensional vector space</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> – dimension of the subspaces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> – dimension of the ambient vector space</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.gushel_mukai">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">gushel_mukai</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#gushel_mukai"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.gushel_mukai" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for a smooth $n$-dimensional Gushel–Mukai variety</p>
+<p>See Proposition 3.1 of [1605.05648v3].</p>
+<ul class="simple">
+<li><p>[1605.05648v3] Debarre–Kuznetsov, Gushel-Mukai varieties: linear spaces and periods</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> - the dimension, where $n=1,\ldots,6$</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.hilbn">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">hilbn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">surface</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#hilbn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.hilbn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for Hilbert scheme of <code class="docutils literal notranslate"><span class="pre">n</span></code> points on a smooth projective surface <code class="docutils literal notranslate"><span class="pre">S</span></code></p>
+<p>For the proof, see Theorem 2.3.14 of [MR1312161].</p>
+<ul class="simple">
+<li><p>[MR1312161] Göttsche, Hilbert schemes of zero-dimensional subschemes of smooth varieties. Lecture Notes in Mathematics, 1572. Springer-Verlag, Berlin, 1994. x+196 pp.</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">S</span></code> – Hodge diamond for smooth projective surface</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> – number of points</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.hilbthree">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">hilbthree</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#hilbthree"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.hilbthree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the Hilbert cube of any smooth projective variety</p>
+<p>The corollary on page 507 of [MR1382733].</p>
+<ul class="simple">
+<li><p>[MR1382733] Cheah, On the cohomology of Hilbert schemes of points, J. Algebraic Geom. 5 (1996), no. 3, 479-511</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X</span></code> - Hodge diamond of the smooth projective variety</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>We recover the Hilbert cube of a surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">hilbthree</span><span class="p">(</span><span class="n">K3</span><span class="p">())</span> <span class="o">==</span> <span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="mi">3</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.hilbtwo">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">hilbtwo</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#hilbtwo"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.hilbtwo" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the Hilbert square of any smooth projective variety</p>
+<p>For the proof, see e.g. lemma 2.6 of [MR2506383], or the corollary on page 507 of [MR1382733] (but it can be said to be classical).</p>
+<ul class="simple">
+<li><p>[MR2506383] Muñoz–Ortega–Vázquez-Gallo, Hodge polynomials of the moduli spaces of triples of rank (2,2). Q. J. Math. 60 (2009), no. 2, 235–272.</p></li>
+<li><p>[MR1382733] Cheah, On the cohomology of Hilbert schemes of points, J. Algebraic Geom. 5 (1996), no. 3, 479-511</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X</span></code> - Hodge diamond of the smooth projective variety</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>We recover the Hilbert square of a surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">hilbtwo</span><span class="p">(</span><span class="n">K3</span><span class="p">())</span> <span class="o">==</span> <span class="n">hilbn</span><span class="p">(</span><span class="n">K3</span><span class="p">(),</span> <span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.horospherical">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">horospherical</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span></em>, <em class="sig-param"><span class="n">y</span><span class="o">=</span><span class="default_value">0</span></em>, <em class="sig-param"><span class="n">z</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#horospherical"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.horospherical" title="Permalink to this definition">¶</a></dt>
+<dd><p>Horospherical varieties as discussed in [1803.05063], with labelling
+and notation as in op. cit.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">D</span></code>: either a Dynkin type from the (small) list of allowed types</dt><dd><p>in the classification
+_or_ a plaintext label from X1(n), X2, X3(n,m), X4, X5</p>
+</dd>
+</dl>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code>: index for the parabolic subgroup for Y, see classification</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z</span></code>: index for the parabolic subgroup for the closed orbit Z</p></li>
+</ul>
+<p><code class="docutils literal notranslate"><span class="pre">y</span></code> and <code class="docutils literal notranslate"><span class="pre">z</span></code> must be omitted if a plaintext description is given.</p>
+<ul class="simple">
+<li><p>[1803.05063] Gonzales–Pech–Perrin–Samokhin, Geometry of horospherical
+varieties of Picard rank one</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.hypersurface">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">hypersurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">degree</span></em>, <em class="sig-param"><span class="n">dimension</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#hypersurface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.hypersurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for a complete intersection of the given dimension where $k=1$</p>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.jacobian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">jacobian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genus</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#jacobian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.jacobian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the Jacobian of a genus $g$ curve</p>
+<p>This is an abelian variety of dimension <cite>genus</cite>, so we call <a class="reference internal" href="../../../index.html#diamond.abelian" title="diamond.abelian"><code class="xref py py-func docutils literal notranslate"><span class="pre">abelian()</span></code></a></p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">genus</span></code> – genus of the curve</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The Jacobian of a genus 3 curve:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">jacobian</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+              <span class="mi">1</span>
+          <span class="mi">3</span>       <span class="mi">3</span>
+      <span class="mi">3</span>       <span class="mi">9</span>       <span class="mi">3</span>
+  <span class="mi">1</span>       <span class="mi">9</span>       <span class="mi">9</span>       <span class="mi">1</span>
+      <span class="mi">3</span>       <span class="mi">9</span>       <span class="mi">3</span>
+          <span class="mi">3</span>       <span class="mi">3</span>
+              <span class="mi">1</span>
+</pre></div>
+</div>
+<p>For the projective line we get a point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">jacobian</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">point</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The Jacobian of an elliptic curve is isomorphic to it:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">jacobian</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">curve</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.kummer_resolution">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">kummer_resolution</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">g</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#kummer_resolution"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.kummer_resolution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the standard resolution of the Kummer variety of an abelian variety of a given dimension.</p>
+<p>There’s an invariant part (Hodge numbers of even degree) and the resolution of the 2^2g singularities is added.</p>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.lagrangian_grassmannian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">lagrangian_grassmannian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#lagrangian_grassmannian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.lagrangian_grassmannian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Shorthand for the symplectic Grassmannian of Lagrangian subspaces</p>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.lefschetz">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">lefschetz</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#lefschetz"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.lefschetz" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the Lefschetz motive</p>
+<p>This is the Hodge-Poincaré polynomial of the affine line.</p>
+<p>EXAMPLES:</p>
+<p>The affine line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">lefschetz</span><span class="p">())</span>
+      <span class="mi">0</span>
+  <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">1</span>
+</pre></div>
+</div>
+<p>We can take powers of it, to get the Hodge-Poincaré polynomial for higher-
+dimensional affine spaces:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">lefschetz</span><span class="p">()</span><span class="o">**</span><span class="mi">3</span><span class="p">)</span>
+              <span class="mi">0</span>
+          <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+  <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+      <span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span>
+          <span class="mi">0</span>       <span class="mi">0</span>
+              <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.moduli_parabolic_vector_bundles_rank_two">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">moduli_parabolic_vector_bundles_rank_two</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genus</span></em>, <em class="sig-param"><span class="n">alpha</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#moduli_parabolic_vector_bundles_rank_two"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.moduli_parabolic_vector_bundles_rank_two" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the moduli space of parabolic rank 2 bundles with
+fixed determinant of odd degree on a curve of genus $g$.</p>
+<p>See Corollary 5.34 of [2011.14872].</p>
+<ul class="simple">
+<li><p>[2011.14872] Fu–Hoskins–Pepin Lehalleur, Motives of moduli spaces of
+bundles on curves via variation of stability and flips</p></li>
+</ul>
+<p>This is not a proof of the formula we implemented per se, but it should be correct.
+Also, it could be that the choice of weights give something singular / stacky. Then it’ll
+give bad output without warning. You have been warned.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">genus</span></code> – the genus of the curve</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">alpha</span></code> – the weights of the parabolic bundles</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.moduli_vector_bundles">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">moduli_vector_bundles</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">rank</span></em>, <em class="sig-param"><span class="n">degree</span></em>, <em class="sig-param"><span class="n">genus</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#moduli_vector_bundles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.moduli_vector_bundles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the moduli space of vector bundles of given rank and
+fixed determinant of given degree on a curve of a given genus.</p>
+<p>For the proof, see Corollary 5.1 of [MR1817504].</p>
+<ul class="simple">
+<li><p>[MR1817504] del Baño, On the Chow motive of some moduli spaces. J. Reine Angew. Math. 532 (2001), 105–132.</p></li>
+</ul>
+<p>If the Hodge diamond for the moduli space with non-fixed determinant of
+degree <cite>d</cite> is required, this can be obtained by:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">jacobian</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="o">*</span> <span class="n">moduli_vector_bundles</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><cite>rank</cite> – rank of the bundles, at least 2</p></li>
+<li><p><cite>degree</cite> – degree of the fixed determinant, coprime to rank</p></li>
+<li><p><cite>genus</cite> – genus of the curve, at least 2</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The case of rank 2, degree 1 and genus 2 is famously the intersection of
+2 quadrics in $\mathbb{P}^5$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_vector_bundles</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.mu">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">mu</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Theta</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#mu"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.mu" title="Permalink to this definition">¶</a></dt>
+<dd><p>Helper function to turn stability for quiver representations in slope stability</p>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.nestedhilbn">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">nestedhilbn</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">surface</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#nestedhilbn"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.nestedhilbn" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the nested Hilbert scheme <code class="docutils literal notranslate"><span class="pre">S^{[n-1,n]}</span></code></p>
+<p>This is the unique nested Hilbert scheme of a smooth projective surface <code class="docutils literal notranslate"><span class="pre">S</span></code>
+which is itself smooth (of dimension $2n$)</p>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.odd_symplectic_grassmannian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">odd_symplectic_grassmannian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#odd_symplectic_grassmannian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.odd_symplectic_grassmannian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the odd symplectic Grassmannian $\operatorname{SGr}(k,n)$</p>
+<p>Here $n$ is odd. This is just shorthand for a call to <code class="xref py py-func docutils literal notranslate"><span class="pre">horospherical_variety()</span></code>
+for type C, with parameters $lfloor n/2rlfloor$, and $Y$ and $Z$ determined
+by $k$ and $k - 1$.</p>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.ogrady10">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">ogrady10</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#ogrady10"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.ogrady10" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for O’Grady’s exceptional 10-dimensional hyperkähler variety</p>
+<p>For the proof, see theorem A of [1905.03217]</p>
+<ul class="simple">
+<li><p>[1905.03217] de Cataldo–Rapagnetta–Saccà, The Hodge numbers of O’Grady 10 via Ngô strings</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The second Betti number is 24:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">ogrady10</span><span class="p">()</span><span class="o">.</span><span class="n">betti</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">24</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.ogrady6">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">ogrady6</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#ogrady6"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.ogrady6" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for O’Grady’s exceptional 6-dimensional hyperkähler variety</p>
+<p>For the proof, see Theorem 1.1 of [MR3798592].</p>
+<ul class="simple">
+<li><p>[MR3798592] Mongardi–Rapagnetta–Saccà, The Hodge diamond of O’Grady’s six-dimensional example. Compos. Math. 154 (2018), no. 5, 984–1013.</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The second Betti number is 8:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">ogrady6</span><span class="p">()</span><span class="o">.</span><span class="n">betti</span><span class="p">()[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="mi">8</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.orthogonal_grassmannian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">orthogonal_grassmannian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#orthogonal_grassmannian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.orthogonal_grassmannian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the orthogonal Grassmannian $\operatorname{OGr}(k, n)$ of $k$-dimensional
+subspaces in an $n$-dimensional vector space isotropic with respect to a
+non-degenerate symmetric bilinear form</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> – dimension of the subspaces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> – dimension of the ambient vector space</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.partial_flag_variety">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">partial_flag_variety</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">D</span></em>, <em class="sig-param"><span class="n">I</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#partial_flag_variety"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.partial_flag_variety" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of a partial flag variety G/P</p>
+<p>This is computed by counting the number of Schubert cells in the
+appropriate dimension.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">D</span></code> – Dynkin type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">I</span></code> – indices of vertices to be omitted in defining the parabolic
+subgroup</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>An absolute baby case is projective space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">partial_flag_variety</span><span class="p">(</span><span class="s2">"A5"</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The next easiest case are quadrics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">partial_flag_variety</span><span class="p">(</span><span class="s2">"B5"</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span> <span class="o">==</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">partial_flag_variety</span><span class="p">(</span><span class="s2">"D5"</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">5</span><span class="p">])</span> <span class="o">==</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.point">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">point</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#point"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.point" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the point</p>
+<p>EXAMPLES:</p>
+<p>The point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">point</span><span class="p">())</span>
+  <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.quiver_moduli">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">quiver_moduli</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">Q</span></em>, <em class="sig-param"><span class="n">d</span></em>, <em class="sig-param"><span class="n">mu</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#quiver_moduli"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.quiver_moduli" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the moduli space of semistable quiver representations
+for a quiver Q, dimension vector d, and slope-stability condition mu.</p>
+<p>Taken from Corollary 6.9 of [MR1974891]</p>
+<ul class="simple">
+<li><p>[MR1974891] Reineke, The Harder-Narasimhan system in quantum groups and cohomology of quiver moduli.</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Q</span></code> – adjacency matrix of an acyclic quiver</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span></code> – dimension vector</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">mu</span></code> – stability condition, these can be produced using <a class="reference internal" href="#diamond.mu" title="diamond.mu"><code class="xref py py-func docutils literal notranslate"><span class="pre">mu()</span></code></a></p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>Let’s consider moduli spaces for the Kronecker quiver:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="k">def</span> <span class="nf">kronecker</span><span class="p">(</span><span class="n">d</span><span class="p">):</span> <span class="k">return</span> <span class="n">matrix</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>For the 2-Kronecker quiver and dimension vector <cite>(1,1)</cite> a representation
+is given by 2 scalars, and the stability condition <cite>(1,-1)</cite> encodes that
+they are not both zero. This way we obtain the projective line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">quiver_moduli</span><span class="p">(</span><span class="n">kronecker</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mu</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>Similar to the first example, the $d$-Kronecker quiver gives rise to
+projective spaces:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">quiver_moduli</span><span class="p">(</span><span class="n">kronecker</span><span class="p">(</span><span class="n">d</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mu</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)))</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="n">d</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">d</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">10</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>We can also realise Grassmannians using the $d$-Kronecker quiver, for
+dimension vector $(1,k)$ and stability condition $(k,1)$ we get the
+Grassmannian $\operatorname{Gr}(k,d)$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">quiver_moduli</span><span class="p">(</span><span class="n">kronecker</span><span class="p">(</span><span class="mi">4</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="n">mu</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">==</span> <span class="n">grassmannian</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">quiver_moduli</span><span class="p">(</span><span class="n">kronecker</span><span class="p">(</span><span class="mi">7</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="n">mu</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)))</span> <span class="o">==</span> <span class="n">grassmannian</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The flag variety $\operatorname{Fl}(n,r_1,\ldots,r_s)$ is also a quiver
+moduli space, for $\mathrm{A}_s$ quiver prefixed with an $n$-Kronecker
+quiver, dimension vector $(1,r_1,\ldots,r_s)$ with $r_1&gt;\ldots&gt;r_s$
+and stability condition the indicator function at the first vertex:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="k">def</span> <span class="nf">flags</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span> <span class="k">return</span> <span class="n">matrix</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">s</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="k">lambda</span> <span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">:</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">j</span><span class="o">-</span><span class="mi">1</span> <span class="k">else</span> <span class="p">(</span><span class="n">n</span> <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span> <span class="k">else</span> <span class="mi">1</span><span class="p">))</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">quiver_moduli</span><span class="p">(</span><span class="n">flags</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mu</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">quiver_moduli</span><span class="p">(</span><span class="n">flags</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mu</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">==</span> <span class="n">fano_threefold</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">32</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">quiver_moduli</span><span class="p">(</span><span class="n">flags</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span> <span class="n">mu</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)))</span> <span class="o">==</span> <span class="n">partial_flag_variety</span><span class="p">(</span><span class="s2">"A4"</span><span class="p">,</span> <span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.quot_scheme_curve">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">quot_scheme_curve</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genus</span></em>, <em class="sig-param"><span class="n">length</span></em>, <em class="sig-param"><span class="n">rank</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#quot_scheme_curve"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.quot_scheme_curve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the Quot scheme of zero-dimensional quotients of given
+length of a vector bundle of given rank on a curve of given genus.</p>
+<p>For the proof, see Proposition 4.5 of [1907.00826] (or rather, the
+reference [Bif89] in there)</p>
+<ul class="simple">
+<li><p>[1907.00826] Bagnarol–Fantechi–Perroni, On the motive of zero-dimensional Quot schemes on a curve</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.ruled">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">ruled</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genus</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#ruled"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.ruled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for a ruled surface</p>
+<p>These are $\mathbb{P}^1$-bundles over a curve of given genus.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">genus</span></code> – genus of the base curve</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>For genus 0 we get Hirzebruch surfaces, whose Hodge diamond is that of
+the quadric surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">ruled</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For higher genus the Hodge diamond looks as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">ruled</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+          <span class="mi">1</span>
+      <span class="mi">5</span>       <span class="mi">5</span>
+  <span class="mi">0</span>       <span class="mi">2</span>       <span class="mi">0</span>
+      <span class="mi">5</span>       <span class="mi">5</span>
+          <span class="mi">1</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.seshadris_desingularisation">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">seshadris_desingularisation</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genus</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#seshadris_desingularisation"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.seshadris_desingularisation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for Seshadri’s desingularisation of the moduli space of
+rank 2 bundles with trivial determinant on a curve of a given genus $g$.</p>
+<p>For the statement, see Corollary 3.18 of [MR1895918].</p>
+<ul class="simple">
+<li><p>[MR1895918] del Baño, On the motive of moduli spaces of rank two vector bundles over a curve. Compositio Math. 131 (2002), 1-30.</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">genus</span></code> – the genus $g$, at least 2</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>For $g=2$ nothing needs to be desingularised, and the answer is $\mathbb{P}^3$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">seshadris_desingularisation</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>Already for $g=3$ the result is not a familiar variety, so we just check the
+Euler characteristic:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">seshadris_desingularisation</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">euler</span><span class="p">()</span> <span class="o">==</span> <span class="mi">112</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.surface">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">surface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">genus</span></em>, <em class="sig-param"><span class="n">irregularity</span></em>, <em class="sig-param"><span class="n">h11</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#surface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.surface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for a surface $S$ with given invariants</p>
+<p>These invariants are the geometric genus, the irregularity and the middle
+Hodge numbers <code class="docutils literal notranslate"><span class="pre">h11</span></code>.</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">genus</span></code> – geometric genus of the surface, $\dim\mathrm{H}^2(S,\mathcal{O}_S)$,</dt><dd><p>a non-negative integer</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">irregularity</span></code> – irregularity of the surface, $\dim\mathrm{H}^1(S,\mathcal{O}_S)$,</dt><dd><p>a non-negative integer</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">h11</span></code> – middle Hodge number, $\dim\mathrm{H}^1(S,\Omega_S^1)$,</dt><dd><p>a non-negative integer</p>
+</dd>
+</dl>
+</li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The projective plane:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">surface</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>A K3 surface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">K3</span><span class="p">()</span> <span class="o">==</span> <span class="n">surface</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">20</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.symmetric_power">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">symmetric_power</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n</span></em>, <em class="sig-param"><span class="n">genus</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#symmetric_power"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.symmetric_power" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the nth symmetric power of a curve of given genus</p>
+<p>For the proof, see Example 1.1(1) of [MR2777820]. An earlier reference, probably in Macdonald, should exist.</p>
+<ul class="simple">
+<li><p>[MR2777820] Laurentiu–Schuermann, Hirzebruch invariants of symmetric products. Topology of algebraic varieties and singularities, 163–177, Contemp. Math., 538, Amer. Math. Soc., 2011.</p></li>
+</ul>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> – exponent of the symmetric power</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">genus</span></code> – genus of the curve, a non-negative integer</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>The symmetric square of a genus 3 curve:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">symmetric_power</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+          <span class="mi">1</span>
+      <span class="mi">3</span>        <span class="mi">3</span>
+  <span class="mi">3</span>       <span class="mi">10</span>       <span class="mi">3</span>
+      <span class="mi">3</span>        <span class="mi">3</span>
+          <span class="mi">1</span>
+</pre></div>
+</div>
+<p>If $n=1$ we get the curve back:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="nb">all</span><span class="p">([</span><span class="n">symmetric_power</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="o">==</span> <span class="n">curve</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">for</span> <span class="n">g</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>If $n=0$ we get the point:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">symmetric_power</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">point</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>If $n&lt;0$ we have the empty space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">symmetric_power</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">zero</span><span class="p">()</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.symplectic_grassmannian">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">symplectic_grassmannian</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">k</span></em>, <em class="sig-param"><span class="n">n</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#symplectic_grassmannian"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.symplectic_grassmannian" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond of the symplectic Grassmannian $\operatorname{SGr}(k, n)$ of $k$-dimensional
+subspaces in an $n$-dimensional vector space isotropic with respect to a
+non-degenerate skew-symmetric bilinear form</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> – dimension of the subspaces</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code> – dimension of the ambient vector space</p></li>
+</ul>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.weighted_hypersurface">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">weighted_hypersurface</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">degree</span></em>, <em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#weighted_hypersurface"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.weighted_hypersurface" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for a weighted hypersurface of degree <code class="docutils literal notranslate"><span class="pre">d</span></code> in <code class="docutils literal notranslate"><span class="pre">P(w_0,...,w_n)</span></code></p>
+<p>Implementation taken from
+<a class="reference external" href="https://github.com/jxxcarlson/math_research/blob/master/hodge.sage">https://github.com/jxxcarlson/math_research/blob/master/hodge.sage</a>.
+If I’m not mistaken, the generalisation to weighted complete intersection
+depends on which polynomials are used, not just the degrees, even if the
+result is smooth?</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">degree</span></code> – degree of the hypersurface</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">weights</span></code> – the weights of the weighted projective space, if it is an
+integer we interpret it as the dimension of P^n</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>Elliptic curves can be realised as hypersurfaces in 3 ways:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">weighted_hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">weighted_hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">weighted_hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">curve</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">weighted_hypersurface</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span> <span class="o">==</span> <span class="n">curve</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">weighted_hypersurface</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span> <span class="o">==</span> <span class="n">curve</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>The Fano 3-fold 1.1 is a weighted hypersurface:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">fano_threefold</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">weighted_hypersurface</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+</dd></dl>
+<dl class="py function">
+<dt id="diamond.zero">
+<code class="sig-prename descclassname">diamond.</code><code class="sig-name descname">zero</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/diamond.html#zero"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#diamond.zero" title="Permalink to this definition">¶</a></dt>
+<dd><p>Hodge diamond for the empty space</p>
+<p>EXAMPLES:</p>
+<p>Zero:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">load</span><span class="p">(</span><span class="s2">"diamond.py"</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">zero</span><span class="p">())</span>
+  <span class="mi">0</span>
+</pre></div>
+</div>
+</dd></dl>
+</div>
+
+      </article>
+      <footer>
+        
+        <div class="related-pages">
+          
+          
+        </div>
+
+        <div class="related-information">
+              Copyright &#169; 2021, Pieter Belmans
+            |
+            Built with <a href="https://www.sphinx-doc.org/">Sphinx</a>
+              and
+              <a class="muted-link" href="https://pradyunsg.me">@pradyunsg</a>'s
+              <a href="https://github.com/pradyunsg/furo">Furo theme</a>.
+            |
+            <a class="muted-link" href="../../../_sources/docs/diamond/source/index.rst.txt"
+               rel="nofollow">
+              Show Source
+            </a>
+        </div>
+        
+      </footer>
+    </div>
+    <aside class="toc-drawer no-toc">
+      
+      
+      
+    </aside>
+  </main>
+</div>
+    <script id="documentation_options" data-url_root="../../../" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/language_data.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/x-mathjax-config">MathJax.Hub.Config({"extensionsr": ["tex2jax.js"], "jax": ["input/TeX", "output/HTML-CSS"], "tex2jax": {"inlineMath": [["$", "$"]], "displayMath": [["$$", "$$"], ["\\[", "\\]"]]}})</script>
+    <script src="../../../_static/scripts/main.js?digest=e931d09b2a40c1bb82b542effe772014573baf67"></script></body>
+</html>
