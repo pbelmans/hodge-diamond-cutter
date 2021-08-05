@@ -1537,20 +1537,31 @@ def jacobian(genus):
 
 
 def abelian(dimension):
-    """
+    r"""
     Hodge diamond for an abelian variety of a given dimension.
 
-    This description is standard, and follows from the fact that the cohomology
-    is the exterior power of the first cohomology, as graded algebra.
+    The $g$th power of an elliptic curve is an abelian variety of the given
+    dimension, so we just use this computation method.
 
-    See e.g. Proposition 7.27 in the Edixhoven--van der Geer--Moonen book-in-progress
-    on abelian varieties.
+    INPUT:
+
+    - ``dimension`` -- dimension of the abelian variety
+
+    EXAMPLES:
+
+    A 1-dimensional abelian variety is an elliptic curve::
+
+        sage: load("diamond.py")
+        sage: abelian(1) == curve(1)
+        True
+
+    A 2-dimensional abelian variety is a surface with known Hodge numbers::
+
+        sage: abelian(2) == surface(1, 2, 4)
+        True
+
     """
-    M = matrix(dimension + 1)
-    for (i, j) in cartesian_product([range(dimension + 1), range(dimension + 1)]):
-        M[i, j] = binomial(dimension, i) * binomial(dimension, j)
-
-    return HodgeDiamond.from_matrix(M, from_variety=True)
+    return curve(1)**dimension
 
 
 def kummer_resolution(g):
