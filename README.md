@@ -1,10 +1,10 @@
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.5162761.svg)](https://doi.org/10.5281/zenodo.5162761)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3893510.svg)](https://doi.org/10.5281/zenodo.3893510)
 
 # Hodge diamond cutter
 
 A collection of Python classes and functions in Sage to deal with Hodge diamonds (and Hochschild homology) of smooth projective varieties, together with many constructions.
 
-If you have used this code in any way (including the interactive versions on my blog), please consider citing it as explained on [Zenodo](https://doi.org/10.5281/zenodo.5162761). You can choose to cite a specific version, or the library in general.
+If you have used this code in any way (including the interactive versions on my blog), please consider citing it as explained on [Zenodo](https://doi.org/10.5281/zenodo.3893510). You can choose to cite a specific version, or the library in general.
 
 
 ## Getting started
