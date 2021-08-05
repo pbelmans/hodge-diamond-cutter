@@ -1564,12 +1564,27 @@ def abelian(dimension):
     return curve(1)**dimension
 
 
-def kummer_resolution(g):
+def kummer_resolution(dimension):
     """
     Hodge diamond for the standard resolution of the Kummer variety of an abelian variety of a given dimension.
 
-    There's an invariant part (Hodge numbers of even degree) and the resolution of the 2^2g singularities is added.
+    There's an invariant part (Hodge numbers of even degree) and the resolution of the $2^2g$ singularities is added.
+
+    INPUT:
+
+    - ``dimension`` -- dimension of the abelian variety taken as input
+
+    EXAMPLES:
+
+    The Kummer resolution of the involution on an abelian surface is a K3 surface::
+
+        sage: load("diamond.py")
+        sage: kummer_resolution(2) == K3()
+        True
+
     """
+    g = dimension
+
     invariant = sum([jacobian(g).polynomial.monomial_coefficient(m) * m for m in jacobian(g).polynomial.monomials() if m.degree() % 2 == 0])
     return HodgeDiamond.from_polynomial(invariant) + sum([2**(2*g) * point()(i) for i in range(1, g)])
 
