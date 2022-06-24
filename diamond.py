@@ -98,10 +98,9 @@ AUTHORS:
 
 - Pieter Belmans (2019-01-27): initial version
 - Pieter Belmans (2020-06-16): the version which got assigned a DOI
-- Pieter Belmans (2021-08-04): various additions, added unit tests and proper documentation
-
+- Pieter Belmans (2021-08-04): various additions, added unit tests and proper
+  documentation
 """
-
 # ****************************************************************************
 #       Copyright (C) 2021 Pieter Belmans <pieterbelmans@gmail.com>
 #
@@ -111,10 +110,31 @@ AUTHORS:
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
+from sage.arith.misc import gcd
+from sage.calculus.functional import expand, simplify
+from sage.categories.cartesian_product import cartesian_product
+from sage.combinat.composition import Compositions
+from sage.combinat.integer_vector import IntegerVectors
+from sage.combinat.partition import Partitions
+from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
+from sage.combinat.subset import Subsets
+from sage.functions.other import binomial, floor, factorial
+from sage.graphs.digraph import DiGraph
+from sage.matrix.constructor import matrix
+from sage.matrix.special import diagonal_matrix
+from sage.misc.cachefunc import cached_function
+from sage.misc.misc_c import prod
+from sage.misc.table import table
+from sage.modules.free_module_element import vector
+from sage.rings.function_field.constructor import FunctionField
+from sage.rings.integer import Integer
+from sage.rings.integer_ring import ZZ
+from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
+from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
+from sage.rings.power_series_ring import PowerSeriesRing
+from sage.rings.rational_field import QQ
+from sage.symbolic.ring import SR
 
-from sage.all import cartesian_product, matrix, prod
-from sage.all import FunctionField, LaurentPolynomialRing, PolynomialRing, PowerSeriesRing
-from sage.all import QQ, ZZ
 
 class HodgeDiamond:
     r"""
@@ -125,7 +145,7 @@ class HodgeDiamond:
     #: and can be used externally to create new polynomials (and thus diamonds)
     R = PolynomialRing(ZZ, ("x", "y"))
     #: variables in the polynomial ring for Hodge-Poincaré polynomials
-    (x, y) = R.gens()
+    x, y = R.gens()
 
     def __init__(self, m):
         r"""
@@ -185,7 +205,6 @@ class HodgeDiamond:
 
         return diamond
 
-
     @classmethod
     def from_polynomial(cls, f, from_variety=False):
         r"""
@@ -228,7 +247,6 @@ class HodgeDiamond:
 
         return diamond
 
-
     @property
     def polynomial(self):
         r"""The Hodge--Poincaré polynomial describing the Hodge diamond
@@ -255,18 +273,15 @@ class HodgeDiamond:
               0       2       0
                   0       0
                       1
-
         """
-        return sum([self.matrix[i,j] * self.x**i * self.y**j for (i, j) in \
-                cartesian_product([range(self.matrix.nrows()), \
-                    range(self.matrix.ncols())])])
-
+        M = self.matrix
+        return sum([M[i, j] * self.x**i * self.y**j
+                    for i in range(M.nrows()) for j in range(M.ncols())])
 
     @polynomial.setter
     def polynomial(self, f):
         r"""Setter for the Hodge--Poincaré polynomial"""
         self.matrix = HodgeDiamond.__to_matrix(f)
-
 
     @property
     def matrix(self):
@@ -278,7 +293,6 @@ class HodgeDiamond:
         """
         return self._m
 
-
     @matrix.setter
     def matrix(self, m):
         r"""Setter for the Hodge diamond as a matrix"""
@@ -289,7 +303,6 @@ class HodgeDiamond:
 
         self._m = matrix(m)
         self.__normalise()
-
 
     @staticmethod
     def __to_matrix(f):
@@ -305,21 +318,18 @@ class HodgeDiamond:
             d = max([max(e) for e in f.exponents()]) + 1
             m = matrix(d)
 
-            for (i, j) in cartesian_product([range(d), range(d)]):
+            for i, j in cartesian_product([range(d), range(d)]):
                 m[i, j] = f.monomial_coefficient(HodgeDiamond.x**i * HodgeDiamond.y**j)
 
         return m
-
 
     def __size(self):
         r"""Internal method to determine the (relevant) size of the Hodge diamond"""
         return self.matrix.ncols() - 1
 
-
     def __normalise(self):
         r"""Internal method to get rid of trailing zeros"""
         self._m = HodgeDiamond.__to_matrix(self.polynomial)
-
 
     def __eq__(self, other):
         r"""Check whether two Hodge diamonds are equal
@@ -334,10 +344,8 @@ class HodgeDiamond:
             sage: load("diamond.py")
             sage: K3() == hypersurface(4, 2)
             True
-
         """
         return self.polynomial == other.polynomial
-
 
     def __ne__(self, other):
         r"""Check whether two Hodge diamonds are not equal
@@ -354,10 +362,8 @@ class HodgeDiamond:
 
             sage: point() != lefschetz()
             True
-
         """
         return not self == other
-
 
     def __add__(self, other):
         r"""Add two Hodge diamonds together
@@ -382,16 +388,15 @@ class HodgeDiamond:
         """
         return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
 
-
     def __radd__(self, other):
         r"""Add two Hodge diamonds together
 
         This is used when sum()'ing for instance."""
         # to make sum() work as intended, which by default starts with 0
-        if other == 0: return self
+        if other == 0:
+            return self
 
         return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
-
 
     def __sub__(self, other):
         r"""Subtract two Hodge diamonds
@@ -404,10 +409,8 @@ class HodgeDiamond:
             sage: load("diamond.py")
             sage: Pn(1) - point() == lefschetz()
             True
-
         """
         return HodgeDiamond.from_polynomial(self.polynomial - other.polynomial)
-
 
     def __mul__(self, other):
         r"""Multiply two Hodge diamonds
@@ -431,14 +434,12 @@ class HodgeDiamond:
 
             sage: K3() * point() == point() * K3() == K3()
             True
-
         """
-
-        if not isinstance(other, HodgeDiamond): # in the rare case someone does X*3 instead of 3*X
+        if not isinstance(other, HodgeDiamond):
+            # in the rare case someone does X*3 instead of 3*X
             return other * self
 
         return HodgeDiamond.from_polynomial(self.polynomial * other.polynomial)
-
 
     def __rmul__(self, factor):
         r"""Multiply a Hodge diamond with a factor
@@ -460,7 +461,6 @@ class HodgeDiamond:
         """
         return HodgeDiamond.from_polynomial(factor * self.polynomial)
 
-
     def __pow__(self, power):
         r"""Raise a Hodge diamond to a power
 
@@ -477,10 +477,8 @@ class HodgeDiamond:
             sage: load("diamond.py")
             sage: K3()**2 == K3()*K3()
             True
-
         """
         return HodgeDiamond.from_polynomial(self.polynomial ** power)
-
 
     def __call__(self, i, y=None):
         r"""
@@ -518,23 +516,19 @@ class HodgeDiamond:
 
             sage: Pn(10)(1, 1) == 11
             True
-
         """
-        if y == None:
+        if y is None:
             assert i >= -self.lefschetz_power()
 
             return HodgeDiamond.from_polynomial(self.R(self.polynomial * self.x**i * self.y**i))
-        else:
-            x = i
-
-            return self.polynomial(x, y)
-
+        x = i
+        return self.polynomial(x, y)
 
     def __getitem__(self, index):
         r"""Get (p, q)th entry of Hodge diamond or the ith row of the Hodge diamond"""
         # first try it as (p, q)
         try:
-            (p, q) = index
+            p, q = index
             if p < 0 or q < 0:
                 return 0
             else:
@@ -546,7 +540,6 @@ class HodgeDiamond:
         except TypeError:
             # we could do something smarter, but this is it for now
             return [self.matrix[p, index - p] for p in range(index + 1)]
-
 
     def __repr__(self):
         r"""Output diagnostic information
@@ -566,10 +559,8 @@ class HodgeDiamond:
             sage: load("diamond.py")
             sage: Pn(1)
             Hodge diamond of size 2 and dimension 1
-
         """
         return "Hodge diamond of size {} and dimension {}".format(self.__size() + 1, self.dimension())
-
 
     def __str__(self):
         r"""Pretty print Hodge diamond
@@ -585,10 +576,8 @@ class HodgeDiamond:
                   1
               0       0
                   1
-
         """
         return str(self.pprint())
-
 
     def __table(self):
         r"""Generate a table object for the Hodge diamond"""
@@ -611,7 +600,6 @@ class HodgeDiamond:
             T[i].extend([""]*(2*d - len(T[i]) + 1))
 
         return table(T, align="center")
-
 
     def pprint(self, format="table"):
         r"""Pretty print the Hodge diamond
@@ -639,11 +627,9 @@ class HodgeDiamond:
         else:
             return self.polynomial
 
-
     def __is_positive(self):
         r"""Check whether all entries are positive integers"""
-        return all([hpq >= 0 for hpq in self.matrix.coefficients()])
-
+        return all(hpq >= 0 for hpq in self.matrix.coefficients())
 
     def is_hodge_symmetric(self):
         r"""Check whether the Hodge diamond satisfies Hodge symmetry
@@ -701,10 +687,8 @@ class HodgeDiamond:
             False
             sage: enriques(two="supersingular").is_hodge_symmetric()
             True
-
         """
         return self.matrix.is_symmetric()
-
 
     def is_serre_symmetric(self):
         r"""Check whether the Hodge diamond satisfies Serre symmetry
@@ -737,9 +721,8 @@ class HodgeDiamond:
 
         """
         d = self.__size()
-
-        return all([self.matrix[p, q] == self.matrix[d - p, d - q] for (p, q) in cartesian_product([range(d + 1), range(d + 1)])])
-
+        return all(self.matrix[p, q] == self.matrix[d - p, d - q]
+                   for p, q in cartesian_product([range(d + 1), range(d + 1)]))
 
     def betti(self):
         r"""Betti numbers of the Hodge diamond
@@ -759,11 +742,11 @@ class HodgeDiamond:
 
             sage: [hilbn(K3(), n).betti()[2] for n in range(2, 5)]
             [23, 23, 23]
-
         """
         d = self.__size()
-        return [sum([self.matrix[j, i - j] for j in range(max(0, i - d), min(i, d) + 1)]) for i in range(2*d + 1)]
-
+        return [sum([self.matrix[j, i - j] for j in range(max(0, i - d),
+                                                          min(i, d) + 1)])
+                for i in range(2 * d + 1)]
 
     def middle(self):
         r"""Middle cohomology of the Hodge diamond
@@ -785,7 +768,6 @@ class HodgeDiamond:
         """
         d = self.__size()
         return [self.matrix[i, d - i] for i in range(d + 1)]
-
 
     def euler(self):
         r"""The topological Euler characteristic of the Hodge diamond
@@ -810,10 +792,8 @@ class HodgeDiamond:
 
             sage: [hilbn(K3(), n).euler() for n in range(5)]
             [1, 24, 324, 3200, 25650]
-
         """
         return sum([(-1)**i * bi for i, bi in enumerate(self.betti())])
-
 
     def holomorphic_euler(self):
         r"""Holomorphic Euler characteristic
@@ -829,17 +809,15 @@ class HodgeDiamond:
         For projective space it is 1::
 
             sage: load("diamond.py")
-            sage: all([Pn(n).holomorphic_euler() == 1 for n in range(10)])
+            sage: all(Pn(n).holomorphic_euler() == 1 for n in range(10))
             True
 
         For a hyperkähler variety of dimension $2n$ this number is $n+1$::
 
-            sage: all([K3n(n).holomorphic_euler() == n+1 for n in range(5)])
+            sage: all(K3n(n).holomorphic_euler() == n+1 for n in range(5))
             True
-
         """
         return sum([(-1)**i * self.matrix[i, 0] for i in range(self.matrix.nrows())])
-
 
     def hirzebruch(self):
         r"""Hirzebruch's \chi_y genus
@@ -870,11 +848,8 @@ class HodgeDiamond:
             3*y^4 - 42*y^3 + 234*y^2 - 42*y + 3
             sage: hilbn(K3(), 2).hirzebruch().subs(y=-1) == hilbn(K3(), 2).euler()
             True
-
-
         """
         return self.polynomial.subs(x=-1)
-
 
     def homological_unit(self):
         r"""Dimensions of $\\mathrm{H}^\bullet(X,O_X)$
@@ -882,7 +857,6 @@ class HodgeDiamond:
         A notion intorduced by Abuaf.
         """
         return self.matrix.row(0)
-
 
     def hochschild(self):
         r"""Dimensions of the Hochschild homology
@@ -893,11 +867,9 @@ class HodgeDiamond:
         d = self.__size()
         return HochschildHomology([sum([self.matrix[d - i + j, j] for j in range(max(0, i - d), min(i, d) + 1)]) for i in range(2*d + 1)])
 
-
     def hh(self):
         r"""Shorthand for :meth:`HodgeDiamond.hochschild`"""
         return self.hochschild()
-
 
     def arises_from_variety(self):
         r"""Check whether the Hodge diamond can arise from a smooth projective variety
@@ -910,25 +882,23 @@ class HodgeDiamond:
         """
         return self.is_hodge_symmetric() and self.is_serre_symmetric() and self.lefschetz_power() == 0
 
-
     def is_zero(self):
         r"""Check whether the Hodge diamond is identically zero"""
         return self.matrix.is_zero()
 
-
     def lefschetz_power(self):
-        r"""Return the twist by the Lefschetz motive that is present
+        r"""
+        Return the twist by the Lefschetz motive that is present
 
         In other words, we see how divisible the Hodge--Poincaré polynomial is
-        with respect to the monomial $x^iy^i$"""
-        if self.is_zero(): return 0
-
-        i = 0
+        with respect to the monomial $x^iy^i$
+        """
+        if self.is_zero():
+            return 0
+        i = -1
         while (self.x**i * self.y**i).divides(self.polynomial):
-            i = i + 1
-
-        return i - 1
-
+            i += 1
+        return i
 
     def dimension(self):
         r"""Dimension of the Hodge diamond
@@ -956,38 +926,36 @@ class HodgeDiamond:
         assert self.is_hodge_symmetric()
         if self.is_zero():
             return -1
-        else:
-            return max([i for i in range(self.matrix.ncols()) if not self.matrix.column(i).is_zero()]) - self.lefschetz_power()
-
+        return max([i for i in range(self.matrix.ncols()) if not self.matrix.column(i).is_zero()]) - self.lefschetz_power()
 
     def level(self):
         r"""Compute the level (or complexity) of the Hodge diamond
 
-        This is a measure of the width of the non-zero part of the Hodge diamond.
+        This is a measure of the width of the non-zero part
+        of the Hodge diamond.
 
         EXAMPLES:
 
         The simplest case is projective space, with level zero::
 
             sage: load("diamond.py")
-            sage: all([Pn(n).level() == 0 for n in range(10)])
+            sage: all(Pn(n).level() == 0 for n in range(10))
             True
 
         For intersections of 2 quadrics it alternates between zero and one::
 
-            sage: all([complete_intersection([2,2], 2*n).level() == 0 for n in range(5)])
+            sage: all(complete_intersection([2,2], 2*n).level() == 0 for n in range(5))
             True
-            sage: all([complete_intersection([2,2], 2*n+1).level() == 1 for n in range(5)])
+            sage: all(complete_intersection([2,2], 2*n+1).level() == 1 for n in range(5))
             True
 
         A Calabi-Yau variety (e.g. a hypersurface of degree $n+1$ in $\\mathbb{P}^n$) has maximal level::
 
-            sage: all([hypersurface(n+2, n).level() == n for n in range(10)])
+            sage: all(hypersurface(n+2, n).level() == n for n in range(10))
             True
-
         """
-        return max([abs(p - q) for (p, q) in [m.degrees() for m in self.polynomial.monomials()]])
-
+        return max(abs(p - q) for m in self.polynomial.monomials()
+                   for p, q in m.degrees())
 
     def blowup(self, other, codim=None):
         r"""Compute Hodge diamond of blowup
@@ -1009,14 +977,12 @@ class HodgeDiamond:
             sage: load("diamond.py")
             sage: Pn(2).blowup(6*point()) == hypersurface(3, 2)
             True
-
         """
         # let's guess the codimension
-        if codim == None:
+        if codim is None:
             codim = self.dimension() - other.dimension()
 
         return self + sum([other(i) for i in range(1, codim)])
-
 
     def bundle(self, rank):
         r"""Compute the Hodge diamond of a projective bundle
@@ -1039,7 +1005,6 @@ class HodgeDiamond:
 
             sage: Pn(1).bundle(2) == hypersurface(2, 2)
             True
-
         """
         return sum([self(i) for i in range(rank)])
 
@@ -1061,10 +1026,8 @@ class HodgeDiamond:
                              1
         """
         assert self.arises_from_variety()
-
         n = self.dimension()
         return HodgeDiamond.from_polynomial(sum([self.polynomial.monomial_coefficient(m) * self.x**(n - m.exponents()[0][0]) * self.y**(m.exponents()[0][1]) for m in self.polynomial.monomials()]))
-
 
 
 class HochschildHomology:
@@ -1072,9 +1035,9 @@ class HochschildHomology:
     This class implements some methods to work with (the dimensions of)
     Hochschild homology spaces, associated to the :class:`HodgeDiamond` class.
 
-    The documentation is not intended to be complete, as this is mostly for my own sake.
+    The documentation is not intended to be complete, as this is mostly
+    for my own sake.
     """
-
     # exposes R and t for external use
     R = LaurentPolynomialRing(ZZ, "t")
     t = R.gen(0)
@@ -1087,11 +1050,9 @@ class HochschildHomology:
 
         - ``L`` -- a list of integers of length 2n+1 representing $\\mathrm{HH}_{-n}$ to $\\mathrm{HH}_n$, such that ``L[i] == L[2n - i]``
         """
-        assert len(L) % 2 == 1, "length needs to be odd, to reflect Serre duality"
-        assert all([L[i] == L[len(L) - i - 1] for i in range(len(L))]), "Serre duality is not satisfied"
-
+        assert len(L) % 2, "length needs to be odd, to reflect Serre duality"
+        assert all(L[i] == L[len(L) - i - 1] for i in range(len(L))), "Serre duality is not satisfied"
         self._L = L
-
 
     @classmethod
     def from_list(cls, L):
@@ -1104,7 +1065,6 @@ class HochschildHomology:
         """
         return cls(L)
 
-
     @classmethod
     def from_positive(cls, L):
         r"""
@@ -1114,10 +1074,9 @@ class HochschildHomology:
 
         - ``L`` -- a list of integers representing $\\mathrm{HH}_0$ to $\\mathrm{HH}_n$
         """
-        double = list(reversed(self._L))[:-1] + L
+        double = list(reversed(cls._L))[:-1] + L
 
         return cls(double)
-
 
     @classmethod
     def from_polynomial(cls, f):
@@ -1128,25 +1087,22 @@ class HochschildHomology:
 
         - ``f`` -- the Hochschild--Poincaré Laurent polynomial
         """
-        if f.is_zero(): return cls([0])
+        if f.is_zero():
+            return cls([0])
 
         L = [f.dict()[i] if i in f.exponents() else 0 for i in range(-f.degree(), f.degree() + 1)]
 
         return cls(L)
 
-
     @property
     def polynomial(self):
         return HochschildHomology.R(sum([self[i] * (self.t)**i for i in range(-self.dimension(), self.dimension() + 1)]))
 
-
     def __repr__(self):
         return "Hochschild homology vector of dimension {}".format(self.dimension())
 
-
     def __str__(self):
         return str(self.pprint())
-
 
     def __table(self):
         if self.is_zero():
@@ -1156,67 +1112,57 @@ class HochschildHomology:
 
         return table([indices, [self[i] for i in indices]], header_row=True)
 
-
     def pprint(self, output="table"):
         if output == "table":
             return self.__table()
-        else:
-            return self._L
-
+        return self._L
 
     def dimension(self):
         r"""Largest index ``i`` such that $\\mathrm{HH}_i\\neq 0$"""
-        if self.is_zero(): return -1
+        if self.is_zero():
+            return -1
 
-        return (len(self._L) // 2) - min([i for (i, d) in enumerate(self._L) if d != 0])
-
+        return (len(self._L) // 2) - min([i for i, d in enumerate(self._L)
+                                          if d != 0])
 
     def is_zero(self):
         return set(self._L) == set([0])
-
 
     def euler(self):
         """Euler characteristic of Hochschild homology"""
         return self.polynomial(-1)
 
-
     def __add__(self, other):
         return HochschildHomology.from_polynomial(self.polynomial + other.polynomial)
 
-
     def __radd__(self, other):
         # to make sum() work as intended, which by default starts with 0
-        if other == 0: return self
+        if other == 0:
+            return self
 
         return HochschildHomology.from_polynomial(self.polynomial + other.polynomial)
-
 
     def __sub__(self, other):
         return HochschildHomology.from_polynomial(self.polynomial - other.polynomial)
 
-
     def __mul__(self, other):
-        if not isinstance(other, HochschildHomology): # in the rare case someone does X*3 instead of 3*X
+        if not isinstance(other, HochschildHomology):
+            # in the rare case someone does X*3 instead of 3*X
             return other * self
 
         return HochschildHomology.from_polynomial(self.polynomial * other.polynomial)
 
-
     def __rmul__(self, factor):
         return HochschildHomology.from_polynomial(factor * self.polynomial)
-
 
     def __pow__(self, i):
         return HochschildHomology.from_polynomial(self.polynomial ** i)
 
-
     def __eq__(self, other):
         return self.polynomial == other.polynomial
 
-
     def __ne__(self, other):
         return not self == other
-
 
     def __getitem__(self, i):
         if i > len(self._L) // 2:
@@ -1224,10 +1170,8 @@ class HochschildHomology:
         else:
             return self._L[len(self._L) // 2 - i]
 
-
     def __iter__(self):
         return self._L.__iter__()
-
 
     def symmetric_power(self, k):
         r"""
@@ -1261,8 +1205,7 @@ class HochschildHomology:
                 return sum([summand(g, j) * summand(h, k - j) for j in range(k + 1)])
 
         # see the object C^{(\lambda)} in the Polishchuk--Van den Bergh paper
-        return HochschildHomology.from_polynomial(sum([product([summand(self.polynomial, ri) for ri in P.to_exp()]) for P in Partitions(k)]))
-
+        return HochschildHomology.from_polynomial(sum([prod([summand(self.polynomial, ri) for ri in P.to_exp()]) for P in Partitions(k)]))
 
     def sym(self, k):
         """Shorthand for ```HochschildHomology.symmetric_power```"""
@@ -1346,14 +1289,12 @@ def Pn(n):
 
     In general projective space is the sum of powers of the Lefschetz class::
 
-        sage: all([Pn(n) == sum([lefschetz()**i for i in range(n + 1)]) for n in range(1, 10)])
+        sage: all(Pn(n) == sum([lefschetz()**i for i in range(n + 1)]) for n in range(1, 10))
         True
-
     """
     assert n >= 0
-
-    return HodgeDiamond.from_matrix(matrix.identity(n + 1), \
-            from_variety=True)
+    return HodgeDiamond.from_matrix(matrix.identity(n + 1),
+                                    from_variety=True)
 
 
 def curve(genus):
@@ -1385,10 +1326,8 @@ def curve(genus):
               1
     """
     assert genus >= 0
-
-    return HodgeDiamond.from_matrix(matrix([[1, genus], [genus, 1]]), \
-            from_variety=True)
-
+    return HodgeDiamond.from_matrix(matrix([[1, genus], [genus, 1]]),
+                                    from_variety=True)
 
 
 def surface(genus, irregularity, h11):
@@ -1430,9 +1369,10 @@ def surface(genus, irregularity, h11):
     pg = genus
     q = irregularity
 
-    return HodgeDiamond.from_matrix(matrix([[1, q, pg], [q, h11, q], [pg, q, 1]]), \
-            from_variety=True)
-
+    return HodgeDiamond.from_matrix(matrix([[1, q, pg],
+                                            [q, h11, q],
+                                            [pg, q, 1]]),
+                                    from_variety=True)
 
 
 def symmetric_power(n, genus):
@@ -1463,7 +1403,7 @@ def symmetric_power(n, genus):
 
     If $n=1$ we get the curve back::
 
-        sage: all([symmetric_power(1, g) == curve(g) for g in range(10)])
+        sage: all(symmetric_power(1, g) == curve(g) for g in range(10))
         True
 
     If $n=0$ we get the point::
@@ -1492,7 +1432,7 @@ def symmetric_power(n, genus):
         return zero()
 
     M = matrix(n + 1)
-    for (i, j) in cartesian_product([range(n + 1), range(n + 1)]):
+    for i, j in cartesian_product([range(n + 1), range(n + 1)]):
         M[i, j] = hpq(genus, n, i, j)
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
@@ -1639,7 +1579,7 @@ def moduli_vector_bundles(rank, degree, genus):
 
     def one(C, g):
         """Return the first factor in del Bano's formula."""
-        return (-1)**(len(C)-1) * ((1+x)**g * (1+y)**g)**(len(C)-1) / (1-x*y)**(len(C)-1) # already corrected the factor from the Jacobian
+        return (-1)**(len(C)-1) * ((1+x)**g * (1+y)**g)**(len(C)-1) / (1-x*y)**(len(C)-1)  # already corrected the factor from the Jacobian
 
     def two(C, g):
         """Return the second factor in del Bano's formula."""
@@ -1698,9 +1638,9 @@ def seshadris_desingularisation(genus):
     B = (1 - x) * (1 - y)
 
     one = ((1 + x*L)**g * (1 + y*L)**g - L**g * A**g) / ((1 - L) * (1 - L**2))
-    two = (A**g * (L - L**g) / (1 - L) + (A**g + B**g) / 2) / (1 + L) # fixed typo in del Bano: compare to 3.12, motive of P^(g-2)
+    two = (A**g * (L - L**g) / (1 - L) + (A**g + B**g) / 2) / (1 + L)  # fixed typo in del Bano: compare to 3.12, motive of P^(g-2)
     three = (A**g - 2**(2*g)) / 2 * ((1 - L**(g-1)) / (1 - L))**2
-    four = (B**g / 2 - 2**(2*g - 1)) * (1 - L**(2*g-2)) / (1 - L**2) # fixed typo in del Bano: compare to 3.14, power of L at the end
+    four = (B**g / 2 - 2**(2*g - 1)) * (1 - L**(2*g-2)) / (1 - L**2)  # fixed typo in del Bano: compare to 3.14, power of L at the end
     five = ((1 - L**g) * (1 - L**(g-1)) * (1 - L**(g-2)) / ((1 - L) * (1 - L**2) * (1 - L**3)) + (1 - L**g) * (1 - L**(g-1)) / ((1 - L) * (1 - L**2)) * L**(g-2)) * 2**(2*g)
 
     return HodgeDiamond.from_polynomial(R(one - two + three + four + five))
@@ -1739,9 +1679,12 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
 
     N = len(alpha)
 
-    if genus == 0: M = zero()
-    if genus == 1: M = curve(1)
-    if genus >= 2: M = moduli_vector_bundles(2, 1, genus)
+    if genus == 0:
+        M = zero()
+    elif genus == 1:
+        M = curve(1)
+    elif genus >= 2:
+        M = moduli_vector_bundles(2, 1, genus)
 
     result = M * (Pn(1)**N) + sum([b(j, alpha) * jacobian(genus)(genus + j) for j in range(N - 2)])
     assert result.arises_from_variety()
@@ -1789,7 +1732,7 @@ def fano_variety_intersection_quadrics_odd(g, i):
             exterior = sum([dimensions[m] * x**m * y**((g - j) - m) for m in range((g - j) + 1)])
             polynomial = polynomial + N(i, d - k, j) * exterior * x**((k - (g - j))/2) * y**((k - (g - j))/2)
 
-            assert binomial(2*g, g - j) == exterior(1, 1) # checking the Betti numbers
+            assert binomial(2*g, g - j) == exterior(1, 1)  # checking the Betti numbers
 
     return HodgeDiamond.from_polynomial(polynomial, from_variety=True)
 
@@ -1843,9 +1786,10 @@ def quot_scheme_curve(genus, length, rank):
     """
     def dn(P):
         # shift in indexing because we start at 0
-        return sum([i * ni for (i, ni) in enumerate(P)])
+        return sum([i * ni for i, ni in enumerate(P)])
 
-    return sum([product([symmetric_power(ni, genus) for ni in P])(dn(P)) for P in IntegerVectors(length, rank)])
+    return sum([prod([symmetric_power(ni, genus) for ni in P])(dn(P))
+                for P in IntegerVectors(length, rank)])
 
 
 def hilbtwo(X):
@@ -1931,9 +1875,8 @@ def K3n(n):
 
     For $n\\geq 2$ we have second Betti number 23::
 
-        sage: all([K3n(n).betti()[2] == 23 for n in range(2, 5)])
+        sage: all(K3n(n).betti()[2] == 23 for n in range(2, 5))
         True
-
     """
     return hilbn(K3(), n)
 
@@ -1961,9 +1904,8 @@ def generalised_kummer(n):
 
     The higher generalised Kummers are hyperkähler varieties with second Betti number 7::
 
-        sage: all([generalised_kummer(n).betti()[2] == 7 for n in range(3, 10)])
+        sage: all(generalised_kummer(n).betti()[2] == 7 for n in range(3, 10))
         True
-
     """
     def product(n):
         x = HodgeDiamond.x
@@ -1990,16 +1932,15 @@ def ogrady6():
         sage: load("diamond.py")
         sage: ogrady6().betti()[2] == 8
         True
-
     """
-    return HodgeDiamond.from_matrix(
-        [[1, 0, 1, 0, 1, 0, 1],
-        [0, 6, 0, 12, 0, 6, 0],
-        [1, 0, 173, 0, 173, 0, 1],
-        [0, 12, 0, 1144, 0, 12, 0],
-        [1, 0, 173, 0, 173, 0, 1],
-        [0, 6, 0, 12, 0, 6, 0],
-        [1, 0, 1, 0, 1, 0, 1]], from_variety=True)
+    H = HodgeDiamond.from_matrix
+    return H([[1, 0, 1, 0, 1, 0, 1],
+              [0, 6, 0, 12, 0, 6, 0],
+              [1, 0, 173, 0, 173, 0, 1],
+              [0, 12, 0, 1144, 0, 12, 0],
+              [1, 0, 173, 0, 173, 0, 1],
+              [0, 6, 0, 12, 0, 6, 0],
+              [1, 0, 1, 0, 1, 0, 1]], from_variety=True)
 
 
 def ogrady10():
@@ -2017,20 +1958,19 @@ def ogrady10():
         sage: load("diamond.py")
         sage: ogrady10().betti()[2] == 24
         True
-
     """
-    return HodgeDiamond.from_matrix(
-        [[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
-        [0, 22, 0, 22, 0, 23, 0, 22, 0, 22, 0],
-        [1, 0, 254, 0, 276, 0, 276, 0, 254, 0, 1],
-        [0, 22, 0, 2299, 0, 2531, 0, 2299, 0, 22, 0],
-        [1, 0, 276, 0, 16490, 0, 16490, 0, 276, 0, 1],
-        [0, 23, 0, 2531, 0, 88024, 0, 2531, 0, 23, 0],
-        [1, 0, 276, 0, 16490, 0, 16490, 0, 276, 0, 1],
-        [0, 22, 0, 2299, 0, 2531, 0, 2299, 0, 22, 0],
-        [1, 0, 254, 0, 276, 0, 276, 0, 254, 0, 1],
-        [0, 22, 0, 22, 0, 23, 0, 22, 0, 22, 0],
-        [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]], from_variety=True)
+    H = HodgeDiamond.from_matrix
+    return H([[1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1],
+              [0, 22, 0, 22, 0, 23, 0, 22, 0, 22, 0],
+              [1, 0, 254, 0, 276, 0, 276, 0, 254, 0, 1],
+              [0, 22, 0, 2299, 0, 2531, 0, 2299, 0, 22, 0],
+              [1, 0, 276, 0, 16490, 0, 16490, 0, 276, 0, 1],
+              [0, 23, 0, 2531, 0, 88024, 0, 2531, 0, 23, 0],
+              [1, 0, 276, 0, 16490, 0, 16490, 0, 276, 0, 1],
+              [0, 22, 0, 2299, 0, 2531, 0, 2299, 0, 22, 0],
+              [1, 0, 254, 0, 276, 0, 276, 0, 254, 0, 1],
+              [0, 22, 0, 22, 0, 23, 0, 22, 0, 22, 0],
+              [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1]], from_variety=True)
 
 
 def hilbn(surface, n):
@@ -2050,22 +1990,25 @@ def hilbn(surface, n):
     assert surface.arises_from_variety()
     assert surface.dimension() == 2
 
-    R = PowerSeriesRing(ZZ, ("a", "b", "t"), default_prec = (3*n + 1))
-    (a, b, t) = R.gens()
-    series = R(1)
+    ring_ab = PolynomialRing(ZZ, "a,b")
+    a, b = ring_ab.gens()
+    R = PowerSeriesRing(ring_ab, "t", default_prec=n + 1)
+    t = R.gen()
+
+    series = R.one().O(n + 1)
 
     # theorem 2.3.14 of Göttsche's book
-    for k in range(1, n+1):
-        for (p,q) in cartesian_product([range(3), range(3)]):
-            series = series * (1 + (-1)**(p+q+1) * a**(p+k-1) * b**(q+k-1) * t**k)**((-1)**(p+q+1) * surface[p,q])
+    for k in range(1, n + 1):
+        for p, q in cartesian_product([range(3), range(3)]):
+            eps_pq = (-1)**(p + q + 1)
+            series *= (1 + eps_pq * a**(p+k-1) * b**(q+k-1) * t**k)**(eps_pq * surface[p, q])
 
-    # convert to a polynomial which allows quick access to the coefficients
-    series = series.polynomial()
+    coeff_n = series[n]
 
     # read off Hodge diamond from the (truncated) series
-    M = matrix(2*n + 1)
-    for (p, q) in cartesian_product([range(2*n + 1), range(2*n + 1)]):
-        M[p,q] = series.coefficient([min(p, 2*n-q), min(q, 2*n-p), n]) # use Serre duality
+    M = matrix(2 * n + 1)
+    for p, q in cartesian_product([range(2 * n + 1), range(2 * n + 1)]):
+        M[p, q] = coeff_n.coefficient([min(p, 2 * n - q), min(q, 2 * n - p)])  # use Serre duality
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2080,13 +2023,13 @@ def nestedhilbn(surface, n):
     assert surface.arises_from_variety()
     assert surface.dimension() == 2
 
-    R = PowerSeriesRing(ZZ, default_prec = (5*n + 1)) # TODO lower this?
-    (x, y, t) = R.gens()
+    R = PowerSeriesRing(ZZ, default_prec=5*n + 1)  # TODO lower this?
+    x, y, t = R.gens()
 
     series = R(1)
-    for k in range(1, 3*n): # TODO lower this?
-        for (p, q) in cartesian_product([range(3), range(3)]):
-            if p + q % 2 == 1:
+    for k in range(1, 3 * n):  # TODO lower this?
+        for p, q in cartesian_product([range(3), range(3)]):
+            if p + q % 2:
                 series = series * (1 + x**(p+k-1) * y**(q+k-1) * t**k)**(surface[p, q])
             else:
                 series = series * (1 - x**(p+k-1) * y**(q+k-1) * t**k)**(-surface[p, q])
@@ -2096,8 +2039,8 @@ def nestedhilbn(surface, n):
 
     # read off Hodge diamond from the (truncated) series
     M = matrix(2*n + 1)
-    for (p, q) in cartesian_product([range(2*n + 1), range(2*n + 1)]):
-        M[p,q] = series.coefficient([min(p, 2*n-q), min(q, 2*n-p), n]) # use Serre duality
+    for p, q in cartesian_product([range(2*n + 1), range(2*n + 1)]):
+        M[p, q] = series.coefficient([min(p, 2*n-q), min(q, 2*n-p), n])  # use Serre duality
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2125,7 +2068,6 @@ def complete_intersection(degrees, dimension):
         True
         sage: complete_intersection([1, 1], 5) == Pn(5)
         True
-
     """
     # hypersurface as complete intersection
     try:
@@ -2165,7 +2107,6 @@ def K3():
           1       20       1
               0        0
                   1
-
     """
     return complete_intersection(4, 2)
 
@@ -2217,7 +2158,6 @@ def enriques(two=None):
           1       12       1
               1        1
                   1
-
     """
     if two:
         if two == "classical":
@@ -2262,7 +2202,6 @@ def ruled(genus):
     return surface(0, genus, 2)
 
 
-
 def weighted_hypersurface(degree, weights):
     """
     Hodge diamond for a weighted hypersurface of degree ``d`` in ``P(w_0,...,w_n)``
@@ -2298,12 +2237,11 @@ def weighted_hypersurface(degree, weights):
 
         sage: fano_threefold(1, 1) == weighted_hypersurface(6, [1,1,1,1,3])
         True
-
     """
-    var('t')
+    t = SR.var('t')  # why not use polynomials ?
 
     def poincare_function(L):
-        return expand(product([1] + [simplify((1 - t**a) / (1 - t**b)) for (a, b) in L]))
+        return expand(prod([1] + [simplify((1 - t**a) / (1 - t**b)) for a, b in L]))
 
     def jacobian_weights(degree, weights):
         return [(degree - weight, weight) for weight in weights]
@@ -2311,9 +2249,8 @@ def weighted_hypersurface(degree, weights):
     def poincare(degree, weights):
         return poincare_function(jacobian_weights(degree, weights))
 
-
     # weights should be interpreted as dimension of unweighted P^n
-    if type(weights) == sage.rings.integer.Integer:
+    if isinstance(weights, Integer):
         weights = [1]*(weights + 1)
 
     P = poincare(degree, weights)
@@ -2327,7 +2264,8 @@ def weighted_hypersurface(degree, weights):
         middle.append(T.coefficient(t, (q+1)*degree - vdeg))
 
     # adding in non-primitive cohomology if necessary
-    if len(middle) % 2 == 1: middle[len(middle) // 2] += 1
+    if len(middle) % 2:
+        middle[len(middle) // 2] += 1
 
     M = matrix.identity(n - 1)
     for i in range(n - 1):
@@ -2364,10 +2302,9 @@ def cyclic_cover(ramification_degree, cover_degree, weights):
 
         sage: cyclic_cover(6, 2, 3) == fano_threefold(1, 1)
         True
-
     """
     # weights should be interpreted as dimension of unweighted P^n
-    if type(weights) == sage.rings.integer.Integer:
+    if isinstance(weights, Integer):
         weights = [1]*(weights + 1)
 
     weights.append(ramification_degree // cover_degree)
@@ -2451,11 +2388,11 @@ def grassmannian(k, n):
     - ``n`` -- dimension of the ambient vector space
 
     """
-    if n in [0, 1] and k in [0, 1]: return point()
-
+    if n in [0, 1] and k in [0, 1]:
+        return point()
     D = "A" + str(n - 1)
-    I = [i for i in range(1, n) if i != k]
-    return partial_flag_variety(D, I)
+    index_set = [i for i in range(1, n) if i != k]
+    return partial_flag_variety(D, index_set)
 
 
 def orthogonal_grassmannian(k, n):
@@ -2538,20 +2475,23 @@ def horospherical(D, y=0, z=0):
     # treat D as the plaintext description of a horospherical variety
     # not supposed to be 100% robust
     if y == 0 and z == 0:
-        X = D # rename for less confusion
+        X = D  # rename for less confusion
 
         i = int(X[1])
 
         if i == 1:
             n = X[3:-1]
             return horospherical("B" + n, int(n) - 1, int(n))
-        if i == 2: return horospherical("B3", 1, 3)
+        if i == 2:
+            return horospherical("B3", 1, 3)
         if i == 3:
             n = X[3:].split(",")[0]
             m = int(X[:-1].split(",")[1])
             return horospherical("C" + n, m, m - 1)
-        if i == 4: return horospherical("F4", 2, 3)
-        if i == 5: return horospherical("G2", 1, 2)
+        if i == 4:
+            return horospherical("F4", 2, 3)
+        if i == 5:
+            return horospherical("G2", 1, 2)
 
         # didn't recognise it so far, so must be wrong
         raise Exception
@@ -2747,7 +2687,7 @@ def quiver_moduli(Q, d, mu):
     Similar to the first example, the $d$-Kronecker quiver gives rise to
     projective spaces::
 
-        sage: all([quiver_moduli(kronecker(d), (1, 1), mu((1, -1))) == Pn(d - 1) for d in range(3, 10)])
+        sage: all(quiver_moduli(kronecker(d), (1, 1), mu((1, -1))) == Pn(d - 1) for d in range(3, 10))
         True
 
     We can also realise Grassmannians using the $d$-Kronecker quiver, for
@@ -2771,7 +2711,6 @@ def quiver_moduli(Q, d, mu):
         True
         sage: quiver_moduli(flags(5, 3), (1, 4, 3, 1), mu((1, 0, 0, 0))) == partial_flag_variety("A4", [2])
         True
-
     """
     K = FunctionField(QQ, 'v')
     v = K.gen(0)
@@ -2785,11 +2724,11 @@ def quiver_moduli(Q, d, mu):
         x = [0] * (n + 1)
 
         # start
-        x[n] = b[n] / A[n,n]
+        x[n] = b[n] / A[n, n]
 
         # induct
         for i in range(n - 1, -1, -1):
-            x[i] = (b[i] - sum([A[i,j] * x[j] for j in range(i + 1, n + 1)])) / A[i,i]
+            x[i] = (b[i] - sum([A[i, j] * x[j] for j in range(i + 1, n + 1)])) / A[i, i]
 
         return x
 
@@ -2799,10 +2738,10 @@ def quiver_moduli(Q, d, mu):
         return prod([v**n - v**k for k in range(n)])
 
     # not caching this one seems faster
-    #@cached_function
+    # @cached_function
     def Rd(Q, d):
         """Cardinality of ``R_d`` from Definition 3.1"""
-        return v**sum([d[i] * d[j] * Q[i,j] for (i,j) in Q.dict()])
+        return v**sum([d[i] * d[j] * Q[i, j] for i, j in Q.dict()])
 
     @cached_function
     def Gd(d):
@@ -2841,7 +2780,7 @@ def quiver_moduli(Q, d, mu):
         T = matrix(K, len(I), len(I))
 
         for i in range(len(I)):
-            for j in range(i, len(I)): # upper triangular
+            for j in range(i, len(I)):  # upper triangular
                 T[i, j] = entry(Q, I[i], I[j])
 
         return T
@@ -2857,7 +2796,7 @@ def quiver_moduli(Q, d, mu):
     T = Td(Q.adjacency_matrix(), d, mu)
     # doing a back-substitution is faster
     result = solve(T, [0] * (T.nrows() - 1) + [1])[0] * (1 - v)
-    #result = T.inverse()[0,-1] * (1 - v)
+    # result = T.inverse()[0,-1] * (1 - v)
 
     assert result.denominator() == 1, "result needs to be a polynomial"
 
