@@ -895,10 +895,10 @@ class HodgeDiamond:
         """
         if self.is_zero():
             return 0
-        i = -1
+        i = 0
         while (self.x**i * self.y**i).divides(self.polynomial):
             i += 1
-        return i
+        return i - 1
 
     def dimension(self):
         r"""Dimension of the Hodge diamond
@@ -954,8 +954,7 @@ class HodgeDiamond:
             sage: all(hypersurface(n+2, n).level() == n for n in range(10))
             True
         """
-        return max(abs(p - q) for m in self.polynomial.monomials()
-                   for p, q in m.degrees())
+        return max(abs(m.degrees()[0] - m.degrees()[1]) for m in self.polynomial.monomials())
 
     def blowup(self, other, codim=None):
         r"""Compute Hodge diamond of blowup
