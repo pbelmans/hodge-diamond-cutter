@@ -17,7 +17,8 @@
 #except ImportError:
 #    raise RuntimeError("to build the documentation you need to be inside a Sage shell (run first the command 'sage -sh' in a shell")
 
-import os, sys
+import os
+import sys
 sys.path.insert(0, os.path.abspath('/Users/pbelmans/Documents/Project/hodge-diamond-cutter'))
 
 import diamond
@@ -44,10 +45,10 @@ extensions = [
 
 mathjax_config = {
     "extensionsr": ["tex2jax.js"],
-    "jax": ['input/TeX','output/HTML-CSS'],
+    "jax": ['input/TeX', 'output/HTML-CSS'],
     "tex2jax": {
-        "inlineMath": [['$','$']],
-        "displayMath": [ ['$$','$$'], ["\\[","\\]"] ],
+        "inlineMath": [['$', '$']],
+        "displayMath": [['$$', '$$'], ["\\[", "\\]"]],
     },
 }
 

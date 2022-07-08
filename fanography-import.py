@@ -1,9 +1,9 @@
-import fanography
 import pprint
+import fanography
 
 fanos = fanography.application.fanos
 
-hodge = dict()
+hodge = {}
 
 for rho in fanos:
     for ID in fanos[rho]:

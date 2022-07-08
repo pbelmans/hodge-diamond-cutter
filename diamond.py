@@ -452,12 +452,11 @@ class HodgeDiamond:
 
         EXAMPLES:
 
-        The disjoint union of 2 K3 surfaces in two ways:
+        The disjoint union of 2 K3 surfaces in two ways::
 
             sage: load("diamond.py")
             sage: 2*K3() == K3() + K3()
             True
-
         """
         return HodgeDiamond.from_polynomial(factor * self.polynomial)
 
@@ -607,7 +606,7 @@ class HodgeDiamond:
         INPUT:
 
         - ``format`` -- output format (default: `"table"`), if table it pretty prints
-            a Hodge diamond; all else defaults to the polynomial
+          a Hodge diamond; all else defaults to the polynomial
 
         EXAMPLES:
 
@@ -854,7 +853,7 @@ class HodgeDiamond:
     def homological_unit(self):
         r"""Dimensions of $\\mathrm{H}^\bullet(X,O_X)$
 
-        A notion intorduced by Abuaf.
+        A notion introduced by Abuaf.
         """
         return self.matrix.row(0)
 
@@ -904,7 +903,7 @@ class HodgeDiamond:
         r"""Dimension of the Hodge diamond
 
         This takes twists by the Lefschetz class into account: we untwist by
-        the maximal power and ony then determine how big the diamond is.
+        the maximal power and only then determine how big the diamond is.
 
         EXAMPLES:
 
@@ -967,7 +966,7 @@ class HodgeDiamond:
         - ``other`` -- Hodge diamond of the center of the blowup
 
         - ``codim`` -- codimension of the center (optional), in case it is not
-            the Hodge diamond of an honest variety
+          the Hodge diamond of an honest variety
 
         EXAMPLES:
 
@@ -2554,16 +2553,15 @@ def gushel_mukai(n):
 
     if n == 1:
         return curve(6)
-    elif n == 2:
+    if n == 2:
         return K3()
-    elif n == 3:
+    if n == 3:
         return curve(10)(1) + lefschetz()**0 + lefschetz()**3
-    elif n == 4:
+    if n == 4:
         return K3()(1) + lefschetz()**0 + 2*lefschetz()**2 + lefschetz()**4
-    elif n == 5:
+    if n == 5:
         return curve(10)(2) + Pn(5)
-    else:
-        return K3()(2) + lefschetz()**3 + Pn(6)
+    return K3()(2) + lefschetz()**3 + Pn(6)
 
 
 def fano_variety_lines_cubic(n):
@@ -2778,9 +2776,9 @@ def quiver_moduli(Q, d, mu):
 
         T = matrix(K, len(I), len(I))
 
-        for i in range(len(I)):
+        for i, Ii in enumerate(I):
             for j in range(i, len(I)):  # upper triangular
-                T[i, j] = entry(Q, I[i], I[j])
+                T[i, j] = entry(Q, Ii, I[j])
 
         return T
 
