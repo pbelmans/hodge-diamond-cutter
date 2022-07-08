@@ -2616,15 +2616,15 @@ def gushel_mukai(n):
     if n == 1:
         return curve(6)
     elif n == 2:
-        return K3
+        return K3()
     elif n == 3:
         return curve(10)(1) + lefschetz()**0 + lefschetz()**3
     elif n == 4:
-        return K3(1) + lefschetz()**0 + 2*lefschetz()**2 + lefschetz()**4
+        return K3()(1) + lefschetz()**0 + 2*lefschetz()**2 + lefschetz()**4
     elif n == 5:
         return curve(10)(2) + Pn(5)
     else:
-        return K3(2) + lefschetz()**3 + Pn(6)
+        return K3()(2) + lefschetz()**3 + Pn(6)
 
 
 def fano_variety_lines_cubic(n):
