@@ -452,12 +452,11 @@ class HodgeDiamond:
 
         EXAMPLES:
 
-        The disjoint union of 2 K3 surfaces in two ways:
+        The disjoint union of 2 K3 surfaces in two ways::
 
             sage: load("diamond.py")
             sage: 2*K3() == K3() + K3()
             True
-
         """
         return HodgeDiamond.from_polynomial(factor * self.polynomial)
 
@@ -607,7 +606,7 @@ class HodgeDiamond:
         INPUT:
 
         - ``format`` -- output format (default: `"table"`), if table it pretty prints
-            a Hodge diamond; all else defaults to the polynomial
+          a Hodge diamond; all else defaults to the polynomial
 
         EXAMPLES:
 
@@ -967,7 +966,7 @@ class HodgeDiamond:
         - ``other`` -- Hodge diamond of the center of the blowup
 
         - ``codim`` -- codimension of the center (optional), in case it is not
-            the Hodge diamond of an honest variety
+          the Hodge diamond of an honest variety
 
         EXAMPLES:
 
