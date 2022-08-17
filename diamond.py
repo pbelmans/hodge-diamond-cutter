@@ -738,8 +738,9 @@ class HodgeDiamond:
         The second Betti number of the Hilbert scheme of points on a K3 surface
         is 23, not 22::
 
-            sage: [hilbn(K3(), n).betti()[2] for n in range(2, 5)]
-            [23, 23, 23]
+            sage: [hilbn(K3(), n).betti()[2] for n in range(2, 10)]
+            [23, 23, 23, 23, 23, 23, 23, 23]
+
         """
         d = self.__size()
         return [sum([self.matrix[j, i - j] for j in range(max(0, i - d),
@@ -788,8 +789,9 @@ class HodgeDiamond:
         coefficients of the series expansion of the Dedekind eta-function,
         see A006922 in the OEIS::
 
-            sage: [hilbn(K3(), n).euler() for n in range(5)]
-            [1, 24, 324, 3200, 25650]
+            sage: [hilbn(K3(), n).euler() for n in range(10)]
+            [1, 24, 324, 3200, 25650, 176256, 1073720, 5930496, 30178575, 143184000]
+
         """
         return sum([(-1)**i * bi for i, bi in enumerate(self.betti())])
 
@@ -2069,6 +2071,17 @@ def complete_intersection(degrees, dimension):
         True
         sage: complete_intersection([1, 1], 5) == Pn(5)
         True
+
+    The Euler characteristics of cubic hypersurfaces::
+
+        sage: [complete_intersection(3, n).euler() for n in range(10)]
+        [3, 0, 9, -6, 27, -36, 93, -162, 351, -672]
+
+    The Euler characteristics of intersections of 2 quadrics::
+
+        sage: [complete_intersection([2, 2], n).euler() for n in range(10)]
+        [4, 0, 8, 0, 12, 0, 16, 0, 20, 0]
+
     """
     # hypersurface as complete intersection
     try:
