@@ -111,7 +111,6 @@ AUTHORS:
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
 from sage.arith.misc import gcd
-from sage.calculus.functional import expand, simplify
 from sage.categories.cartesian_product import cartesian_product
 from sage.combinat.composition import Compositions
 from sage.combinat.integer_vector import IntegerVectors
@@ -1991,7 +1990,7 @@ def hilbn(surface, n):
     ring_ab = PolynomialRing(ZZ, "a,b")
     a, b = ring_ab.gens()
     R = PowerSeriesRing(ring_ab, "t", default_prec=n + 1)
-    t = R.gen()
+    t = R.gen().O(n + 1)
 
     series = R.one().O(n + 1)
 
@@ -2015,30 +2014,34 @@ def nestedhilbn(surface, n):
     """
     Hodge diamond for the nested Hilbert scheme ``S^{[n-1,n]}``
 
-    This is the unique nested Hilbert scheme of a smooth projective surface ``S``
-    which is itself smooth (of dimension $2n$)
+    This is the unique nested Hilbert scheme of a smooth projective
+    surface ``S`` which is itself smooth (of dimension $2n$)
     """
     assert surface.arises_from_variety()
     assert surface.dimension() == 2
 
-    R = PowerSeriesRing(ZZ, default_prec=5*n + 1)  # TODO lower this?
-    x, y, t = R.gens()
+    ring_xy = PolynomialRing(ZZ, "x,y")
+    x, y = ring_xy.gens()
+    R = PowerSeriesRing(ring_xy, "t", default_prec=n + 1)
+    t = R.gen().O(n + 1)
 
-    series = R(1)
-    for k in range(1, 3 * n):  # TODO lower this?
+    series = R.one().O(n + 1)
+    for k in range(1, n + 1):
         for p, q in cartesian_product([range(3), range(3)]):
+            s_pq = surface[p, q]
             if p + q % 2:
-                series = series * (1 + x**(p+k-1) * y**(q+k-1) * t**k)**(surface[p, q])
+                series *= (1 + x**(p + k - 1) * y**(q + k - 1) * t**k)**s_pq
             else:
-                series = series * (1 - x**(p+k-1) * y**(q+k-1) * t**k)**(-surface[p, q])
+                series *= (1 - x**(p + k - 1) * y**(q + k - 1) * t**k)**(-s_pq)
 
-    series = series * R(surface.polynomial) * t / (1 - x*y*t)
-    series = series.polynomial()
+    series = series * R(surface.polynomial) * t / (1 - x * y * t)
+    top_poly = series[n]
 
     # read off Hodge diamond from the (truncated) series
-    M = matrix(2*n + 1)
-    for p, q in cartesian_product([range(2*n + 1), range(2*n + 1)]):
-        M[p, q] = series.coefficient([min(p, 2*n-q), min(q, 2*n-p), n])  # use Serre duality
+    M = matrix(2 * n + 1)
+    for p, q in cartesian_product([range(2 * n + 1), range(2 * n + 1)]):
+        M[p, q] = top_poly.coefficient([min(p, 2 * n - q), min(q, 2 * n - p)])
+        # use Serre duality
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2081,7 +2084,7 @@ def complete_intersection(degrees, dimension):
 
     M = matrix.identity(dimension + 1)
     for i in range(dimension + 1):
-        M[i, dimension - i] = H.coefficient([i, dimension-i])
+        M[i, dimension - i] = H.coefficient([i, dimension - i])
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2236,30 +2239,31 @@ def weighted_hypersurface(degree, weights):
         sage: fano_threefold(1, 1) == weighted_hypersurface(6, [1,1,1,1,3])
         True
     """
-    t = SR.var('t')  # why not use polynomials ?
+    R = PolynomialRing(QQ, 't')
+    t = R.gen()
+    F = R.fraction_field()
 
     def poincare_function(L):
-        return expand(prod([1] + [simplify((1 - t**a) / (1 - t**b)) for a, b in L]))
+        return F.prod([(1 - t**a) / (1 - t**b) for a, b in L])
 
     def jacobian_weights(degree, weights):
-        return [(degree - weight, weight) for weight in weights]
+        for weight in weights:
+            yield (degree - weight, weight)
 
     def poincare(degree, weights):
         return poincare_function(jacobian_weights(degree, weights))
 
     # weights should be interpreted as dimension of unweighted P^n
     if isinstance(weights, Integer):
-        weights = [1]*(weights + 1)
+        weights = [1] * (weights + 1)
 
     P = poincare(degree, weights)
     n = len(weights)
     vdeg = sum(weights)
     tdeg = (n + 1) * degree - vdeg + 1
-    T = P.taylor(t, 0, tdeg)
-    middle = []
-
-    for q in range(0, n - 1):
-        middle.append(T.coefficient(t, (q+1)*degree - vdeg))
+    formal_t = PowerSeriesRing(QQ, 't').gen().O(tdeg + 1)
+    T = P(formal_t)
+    middle = [T[(q + 1) * degree - vdeg] for q in range(n - 1)]
 
     # adding in non-primitive cohomology if necessary
     if len(middle) % 2:
@@ -2303,7 +2307,7 @@ def cyclic_cover(ramification_degree, cover_degree, weights):
     """
     # weights should be interpreted as dimension of unweighted P^n
     if isinstance(weights, Integer):
-        weights = [1]*(weights + 1)
+        weights = [1] * (weights + 1)
 
     weights.append(ramification_degree // cover_degree)
 
