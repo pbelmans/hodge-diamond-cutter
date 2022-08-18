@@ -110,14 +110,13 @@ AUTHORS:
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
-from sage.arith.misc import gcd
+from sage.arith.misc import binomial, factorial, gcd
 from sage.categories.cartesian_product import cartesian_product
 from sage.combinat.composition import Compositions
 from sage.combinat.integer_vector import IntegerVectors
 from sage.combinat.partition import Partitions
 from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
 from sage.combinat.subset import Subsets
-from sage.functions.other import binomial, factorial
 from sage.graphs.digraph import DiGraph
 from sage.matrix.constructor import matrix
 from sage.matrix.special import diagonal_matrix
@@ -1667,7 +1666,8 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     """
     def d(j, alpha):
         N = len(alpha)
-        return len([I for I in Subsets(N) if (len(I) - j) % 2 == 0 and j - 1 < len(I) + sum([alpha[i - 1] for i in range(1, N + 1) if i not in I]) - sum([alpha[i - 1] for i in I]) and len(I) + sum([alpha[i - 1] for i in range(1, N + 1) if i not in I]) - sum([alpha[i - 1] for i in I]) < j + 1])
+        total = sum(alpha)
+        return len([1 for I in Subsets(N) if (len(I) - j) % 2 == 0 and j - 1 < (len(I) + total - 2 * sum([alpha[i - 1] for i in I])) < j + 1])
 
     def c(j, alpha):
         return binomial(len(alpha), j) - d(j, alpha)
@@ -1684,7 +1684,8 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     elif genus >= 2:
         M = moduli_vector_bundles(2, 1, genus)
 
-    result = M * (Pn(1)**N) + sum([b(j, alpha) * jacobian(genus)(genus + j) for j in range(N - 2)])
+    result = M * (Pn(1)**N) + sum([b(j, alpha) * jacobian(genus)(genus + j)
+                                   for j in range(N - 2)])
     assert result.arises_from_variety()
 
     return result
@@ -1999,7 +2000,8 @@ def hilbn(surface, n):
     for k in range(1, n + 1):
         for p, q in cartesian_product([range(3), range(3)]):
             eps_pq = (-1)**(p + q + 1)
-            series *= (1 + eps_pq * a**(p+k-1) * b**(q+k-1) * t**k)**(eps_pq * surface[p, q])
+            term = (1 + eps_pq * a**(p+k-1) * b**(q+k-1) * t**k).O(n + 1)
+            series *= term**(eps_pq * surface[p, q])
 
     coeff_n = series[n]
 
@@ -2461,7 +2463,7 @@ def symplectic_grassmannian(k, n):
 
 def lagrangian_grassmannian(n):
     """Shorthand for the symplectic Grassmannian of Lagrangian subspaces"""
-    return symplectic_grassmannian(n, 2*n)
+    return symplectic_grassmannian(n, 2 * n)
 
 
 def horospherical(D, y=0, z=0):
@@ -2522,7 +2524,7 @@ def horospherical(D, y=0, z=0):
             dimension = n * (n + 3) / 2
     elif D[0] == "C":
         assert n >= 2 and y in range(2, n + 1) and z == y - 1
-        dimension = y * (2*n + 1 - y) - y * (y - 1) / 2
+        dimension = y * (2 * n + 1 - y) - y * (y - 1) / 2
     elif D == "F4":
         assert y == 2 and z == 3
         dimension = 23
@@ -2572,7 +2574,7 @@ def gushel_mukai(n):
     if n == 3:
         return curve(10)(1) + lefschetz()**0 + lefschetz()**3
     if n == 4:
-        return K3()(1) + lefschetz()**0 + 2*lefschetz()**2 + lefschetz()**4
+        return K3()(1) + lefschetz()**0 + 2 * lefschetz()**2 + lefschetz()**4
     if n == 5:
         return curve(10)(2) + Pn(5)
     return K3()(2) + lefschetz()**3 + Pn(6)
@@ -2652,7 +2654,7 @@ def Mzeronbar(n):
         if n in [2, 3]:
             return HodgeDiamond.R(1)
         else:
-            return Manin(n - 1) + x*y * sum([binomial(n - 2, i) * Manin(i + 1) * Manin(n - i) for i in range(2, n - 1)])
+            return Manin(n - 1) + x * y * sum([binomial(n - 2, i) * Manin(i + 1) * Manin(n - i) for i in range(2, n - 1)])
 
     return HodgeDiamond.from_polynomial(Manin(n))
 
@@ -2814,7 +2816,7 @@ def quiver_moduli(Q, d, mu):
     x = HodgeDiamond.x
     y = HodgeDiamond.y
 
-    result = HodgeDiamond.R(result.numerator().subs(v=x*y))
+    result = HodgeDiamond.R(result.numerator().subs(v=x * y))
 
     return HodgeDiamond.from_polynomial(result)
 
