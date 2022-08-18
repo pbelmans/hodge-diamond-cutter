@@ -1666,9 +1666,10 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     """
     total = sum(alpha)
     N = len(alpha)
+    rN = range(N)
 
     def d(j, alpha):
-        return len([1 for I in Subsets(N) if (len(I) - j) % 2 == 0 and j - 1 < (len(I) + total - 2 * sum([alpha[i - 1] for i in I])) < j + 1])
+        return len([1 for I in Subsets(rN) if (len(I) - j) % 2 == 0 and j - 1 < (len(I) + total - 2 * sum([alpha[i] for i in I])) < j + 1])
 
     def c(j, alpha):
         return binomial(N, j) - d(j, alpha)
