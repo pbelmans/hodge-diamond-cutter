@@ -1664,13 +1664,14 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     - ``alpha`` -- the weights of the parabolic bundles
 
     """
+    total = sum(alpha)
+    N = len(alpha)
+
     def d(j, alpha):
-        N = len(alpha)
-        total = sum(alpha)
         return len([1 for I in Subsets(N) if (len(I) - j) % 2 == 0 and j - 1 < (len(I) + total - 2 * sum([alpha[i - 1] for i in I])) < j + 1])
 
     def c(j, alpha):
-        return binomial(len(alpha), j) - d(j, alpha)
+        return binomial(N, j) - d(j, alpha)
 
     def b(j, alpha):
         return sum(((i + 2) // 2) * c(j - i, alpha) for i in range(j + 1))
