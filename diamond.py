@@ -117,7 +117,7 @@ from sage.combinat.integer_vector import IntegerVectors
 from sage.combinat.partition import Partitions
 from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
 from sage.combinat.subset import Subsets
-from sage.functions.other import binomial, floor, factorial
+from sage.functions.other import binomial, factorial
 from sage.graphs.digraph import DiGraph
 from sage.matrix.constructor import matrix
 from sage.matrix.special import diagonal_matrix
@@ -132,7 +132,6 @@ from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.power_series_ring import PowerSeriesRing
 from sage.rings.rational_field import QQ
-from sage.symbolic.ring import SR
 
 
 class HodgeDiamond:
@@ -1632,7 +1631,7 @@ def seshadris_desingularisation(genus):
     x = HodgeDiamond.x
     y = HodgeDiamond.y
 
-    L = x*y
+    L = x * y
     A = (1 + x) * (1 + y)
     B = (1 - x) * (1 - y)
 
@@ -1674,7 +1673,7 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
         return binomial(len(alpha), j) - d(j, alpha)
 
     def b(j, alpha):
-        return sum([floor((i + 2) / 2) * c(j - i, alpha) for i in range(j + 1)])
+        return sum(((i + 2) // 2) * c(j - i, alpha) for i in range(j + 1))
 
     N = len(alpha)
 
@@ -1817,7 +1816,7 @@ def hilbtwo(X):
 
     d = X.dimension()
 
-    return HodgeDiamond.from_polynomial(X.R(1/2 * ((X.polynomial)**2 + X.polynomial(-X.x**2, -X.y**2)) + sum([X.x**(i+1) * X.y**(i+1) * X.polynomial for i in range(d - 1)])), from_variety=True)
+    return HodgeDiamond.from_polynomial(X.R(((X.polynomial)**2 + X.polynomial(-X.x**2, -X.y**2)) / 2 + sum([X.x**i * X.y**i * X.polynomial for i in range(1, d)])), from_variety=True)
 
 
 def hilbthree(X):
@@ -1846,11 +1845,11 @@ def hilbthree(X):
     d = X.dimension()
 
     return HodgeDiamond.from_polynomial(X.R(
-        1/6 * (X**3).polynomial
-        + 1/2 * X.polynomial * X.polynomial(-X.x**2, -X.y**2)
-        + 1/3 * X.polynomial(X.x**3, X.y**3)
+        (X**3).polynomial / 6
+        + X.polynomial * X.polynomial(-X.x**2, -X.y**2) / 2
+        + X.polynomial(X.x**3, X.y**3) / 3
         + sum([(X**2)(i).polynomial for i in range(1, d)])
-        + sum([X(i+j).polynomial for i in range(1, d) for j in range(i, d)])
+        + sum([X(i + j).polynomial for i in range(1, d) for j in range(i, d)])
         ), from_variety=True)
 
 
@@ -2091,7 +2090,7 @@ def complete_intersection(degrees, dimension):
 
     R = PowerSeriesRing(ZZ, ("a", "b"), default_prec=dimension+2)
     (a, b) = R.gens()
-    H = 1/((1+a)*(1+b)) * (prod([((1+a)**di - (1+b)**di) / (a*(1+b)**di - b*(1+a)**di) for di in degrees]) - 1) + 1/(1-a*b)
+    H = ~((1+a)*(1+b)) * (prod([((1+a)**di - (1+b)**di) / (a*(1+b)**di - b*(1+a)**di) for di in degrees]) - 1) + ~(1-a*b)
 
     H = H.polynomial()
 
@@ -2176,14 +2175,12 @@ def enriques(two=None):
     if two:
         if two == "classical":
             return HodgeDiamond.from_matrix([[1, 0, 0], [1, 12, 1], [0, 0, 1]])
-        elif two == "singular":
+        if two == "singular":
             return HodgeDiamond.from_matrix([[1, 1, 1], [0, 10, 0], [1, 1, 1]])
-        elif two == "supersingular":
+        if two == "supersingular":
             return HodgeDiamond.from_matrix([[1, 1, 1], [1, 12, 1], [1, 1, 1]])
-        else:
-            raise ValueError("invalid choice for characteristic 2")
-    else:
-        return surface(0, 0, 10)
+        raise ValueError("invalid choice for characteristic 2")
+    return surface(0, 0, 10)
 
 
 def ruled(genus):
@@ -2358,20 +2355,20 @@ def partial_flag_variety(D, I):
 
     """
     R = PolynomialRing(ZZ, "x")
-    x = R.gen(0)
+    x = R.gen()
 
     D = DynkinDiagram(D)
 
     WG = D.root_system().root_lattice().weyl_group()
-    P = prod([sum([x**i for i in range(n)]) for n in WG.degrees()])
+    P = prod(sum(x**i for i in range(n)) for n in WG.degrees())
 
-    if len(I) == 0:
+    if not I:
         Q = 1
     else:
         WL = D.subtype(I).root_system().root_lattice().weyl_group()
-        Q = prod([sum([x**i for i in range(n)]) for n in WL.degrees()])
+        Q = prod(sum(x**i for i in range(n)) for n in WL.degrees())
 
-    return HodgeDiamond.from_matrix(diagonal_matrix(R(P/Q).coefficients()),
+    return HodgeDiamond.from_matrix(diagonal_matrix((P // Q).coefficients()),
                                     from_variety=True)
 
 
