@@ -1893,13 +1893,14 @@ def hilbthree(X):
 
     d = X.dimension()
     X2 = X**2
+    R = HodgeDiamond.R
 
     return HodgeDiamond.from_polynomial(
         (X**3).polynomial / 6
         + X.polynomial * X.polynomial(-X.x**2, -X.y**2) / 2
         + X.polynomial(X.x**3, X.y**3) / 3
-        + sum(X2(i).polynomial for i in range(1, d))
-        + sum(X(i + j).polynomial for i in range(1, d) for j in range(i, d)),
+        + R.sum(X2(i).polynomial for i in range(1, d))
+        + R.sum(X(i + j).polynomial for i in range(1, d) for j in range(i, d)),
         from_variety=True)
 
 
