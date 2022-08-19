@@ -332,8 +332,9 @@ class HodgeDiamond:
             d = max([max(e) for e in f.exponents()]) + 1
             m = matrix(d)
 
-            for i, j in cartesian_product([range(d), range(d)]):
-                m[i, j] = f.monomial_coefficient(HodgeDiamond.x**i * HodgeDiamond.y**j)
+            for i in range(d):
+                for j in range(d):
+                    m[i, j] = f.monomial_coefficient(HodgeDiamond.x**i * HodgeDiamond.y**j)
 
         return m
 
@@ -735,7 +736,7 @@ class HodgeDiamond:
         """
         d = self.__size()
         return all(self.matrix[p, q] == self.matrix[d - p, d - q]
-                   for p, q in cartesian_product([range(d + 1), range(d + 1)]))
+                   for p in range(d + 1) for q in range(d + 1))
 
     def betti(self):
         r"""Betti numbers of the Hodge diamond
@@ -1472,8 +1473,9 @@ def symmetric_power(n, genus):
         return zero()
 
     M = matrix(n + 1)
-    for i, j in cartesian_product([range(n + 1), range(n + 1)]):
-        M[i, j] = hpq(genus, n, i, j)
+    for i in range(n + 1):
+        for j in range(n + 1):
+            M[i, j] = hpq(genus, n, i, j)
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2043,17 +2045,19 @@ def hilbn(surface, n):
 
     # theorem 2.3.14 of Göttsche's book
     for k in range(1, n + 1):
-        for p, q in cartesian_product([range(3), range(3)]):
-            eps_pq = (-1)**(p + q + 1)
-            term = (1 + eps_pq * a**(p+k-1) * b**(q+k-1) * t**k).O(n + 1)
-            series *= term**(eps_pq * surface[p, q])
+        for p in range(3):
+            for q in range(3):
+                eps_pq = (-1)**(p + q + 1)
+                term = (1 + eps_pq * a**(p+k-1) * b**(q+k-1) * t**k).O(n + 1)
+                series *= term**(eps_pq * surface[p, q])
 
     coeff_n = series[n]
 
     # read off Hodge diamond from the (truncated) series
     M = matrix(2 * n + 1)
-    for p, q in cartesian_product([range(2 * n + 1), range(2 * n + 1)]):
-        M[p, q] = coeff_n.coefficient([min(p, 2 * n - q), min(q, 2 * n - p)])  # use Serre duality
+    for p in range(2 * n + 1):
+        for q in range(2 * n + 1):
+            M[p, q] = coeff_n.coefficient([min(p, 2 * n - q), min(q, 2 * n - p)])  # use Serre duality
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2075,21 +2079,23 @@ def nestedhilbn(surface, n):
 
     series = R.one().O(n + 1)
     for k in range(1, n + 1):
-        for p, q in cartesian_product([range(3), range(3)]):
-            s_pq = surface[p, q]
-            if p + q % 2:
-                series *= (1 + x**(p + k - 1) * y**(q + k - 1) * t**k)**s_pq
-            else:
-                series *= (1 - x**(p + k - 1) * y**(q + k - 1) * t**k)**(-s_pq)
+        for p in range(3):
+            for q in range(3):
+                s_pq = surface[p, q]
+                if p + q % 2:
+                    series *= (1 + x**(p + k - 1) * y**(q + k - 1) * t**k)**s_pq
+                else:
+                    series *= (1 - x**(p + k - 1) * y**(q + k - 1) * t**k)**(-s_pq)
 
     series = series * R(surface.polynomial) * t / (1 - x * y * t)
     top_poly = series[n]
 
     # read off Hodge diamond from the (truncated) series
     M = matrix(2 * n + 1)
-    for p, q in cartesian_product([range(2 * n + 1), range(2 * n + 1)]):
-        M[p, q] = top_poly.coefficient([min(p, 2 * n - q), min(q, 2 * n - p)])
-        # use Serre duality
+    for p in range(2 * n + 1):
+        for q in range(2 * n + 1):
+            M[p, q] = top_poly.coefficient([min(p, 2 * n - q), min(q, 2 * n - p)])
+            # use Serre duality
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
@@ -2813,7 +2819,7 @@ def quiver_moduli(Q, d, mu):
         than ``d``, together with the zero dimension vector and ``d`` itself.
         """
         # all possible dimension vectors e <= d
-        E = cartesian_product(list(map(range, map(lambda di: di + 1, d))))
+        E = cartesian_product([range(di + 1) for di in d])
 
         # predicate from Corollary 5.5, E[0] is the zero dimension vector
         return [E[0]] + list(filter(lambda e: mu(e) > mu(d), E[1:])) + [d]
