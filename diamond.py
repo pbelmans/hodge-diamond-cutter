@@ -766,6 +766,32 @@ class HodgeDiamond:
         d = self.__size()
         return [self.matrix[i, d - i] for i in range(d + 1)]
 
+    def signature(self):
+        r"""The signature of the Hodge diamond
+
+        This is the index of the intersection form on middle cohomology
+        taken with real coefficients. By the Hodge index theorem it is given
+        by the formula in Theorem 6.33 of Voisin's first book on Hodge theory.
+
+        .. MATH::
+
+            \sigma=\sum_{p,q=0}^{\dim X}(-1)^p\mathrm{h}^{p,q}
+
+        This of course only makes sense if the diamond comes from a compact
+        Kähler manifold.
+
+        EXAMPLES:
+
+            sage: load("diamond.py")
+            sage: K3().signature()
+            -16
+
+        """
+        assert self.arises_from_variety()
+
+        d = self.__size()
+        return sum((-1)**p * self[p,q] for p in range(d + 1) for q in range(d + 1))
+
     def euler(self):
         r"""The topological Euler characteristic of the Hodge diamond
 
