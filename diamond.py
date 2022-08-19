@@ -1808,14 +1808,15 @@ def fano_variety_intersection_quadrics_even(g, i):
         True
 
     """
-    def M(g, i, k, j):
-        return grassmannian(i - j, 2*g - i - j)[k - j*(g-i), k - j*(g-i)]
+    def M(k, j):
+        index = k - j * (g - i)
+        return grassmannian(i - j, 2 * g - i - j)[index, index]
 
-    (x, y) = (HodgeDiamond.x, HodgeDiamond.y)
-    polynomial = 0
-
-    for k in range(0, i * (2*g - 2*i) + 1):
-        polynomial = polynomial + sum([M(g, i, k, j) * binomial(2*g+1, j) * x**k * y**k for j in range(i+1)])
+    x, y = (HodgeDiamond.x, HodgeDiamond.y)
+    R = x.parent()
+    polynomial = R.sum(M(k, j) * binomial(2 * g + 1, j) * x**k * y**k
+                       for j in range(i + 1)
+                       for k in range(i * (2 * g - 2 * i) + 1))
 
     return HodgeDiamond.from_polynomial(polynomial, from_variety=True)
 
@@ -2458,9 +2459,9 @@ def grassmannian(k, n):
     - ``k`` -- dimension of the subspaces
 
     - ``n`` -- dimension of the ambient vector space
-
     """
-    if n in [0, 1] and k in [0, 1]:
+    assert 0 <= k <= n
+    if n in [0, k]:
         return point()
     D = "A" + str(n - 1)
     index_set = [i for i in range(1, n) if i != k]
