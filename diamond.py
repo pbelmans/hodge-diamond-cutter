@@ -1951,11 +1951,20 @@ def generalised_kummer(n):
         sage: all(generalised_kummer(n).betti()[2] == 7 for n in range(3, 10))
         True
     """
-    def product(n):
-        x = HodgeDiamond.x
-        y = HodgeDiamond.y
+    x = HodgeDiamond.x
+    y = HodgeDiamond.y
 
-        return HodgeDiamond.R(sum([gcd(list(a.keys()))**4 * (x*y)**(n - sum(a.values())) * prod([sum([prod([1 / HodgeDiamond.R((j**b[j]) * factorial(b[j])) * ((1-x**j) * (1-y**j))**(2*b[j]) for j in b.keys()]) for b in [b.to_exp_dict() for b in Partitions(a[i])]]) for i in a.keys()]) for a in [a.to_exp_dict() for a in Partitions(n)]])(-x, -y))
+    def my_Partitions(k):
+        for pi in Partitions(k):
+            yield pi.to_exp_dict()
+
+    def product(n):
+        hd = sum(gcd(a)**4 * (x*y)**(n - sum(a.values())) *
+                 prod([sum([prod([~((j**bj) * factorial(bj)) *
+                                  ((1 - x**j) * (1 - y**j))**(2*bj) for j, bj in b.items()])
+                            for b in my_Partitions(ai)]) for ai in a.values()])
+                 for a in my_Partitions(n))
+        return HodgeDiamond.R(hd(-x, -y))
 
     # Göttsche--Soergel gives the polynomial for A\times Kum^n A, so we quotient out A
     return HodgeDiamond.from_polynomial(HodgeDiamond.R(product(n) / product(1)), from_variety=True)
