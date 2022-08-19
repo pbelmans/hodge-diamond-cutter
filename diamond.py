@@ -1956,10 +1956,6 @@ def generalised_kummer(n):
     x = HodgeDiamond.x
     y = HodgeDiamond.y
 
-    def my_Partitions(k):
-        for pi in Partitions(k):
-            yield pi.to_exp_dict()
-
     def product(n):
         hd = sum(gcd(a)**4 * (x*y)**(n - sum(a.values())) *
                  prod([sum([prod([~((j**bj) * factorial(bj)) *
