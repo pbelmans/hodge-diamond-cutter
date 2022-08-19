@@ -1957,13 +1957,13 @@ def generalised_kummer(n):
     y = HodgeDiamond.y
 
     def product(n):
-        hd = sum(gcd(a)**4 * (x*y)**(n - sum(a.values())) *
+        hd = sum(gcd(a := ap.to_exp_dict())**4 * (x*y)**(n - sum(a.values())) *
                  prod([sum([prod([~((j**bj) * factorial(bj)) *
                                   ((1 - x**j) * (1 - y**j))**(2*bj)
                                   for j, bj in b.to_exp_dict().items()])
                             for b in Partitions(ai)])
                        for ai in a.values()])
-                 for ap in Partitions(n) for a in (ap.to_exp_dict(),))
+                 for ap in Partitions(n))
         return HodgeDiamond.R(hd(-x, -y))
 
     # Göttsche--Soergel gives the polynomial for A\times Kum^n A, so we quotient out A
