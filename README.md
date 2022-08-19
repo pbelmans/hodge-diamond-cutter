@@ -18,6 +18,15 @@ Please feel free to make suggestions for more examples of Hodge diamonds. Prefer
 
 Feature requests are also very welcome.
 
+## A warning
+
+In the [words of Simon Pepin Lehalleur on Twitter](https://twitter.com/plain_simon/status/1355599647893549056),
+in order to use the Hodge diamond cutter, you must always answer the question
+
+> You are solving a PDE; do you want to proceed?
+
+positively.
+
 ## Instructions to myself
 
 To build the documentation:
