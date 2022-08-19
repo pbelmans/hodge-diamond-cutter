@@ -88,11 +88,28 @@ Pretty print the Hodge diamond of the Hilbert square of a K3 surface::
                    0         0
                         1
 
+It also possible to generate LaTeX code::
+
+    sage: latex(K3().pprint())
+    \begin{tabular}{ccccc}
+     &  & $1$ &  &  \\
+     & $0$ &  & $0$ &  \\
+    $1$ &  & $20$ &  & $1$ &  \\
+     & $0$ &  & $0$ &  \\
+     &  & $1$ &  &  \\
+    \end{tabular}
+
 There are many varieties built in, e.g. the previously defined K3 surface can
 be compared to the built-in one::
 
     sage: print(S == K3())
     True
+
+Check out the [documentation](https://pbelmans.ncag.info/hodge-diamond-cutter)
+for all the available functionality.
+
+If you use the software in your work, please cite it as explained on
+[Zenodo](https://doi.org/10.5281/zenodo.3893509).
 
 AUTHORS:
 
