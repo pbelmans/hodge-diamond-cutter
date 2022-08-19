@@ -329,12 +329,12 @@ class HodgeDiamond:
             # deal with the size of the diamond in this way because of the following example:
             # X = complete_intersection(5, 3)
             # X*X - hilbtwo(X)
-            d = max([max(e) for e in f.exponents()]) + 1
+            d = max(max(e) for e in f.exponents()) + 1
             m = matrix(d)
 
             for i in range(d):
                 for j in range(d):
-                    m[i, j] = f.monomial_coefficient(HodgeDiamond.x**i * HodgeDiamond.y**j)
+                    m[i, j] = f[i, j]
 
         return m
 
@@ -1068,7 +1068,9 @@ class HodgeDiamond:
         """
         assert self.arises_from_variety()
         n = self.dimension()
-        return HodgeDiamond.from_polynomial(sum([self.polynomial.monomial_coefficient(m) * self.x**(n - m.exponents()[0][0]) * self.y**(m.exponents()[0][1]) for m in self.polynomial.monomials()]))
+        R = HodgeDiamond.R
+        x, y = self.x, self.y
+        return HodgeDiamond.from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
 
 
 class HochschildHomology:
