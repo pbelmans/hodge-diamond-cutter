@@ -329,12 +329,12 @@ class HodgeDiamond:
             # deal with the size of the diamond in this way because of the following example:
             # X = complete_intersection(5, 3)
             # X*X - hilbtwo(X)
-            d = max([max(e) for e in f.exponents()]) + 1
+            d = max(max(e) for e in f.exponents()) + 1
             m = matrix(d)
 
             for i in range(d):
                 for j in range(d):
-                    m[i, j] = f.monomial_coefficient(HodgeDiamond.x**i * HodgeDiamond.y**j)
+                    m[i, j] = f[i, j]
 
         return m
 
@@ -1068,7 +1068,9 @@ class HodgeDiamond:
         """
         assert self.arises_from_variety()
         n = self.dimension()
-        return HodgeDiamond.from_polynomial(sum([self.polynomial.monomial_coefficient(m) * self.x**(n - m.exponents()[0][0]) * self.y**(m.exponents()[0][1]) for m in self.polynomial.monomials()]))
+        R = HodgeDiamond.R
+        x, y = self.x, self.y
+        return HodgeDiamond.from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
 
 
 class HochschildHomology:
@@ -1892,14 +1894,16 @@ def hilbthree(X):
     assert X.arises_from_variety()
 
     d = X.dimension()
+    X2 = X**2
+    R = HodgeDiamond.R
 
-    return HodgeDiamond.from_polynomial(X.R(
+    return HodgeDiamond.from_polynomial(
         (X**3).polynomial / 6
         + X.polynomial * X.polynomial(-X.x**2, -X.y**2) / 2
         + X.polynomial(X.x**3, X.y**3) / 3
-        + sum([(X**2)(i).polynomial for i in range(1, d)])
-        + sum([X(i + j).polynomial for i in range(1, d) for j in range(i, d)])
-        ), from_variety=True)
+        + R.sum(X2(i).polynomial for i in range(1, d))
+        + R.sum(X(i + j).polynomial for i in range(1, d) for j in range(i, d)),
+        from_variety=True)
 
 
 def K3n(n):
@@ -1968,7 +1972,7 @@ def generalised_kummer(n):
         return HodgeDiamond.R(hd(-x, -y))
 
     # Göttsche--Soergel gives the polynomial for A\times Kum^n A, so we quotient out A
-    return HodgeDiamond.from_polynomial(HodgeDiamond.R(product(n) / product(1)), from_variety=True)
+    return HodgeDiamond.from_polynomial(product(n) // product(1), from_variety=True)
 
 
 def ogrady6():
@@ -2711,9 +2715,9 @@ def Mzeronbar(n):
 
     def Manin(n):
         if n in [2, 3]:
-            return HodgeDiamond.R(1)
+            return HodgeDiamond.R.one()
         else:
-            return Manin(n - 1) + x * y * sum([binomial(n - 2, i) * Manin(i + 1) * Manin(n - i) for i in range(2, n - 1)])
+            return Manin(n - 1) + x * y * sum(binomial(n - 2, i) * Manin(i + 1) * Manin(n - i) for i in range(2, n - 1))
 
     return HodgeDiamond.from_polynomial(Manin(n))
 
