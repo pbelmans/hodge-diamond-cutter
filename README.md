@@ -1,4 +1,6 @@
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3893509.svg)](https://doi.org/10.5281/zenodo.3893509)
+[![releases](https://badgen.net/github/release/pbelmans/hodge-diamond-cutter?color=green)](https://github.com/pbelmans/hodge-diamond-cutter/releases)
+[![license](https://badgen.net/github/license/pbelmans/hodge-diamond-cutter)](https://github.com/pbelmans/hodge-diamond-cutter/blob/master/LICENSE)
 
 # Hodge diamond cutter
 
