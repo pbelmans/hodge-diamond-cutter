@@ -237,7 +237,7 @@ class HodgeDiamond:
         Hodge diamond of a K3 surface::
 
             sage: load("diamond.py")
-            sage: (x, y) = (HodgeDiamond.x, HodgeDiamond.y)
+            sage: x, y = (HodgeDiamond.x, HodgeDiamond.y)
             sage: S = HodgeDiamond.from_polynomial(1 + x**2 + 20*x*y + y**2 + x**2 * y**2)
             sage: S == K3()
             True
@@ -289,8 +289,8 @@ class HodgeDiamond:
                       1
         """
         M = self.matrix
-        return sum([M[i, j] * self.x**i * self.y**j
-                    for i in range(M.nrows()) for j in range(M.ncols())])
+        return self.R({(i, j): M[i, j]
+                       for i in range(M.nrows()) for j in range(M.ncols())})
 
     @polynomial.setter
     def polynomial(self, f):
@@ -1716,7 +1716,7 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     rN = range(N)
 
     def d(j, alpha):
-        return len([1 for I in Subsets(rN) if (len(I) - j) % 2 == 0 and j - 1 < (len(I) + total - 2 * sum([alpha[i] for i in I])) < j + 1])
+        return len([1 for I in Subsets(rN) if (len(I) - j) % 2 == 0 and j - 1 < (len(I) + total - 2 * sum(alpha[i] for i in I)) < j + 1])
 
     def c(j, alpha):
         return binomial(N, j) - d(j, alpha)
@@ -1767,7 +1767,7 @@ def fano_variety_intersection_quadrics_odd(g, i):
 
     d = (g - i + 1) * (2*i - 1)
 
-    (x, y) = (HodgeDiamond.x, HodgeDiamond.y)
+    x, y = (HodgeDiamond.x, HodgeDiamond.y)
 
     polynomial = 0
 
@@ -2095,9 +2095,11 @@ def nestedhilbn(surface, n):
             for q in range(3):
                 s_pq = surface[p, q]
                 if p + q % 2:
-                    series *= (1 + x**(p + k - 1) * y**(q + k - 1) * t**k)**s_pq
+                    term = (1 + x**(p + k - 1) * y**(q + k - 1) * t**k).O(n + 1)
+                    series *= term**s_pq
                 else:
-                    series *= (1 - x**(p + k - 1) * y**(q + k - 1) * t**k)**(-s_pq)
+                    term = (1 - x**(p + k - 1) * y**(q + k - 1) * t**k).O(n + 1)
+                    series *= term**(-s_pq)
 
     series = series * R(surface.polynomial) * t / (1 - x * y * t)
     top_poly = series[n]
@@ -2153,8 +2155,8 @@ def complete_intersection(degrees, dimension):
     except TypeError:
         degrees = [degrees]
 
-    R = PowerSeriesRing(ZZ, ("a", "b"), default_prec=dimension+2)
-    (a, b) = R.gens()
+    R = PowerSeriesRing(ZZ, ("a", "b"), default_prec=dimension + 2)
+    a, b = R.gens()
     H = ~((1+a)*(1+b)) * (prod([((1+a)**di - (1+b)**di) / (a*(1+b)**di - b*(1+a)**di) for di in degrees]) - 1) + ~(1-a*b)
 
     H = H.polynomial()
