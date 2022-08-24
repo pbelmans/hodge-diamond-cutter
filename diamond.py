@@ -1816,9 +1816,8 @@ def fano_variety_intersection_quadrics_even(g, i):
 
     x, y = (HodgeDiamond.x, HodgeDiamond.y)
     R = x.parent()
-    polynomial = R.sum(M(k, j) * binomial(2 * g + 1, j) * x**k * y**k
-                       for j in range(i + 1)
-                       for k in range(i * (2 * g - 2 * i) + 1))
+    polynomial = R({(k, k): sum(M(k, j) * binomial(2 * g + 1, j) for j in range(i + 1))
+                    for k in range(i * (2 * g - 2 * i) + 1)})
 
     return HodgeDiamond.from_polynomial(polynomial, from_variety=True)
 
@@ -1835,7 +1834,7 @@ def quot_scheme_curve(genus, length, rank):
     """
     def dn(P):
         # shift in indexing because we start at 0
-        return sum([i * ni for i, ni in enumerate(P)])
+        return sum(i * ni for i, ni in enumerate(P))
 
     return sum([prod([symmetric_power(ni, genus) for ni in P])(dn(P))
                 for P in IntegerVectors(length, rank)])
