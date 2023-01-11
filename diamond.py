@@ -316,7 +316,7 @@ class HodgeDiamond:
         assert m.base_ring() == ZZ, "Entries need to be integers"
         assert m.is_square()
 
-        self._m = matrix(m)
+        self._m = m
         self.__normalise()
 
     @staticmethod
@@ -346,6 +346,7 @@ class HodgeDiamond:
     def __normalise(self):
         r"""Internal method to get rid of trailing zeros"""
         self._m = HodgeDiamond.__to_matrix(self.polynomial)
+        self._size = self._m.ncols() - 1
 
     def __eq__(self, other):
         r"""Check whether two Hodge diamonds are equal
@@ -400,7 +401,6 @@ class HodgeDiamond:
 
             sage: K3() + zero() == K3()
             True
-
         """
         return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
 
@@ -1069,7 +1069,6 @@ class HodgeDiamond:
         """
         assert self.arises_from_variety()
         n = self.dimension()
-        R = HodgeDiamond.R
         x, y = self.x, self.y
         return HodgeDiamond.from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
 
