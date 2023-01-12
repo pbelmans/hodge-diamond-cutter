@@ -175,6 +175,7 @@ class HodgeDiamond:
         """
         # matrix representation of the Hodge diamond is used internally
         self._m = m
+        self._size = m.ncols() - 1
 
     @classmethod
     def from_matrix(cls, m, from_variety=False):
@@ -315,7 +316,7 @@ class HodgeDiamond:
         assert m.base_ring() == ZZ, "Entries need to be integers"
         assert m.is_square()
 
-        self._m = matrix(m)
+        self._m = m
         self.__normalise()
 
     @staticmethod
@@ -338,13 +339,14 @@ class HodgeDiamond:
 
         return m
 
-    def __size(self):
+    def size(self):
         r"""Internal method to determine the (relevant) size of the Hodge diamond"""
-        return self.matrix.ncols() - 1
+        return self._size
 
     def __normalise(self):
         r"""Internal method to get rid of trailing zeros"""
         self._m = HodgeDiamond.__to_matrix(self.polynomial)
+        self._size = self._m.ncols() - 1
 
     def __eq__(self, other):
         r"""Check whether two Hodge diamonds are equal
@@ -399,7 +401,6 @@ class HodgeDiamond:
 
             sage: K3() + zero() == K3()
             True
-
         """
         return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
 
@@ -525,7 +526,7 @@ class HodgeDiamond:
             sage: Pn(10) == sum([point()(i) for i in range(11)])
             True
 
-        If we supply two parameters we are evaluation the Hodge-Poincare
+        If we supply two parameters we are evaluation the Hodge-Poincaré
         polynomial, e.g. to find the Euler characteristic::
 
             sage: Pn(10)(1, 1) == 11
@@ -574,7 +575,7 @@ class HodgeDiamond:
             sage: Pn(1)
             Hodge diamond of size 2 and dimension 1
         """
-        return "Hodge diamond of size {} and dimension {}".format(self.__size() + 1, self.dimension())
+        return "Hodge diamond of size {} and dimension {}".format(self._size + 1, self.dimension())
 
     def __str__(self):
         r"""Pretty print Hodge diamond
@@ -595,7 +596,7 @@ class HodgeDiamond:
 
     def __table(self):
         r"""Generate a table object for the Hodge diamond"""
-        d = self.__size()
+        d = self._size
         T = []
 
         if self.is_zero():
@@ -734,7 +735,7 @@ class HodgeDiamond:
             False
 
         """
-        d = self.__size()
+        d = self._size
         return all(self.matrix[p, q] == self.matrix[d - p, d - q]
                    for p in range(d + 1) for q in range(d + 1))
 
@@ -758,7 +759,7 @@ class HodgeDiamond:
             [23, 23, 23, 23, 23, 23, 23, 23]
 
         """
-        d = self.__size()
+        d = self._size
         return [sum([self.matrix[j, i - j] for j in range(max(0, i - d),
                                                           min(i, d) + 1)])
                 for i in range(2 * d + 1)]
@@ -781,7 +782,7 @@ class HodgeDiamond:
             [1, 20, 1]
 
         """
-        d = self.__size()
+        d = self._size
         return [self.matrix[i, d - i] for i in range(d + 1)]
 
     def signature(self):
@@ -807,8 +808,8 @@ class HodgeDiamond:
         """
         assert self.arises_from_variety()
 
-        d = self.__size()
-        return sum((-1)**p * self[p,q] for p in range(d + 1) for q in range(d + 1))
+        d = self._size
+        return sum((-1)**p * self[p, q] for p in range(d + 1) for q in range(d + 1))
 
     def euler(self):
         r"""The topological Euler characteristic of the Hodge diamond
@@ -906,7 +907,7 @@ class HodgeDiamond:
         Columns of the Hodge diamond are Hochschild homology, by the Hochschild-
         Kostant-Rosenberg theorem.
         """
-        d = self.__size()
+        d = self._size
         return HochschildHomology([sum([self.matrix[d - i + j, j] for j in range(max(0, i - d), min(i, d) + 1)]) for i in range(2*d + 1)])
 
     def hh(self):
@@ -1068,7 +1069,6 @@ class HodgeDiamond:
         """
         assert self.arises_from_variety()
         n = self.dimension()
-        R = HodgeDiamond.R
         x, y = self.x, self.y
         return HodgeDiamond.from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
 
@@ -1814,7 +1814,7 @@ def fano_variety_intersection_quadrics_even(g, i):
         index = k - j * (g - i)
         return grassmannian(i - j, 2 * g - i - j)[index, index]
 
-    x, y = (HodgeDiamond.x, HodgeDiamond.y)
+    x, _ = (HodgeDiamond.x, HodgeDiamond.y)
     R = x.parent()
     polynomial = R({(k, k): sum(M(k, j) * binomial(2 * g + 1, j) for j in range(i + 1))
                     for k in range(i * (2 * g - 2 * i) + 1)})
