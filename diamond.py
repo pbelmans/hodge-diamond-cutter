@@ -154,6 +154,31 @@ from sage.structure.element import Element
 from sage.misc.fast_methods import Singleton
 
 
+def _to_matrix(f):
+    r"""
+    Convert Hodge--Poincaré polynomial to matrix representation
+
+    EXAMPLES::
+
+        sage: x,y = polygens(ZZ,'x,y')
+        sage: f = 1+x**2+4*x*y+x**2*y**2+y**2
+        sage: _to_matrix(f)
+        [1 0 1]
+        [0 4 0]
+        [1 0 1]
+    """
+    assert f in HodgeDiamond.R
+
+    if f.is_zero():
+        return matrix([[0]])
+
+    # deal with the size of the diamond in this way because of the following example:
+    # X = complete_intersection(5, 3)
+    # X*X - hilbtwo(X)
+    d = max(max(e) for e in f.exponents()) + 1
+    return matrix(ZZ, d, d, lambda i, j: f[i, j])
+
+
 class HodgeDiamond(Element):
     r"""
     This class implements some methods to work with Hodge diamonds.
@@ -213,19 +238,8 @@ class HodgeDiamond(Element):
             AssertionError: The matrix does not
                             satisfy the conditions satisfied by the Hodge diamond of a
                             smooth projective variety.
-
         """
-        diamond = cls(HodgeDiamondRing(), matrix(m))
-
-        if from_variety:
-            assert diamond.arises_from_variety(), \
-                """The matrix does not satisfy the conditions satisfied by the
-                Hodge diamond of a smooth projective variety."""
-
-        # get rid of trailing zeroes from the diamond
-        diamond.matrix = HodgeDiamond.__to_matrix(diamond.polynomial)
-
-        return diamond
+        return HodgeDiamondRing().from_matrix(m, from_variety=from_variety)
 
     @classmethod
     def from_polynomial(cls, f, from_variety=False):
@@ -258,16 +272,8 @@ class HodgeDiamond(Element):
             AssertionError: The matrix does not
                             satisfy the conditions satisfied by the Hodge diamond of a
                             smooth projective variety.
-
         """
-        diamond = cls(HodgeDiamondRing(), cls.__to_matrix(f))
-
-        if from_variety:
-            assert diamond.arises_from_variety(), """The matrix does not
-                satisfy the conditions satisfied by the Hodge diamond of a
-                smooth projective variety."""
-
-        return diamond
+        return HodgeDiamondRing().from_polynomial(f, from_variety=from_variety)
 
     @property
     def polynomial(self):
@@ -303,7 +309,7 @@ class HodgeDiamond(Element):
     @polynomial.setter
     def polynomial(self, f):
         r"""Setter for the Hodge--Poincaré polynomial"""
-        self.matrix = HodgeDiamond.__to_matrix(f)
+        self.matrix = _to_matrix(f)
 
     @property
     def matrix(self):
@@ -326,33 +332,13 @@ class HodgeDiamond(Element):
         self._m = m
         self.__normalise()
 
-    @staticmethod
-    def __to_matrix(f):
-        r"""Convert Hodge--Poincaré polynomial to matrix representation"""
-        assert f in HodgeDiamond.R
-
-        if f.is_zero():
-            m = matrix([[0]])
-        else:
-            # deal with the size of the diamond in this way because of the following example:
-            # X = complete_intersection(5, 3)
-            # X*X - hilbtwo(X)
-            d = max(max(e) for e in f.exponents()) + 1
-            m = matrix(d)
-
-            for i in range(d):
-                for j in range(d):
-                    m[i, j] = f[i, j]
-
-        return m
-
     def size(self):
         r"""Internal method to determine the (relevant) size of the Hodge diamond"""
         return self._size
 
     def __normalise(self):
         r"""Internal method to get rid of trailing zeros"""
-        self._m = HodgeDiamond.__to_matrix(self.polynomial)
+        self._m = _to_matrix(self.polynomial)
         self._size = self._m.ncols() - 1
 
     def __eq__(self, other):
@@ -1062,6 +1048,12 @@ class HodgeDiamond(Element):
 
 class HodgeDiamondRing(Singleton, Parent):
     def __init__(self):
+        """
+        TESTS::
+
+            sage: H = HodgeDiamondRing()
+            sage: TestSuite(H).run()   # not tested (works only in the console)
+        """
         Parent.__init__(self, category=Rings().Commutative())
 
     def _repr_(self) -> str:
@@ -1071,6 +1063,29 @@ class HodgeDiamondRing(Singleton, Parent):
 
     def _element_constructor_(self, *args, **keywords):
         return self.element_class(self, *args, **keywords)
+
+    def from_matrix(self, m, from_variety=False):
+        diamond = self.element_class(self, matrix(m))
+
+        if from_variety:
+            assert diamond.arises_from_variety(), \
+                """The matrix does not satisfy the conditions satisfied by the
+                Hodge diamond of a smooth projective variety."""
+
+        # get rid of trailing zeroes from the diamond
+        diamond.matrix = _to_matrix(diamond.polynomial)
+
+        return diamond
+
+    def from_polynomial(self, f, from_variety=False):
+        diamond = self.element_class(self, _to_matrix(f))
+
+        if from_variety:
+            assert diamond.arises_from_variety(), """The matrix does not
+                satisfy the conditions satisfied by the Hodge diamond of a
+                smooth projective variety."""
+
+        return diamond
 
     def one(self):
         return point()
