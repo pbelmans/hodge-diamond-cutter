@@ -369,6 +369,8 @@ class HodgeDiamond(Element):
             sage: K3() == hypersurface(4, 2)
             True
         """
+        if not isinstance(other, HodgeDiamond):
+            return False
         return self.polynomial == other.polynomial
 
     def __ne__(self, other):
