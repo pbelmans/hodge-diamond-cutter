@@ -397,7 +397,7 @@ class HodgeDiamond(Element):
             sage: K3() + zero() == K3()
             True
         """
-        return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
+        return self.parent().from_polynomial(self.polynomial + other.polynomial)
 
     def _sub_(self, other):
         r"""Subtract two Hodge diamonds
@@ -411,7 +411,7 @@ class HodgeDiamond(Element):
             sage: Pn(1) - 1 == lefschetz()
             True
         """
-        return HodgeDiamond.from_polynomial(self.polynomial - other.polynomial)
+        return self.parent().from_polynomial(self.polynomial - other.polynomial)
 
     def _mul_(self, other):
         r"""Multiply two Hodge diamonds
@@ -445,7 +445,7 @@ class HodgeDiamond(Element):
             # in the rare case someone does X*3 instead of 3*X
             return other * self
 
-        return HodgeDiamond.from_polynomial(self.polynomial * other.polynomial)
+        return self.parent().from_polynomial(self.polynomial * other.polynomial)
 
     def __pow__(self, power):
         r"""Raise a Hodge diamond to a power
@@ -464,7 +464,7 @@ class HodgeDiamond(Element):
             sage: K3()**2 == K3()*K3()
             True
         """
-        return HodgeDiamond.from_polynomial(self.polynomial ** power)
+        return self.parent().from_polynomial(self.polynomial ** power)
 
     def __call__(self, i, y=None):
         r"""
@@ -506,7 +506,7 @@ class HodgeDiamond(Element):
         if y is None:
             assert i >= -self.lefschetz_power()
 
-            return HodgeDiamond.from_polynomial(self.R(self.polynomial * self.x**i * self.y**i))
+            return self.parent().from_polynomial(self.R(self.polynomial * self.x**i * self.y**i))
         x = i
         return self.polynomial(x, y)
 
@@ -1043,7 +1043,7 @@ class HodgeDiamond(Element):
         assert self.arises_from_variety()
         n = self.dimension()
         x, y = self.x, self.y
-        return HodgeDiamond.from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
+        return self.parent().from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
 
 
 class HodgeDiamondRing(Singleton, Parent):
