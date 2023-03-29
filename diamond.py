@@ -447,6 +447,11 @@ class HodgeDiamond(Element):
 
             sage: K3() * point() == point() * K3() == K3()
             True
+
+        TESTS::
+
+           sage: 2 * K3() == K3() + K3()
+           True
         """
         if not isinstance(other, HodgeDiamond):
             # in the rare case someone does X*3 instead of 3*X
