@@ -151,7 +151,7 @@ from sage.rings.power_series_ring import PowerSeriesRing
 from sage.rings.rational_field import QQ
 from sage.structure.parent import Parent
 from sage.structure.element import Element
-from sage.structure.unique_representation import UniqueRepresentation
+from sage.misc.fast_methods import Singleton
 
 
 class HodgeDiamond(Element):
@@ -1060,7 +1060,7 @@ class HodgeDiamond(Element):
         return HodgeDiamond.from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
 
 
-class HodgeDiamondRing(UniqueRepresentation, Parent):
+class HodgeDiamondRing(Singleton, Parent):
     def __init__(self):
         Parent.__init__(self, category=Rings().Commutative())
 
