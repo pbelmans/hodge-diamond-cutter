@@ -401,7 +401,7 @@ class HodgeDiamond(Element):
         and the Lefschetz diamond::
 
             sage: load("diamond.py")
-            sage: Pn(1) == point() + lefschetz()
+            sage: Pn(1) == 1 + lefschetz()
             True
 
         Adding zero doesn't do anything::
@@ -411,7 +411,7 @@ class HodgeDiamond(Element):
         """
         return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
 
-    def __sub__(self, other):
+    def _sub_(self, other):
         r"""Subtract two Hodge diamonds
 
         EXAMPLES:
@@ -420,7 +420,7 @@ class HodgeDiamond(Element):
         and the Lefschetz diamond, but now we check it the other way around::
 
             sage: load("diamond.py")
-            sage: Pn(1) - point() == lefschetz()
+            sage: Pn(1) - 1 == lefschetz()
             True
         """
         return HodgeDiamond.from_polynomial(self.polynomial - other.polynomial)
