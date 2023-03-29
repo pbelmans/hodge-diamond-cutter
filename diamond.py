@@ -129,6 +129,7 @@ AUTHORS:
 # ****************************************************************************
 from sage.arith.misc import binomial, factorial, gcd
 from sage.categories.cartesian_product import cartesian_product
+from sage.categories.rings import Rings
 from sage.combinat.composition import Compositions
 from sage.combinat.integer_vector import IntegerVectors
 from sage.combinat.partition import Partitions
@@ -148,9 +149,12 @@ from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.power_series_ring import PowerSeriesRing
 from sage.rings.rational_field import QQ
+from sage.structure.parent import Parent
+from sage.structure.element import Element
+from sage.structure.unique_representation import UniqueRepresentation
 
 
-class HodgeDiamond:
+class HodgeDiamond(Element):
     r"""
     This class implements some methods to work with Hodge diamonds.
     """
@@ -161,7 +165,7 @@ class HodgeDiamond:
     #: variables in the polynomial ring for Hodge-Poincaré polynomials
     x, y = R.gens()
 
-    def __init__(self, m):
+    def __init__(self, parent, m):
         r"""
         Constructor for a Hodge diamond if you know what you are doing
 
@@ -173,9 +177,12 @@ class HodgeDiamond:
 
         in most cases though.
         """
+        if m in ZZ:
+            m = matrix([m])
         # matrix representation of the Hodge diamond is used internally
         self._m = m
         self._size = m.ncols() - 1
+        Element.__init__(self, parent)
 
     @classmethod
     def from_matrix(cls, m, from_variety=False):
@@ -208,7 +215,7 @@ class HodgeDiamond:
                             smooth projective variety.
 
         """
-        diamond = cls(matrix(m))
+        diamond = cls(HodgeDiamondRing(), matrix(m))
 
         if from_variety:
             assert diamond.arises_from_variety(), \
@@ -253,7 +260,7 @@ class HodgeDiamond:
                             smooth projective variety.
 
         """
-        diamond = cls(cls.__to_matrix(f))
+        diamond = cls(HodgeDiamondRing(), cls.__to_matrix(f))
 
         if from_variety:
             assert diamond.arises_from_variety(), """The matrix does not
@@ -382,7 +389,7 @@ class HodgeDiamond:
         """
         return not self == other
 
-    def __add__(self, other):
+    def _add_(self, other):
         r"""Add two Hodge diamonds together
 
         This corresponds to taking the disjoint union of varieties, or the
@@ -404,16 +411,6 @@ class HodgeDiamond:
         """
         return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
 
-    def __radd__(self, other):
-        r"""Add two Hodge diamonds together
-
-        This is used when sum()'ing for instance."""
-        # to make sum() work as intended, which by default starts with 0
-        if other == 0:
-            return self
-
-        return HodgeDiamond.from_polynomial(self.polynomial + other.polynomial)
-
     def __sub__(self, other):
         r"""Subtract two Hodge diamonds
 
@@ -428,7 +425,7 @@ class HodgeDiamond:
         """
         return HodgeDiamond.from_polynomial(self.polynomial - other.polynomial)
 
-    def __mul__(self, other):
+    def _mul_(self, other):
         r"""Multiply two Hodge diamonds
 
         This corresponds to taking the product of two varieties.
@@ -456,25 +453,6 @@ class HodgeDiamond:
             return other * self
 
         return HodgeDiamond.from_polynomial(self.polynomial * other.polynomial)
-
-    def __rmul__(self, factor):
-        r"""Multiply a Hodge diamond with a factor
-
-        This corresponds to iterated addition.
-
-        INPUT:
-
-        - ``factor`` -- coefficient for the iterated addition
-
-        EXAMPLES:
-
-        The disjoint union of 2 K3 surfaces in two ways::
-
-            sage: load("diamond.py")
-            sage: 2*K3() == K3() + K3()
-            True
-        """
-        return HodgeDiamond.from_polynomial(factor * self.polynomial)
 
     def __pow__(self, power):
         r"""Raise a Hodge diamond to a power
@@ -523,7 +501,7 @@ class HodgeDiamond:
 
         We can reconstruct projective space as a sum of twists of the point::
 
-            sage: Pn(10) == sum([point()(i) for i in range(11)])
+            sage: Pn(10) == sum(point()(i) for i in range(11))
             True
 
         If we supply two parameters we are evaluation the Hodge-Poincaré
@@ -760,8 +738,8 @@ class HodgeDiamond:
 
         """
         d = self._size
-        return [sum([self.matrix[j, i - j] for j in range(max(0, i - d),
-                                                          min(i, d) + 1)])
+        return [ZZ.sum(self.matrix[j, i - j] for j in range(max(0, i - d),
+                                                            min(i, d) + 1))
                 for i in range(2 * d + 1)]
 
     def middle(self):
@@ -834,9 +812,8 @@ class HodgeDiamond:
 
             sage: [hilbn(K3(), n).euler() for n in range(10)]
             [1, 24, 324, 3200, 25650, 176256, 1073720, 5930496, 30178575, 143184000]
-
         """
-        return sum([(-1)**i * bi for i, bi in enumerate(self.betti())])
+        return ZZ.sum((-1)**i * bi for i, bi in enumerate(self.betti()))
 
     def holomorphic_euler(self):
         r"""Holomorphic Euler characteristic
@@ -860,7 +837,8 @@ class HodgeDiamond:
             sage: all(K3n(n).holomorphic_euler() == n+1 for n in range(5))
             True
         """
-        return sum([(-1)**i * self.matrix[i, 0] for i in range(self.matrix.nrows())])
+        return ZZ.sum((-1)**i * self.matrix[i, 0]
+                      for i in range(self.matrix.nrows()))
 
     def hirzebruch(self):
         r"""Hirzebruch's \chi_y genus
@@ -908,7 +886,9 @@ class HodgeDiamond:
         Kostant-Rosenberg theorem.
         """
         d = self._size
-        return HochschildHomology([sum([self.matrix[d - i + j, j] for j in range(max(0, i - d), min(i, d) + 1)]) for i in range(2*d + 1)])
+        return HochschildHomology([ZZ.sum(self.matrix[d - i + j, j]
+            for j in range(max(0, i - d), min(i, d) + 1))
+            for i in range(2*d + 1)])
 
     def hh(self):
         r"""Shorthand for :meth:`HodgeDiamond.hochschild`"""
@@ -1024,7 +1004,7 @@ class HodgeDiamond:
         if codim is None:
             codim = self.dimension() - other.dimension()
 
-        return self + sum([other(i) for i in range(1, codim)])
+        return self + sum(other(i) for i in range(1, codim))
 
     def bundle(self, rank):
         r"""Compute the Hodge diamond of a projective bundle
@@ -1048,7 +1028,7 @@ class HodgeDiamond:
             sage: Pn(1).bundle(2) == hypersurface(2, 2)
             True
         """
-        return sum([self(i) for i in range(rank)])
+        return sum(self(i) for i in range(rank))
 
     def mirror(self):
         r"""Compute the mirror Hodge diamond
@@ -1071,6 +1051,33 @@ class HodgeDiamond:
         n = self.dimension()
         x, y = self.x, self.y
         return HodgeDiamond.from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
+
+
+class HodgeDiamondRing(UniqueRepresentation, Parent):
+    def __init__(self):
+        Parent.__init__(self, category=Rings().Commutative())
+
+    def _repr_(self) -> str:
+        """
+        """
+        return "Ring of Hodge diamonds"
+
+    def _element_constructor_(self, *args, **keywords):
+        return self.element_class(self, *args, **keywords)
+
+    def one(self):
+        return point()
+
+    def zero(self):
+        return zero()
+
+    def an_element(self):
+        return K3()
+
+    def _coerce_map_from_(self, R):
+        return R is ZZ
+
+    Element = HodgeDiamond
 
 
 class HochschildHomology:
@@ -1106,7 +1113,7 @@ class HochschildHomology:
 
         - ``L`` -- a list of integers representing $\\mathrm{HH}_{-n}$ to $\\mathrm{HH}_n$
         """
-        return cls(L)
+        return cls(HodgeDiamondRing(), L)
 
     @classmethod
     def from_positive(cls, L):
@@ -1119,7 +1126,7 @@ class HochschildHomology:
         """
         double = list(reversed(cls._L))[:-1] + L
 
-        return cls(double)
+        return cls(HodgeDiamondRing(), double)
 
     @classmethod
     def from_polynomial(cls, f):
@@ -1131,11 +1138,11 @@ class HochschildHomology:
         - ``f`` -- the Hochschild--Poincaré Laurent polynomial
         """
         if f.is_zero():
-            return cls([0])
+            return cls(HodgeDiamondRing(), [0])
 
         L = [f.dict()[i] if i in f.exponents() else 0 for i in range(-f.degree(), f.degree() + 1)]
 
-        return cls(L)
+        return cls(HodgeDiamondRing(), L)
 
     @property
     def polynomial(self):
@@ -1265,7 +1272,6 @@ def zero():
         sage: load("diamond.py")
         sage: print(zero())
           0
-
     """
     return HodgeDiamond.from_matrix(matrix([[0]]), from_variety=True)
 
@@ -2727,7 +2733,7 @@ def Mzeronbar(n):
 def mu(Theta):
     r"""Helper function to turn stability for quiver representations in slope stability
     """
-    return lambda d: sum([a * b for (a, b) in zip(Theta, d)]) / sum(d)
+    return lambda d: sum(a * b for (a, b) in zip(Theta, d)) / sum(d)
 
 
 def quiver_moduli(Q, d, mu):
