@@ -573,8 +573,8 @@ class HodgeDiamond(Element):
         if self.is_zero():
             T = [[0]]
         else:
-            for i in range(2*d + 1):
-                row = [""]*(abs(d - i))
+            for i in range(2 * d + 1):
+                row = [""] * (abs(d - i))
 
                 for j in range(max(0, i - d), min(i, d) + 1):
                     row.extend([self.matrix[j, i - j], ""])
@@ -583,7 +583,7 @@ class HodgeDiamond(Element):
 
         # padding all rows to full length
         for i in range(len(T)):
-            T[i].extend([""]*(2*d - len(T[i]) + 1))
+            T[i].extend([""] * (2 * d - len(T[i]) + 1))
 
         return table(T, align="center")
 
@@ -775,7 +775,6 @@ class HodgeDiamond(Element):
             sage: load("diamond.py")
             sage: K3().signature()
             -16
-
         """
         assert self.arises_from_variety()
 
@@ -879,9 +878,9 @@ class HodgeDiamond(Element):
         Kostant-Rosenberg theorem.
         """
         d = self._size
-        return HochschildHomology([ZZ.sum(self.matrix[d - i + j, j]
-            for j in range(max(0, i - d), min(i, d) + 1))
-            for i in range(2*d + 1)])
+        return HochschildHomology.from_list([ZZ.sum(self.matrix[d - i + j, j]
+                                                    for j in range(max(0, i - d), min(i, d) + 1))
+                                             for i in range(2 * d + 1)])
 
     def hh(self):
         r"""Shorthand for :meth:`HodgeDiamond.hochschild`"""
@@ -1102,7 +1101,7 @@ class HodgeDiamondRing(Singleton, Parent):
     Element = HodgeDiamond
 
 
-class HochschildHomology:
+class HochschildHomology(Element):
     r"""
     This class implements some methods to work with (the dimensions of)
     Hochschild homology spaces, associated to the :class:`HodgeDiamond` class.
@@ -1112,19 +1111,43 @@ class HochschildHomology:
     """
     # exposes R and t for external use
     R = LaurentPolynomialRing(ZZ, "t")
-    t = R.gen(0)
+    t = R.gen()
 
-    def __init__(self, L):
+    def __init__(self, parent, L):
         r"""
         Constructor for Hochschild homology dimensions of smooth and proper dg categories, so that Serre duality holds.
 
         INPUT:
 
         - ``L`` -- a list of integers of length 2n+1 representing $\\mathrm{HH}_{-n}$ to $\\mathrm{HH}_n$, such that ``L[i] == L[2n - i]``
+
+        EXAMPLES::
+
+            sage: HochschildHomology.from_list([1,0,22,0,1])
+            Hochschild homology vector of dimension 2
+
+        TESTS::
+
+            sage: k = K3().hh()
+            sage: k + k
+            Hochschild homology vector of dimension 2
+            sage: k*k
+            Hochschild homology vector of dimension 4
+            sage: k**2
+            Hochschild homology vector of dimension 4
+            sage: k.sym(2)
+            Hochschild homology vector of dimension 4
+            sage: 1 + k
+            Hochschild homology vector of dimension 2
+            sage: sum(k for i in range(2))
+            Hochschild homology vector of dimension 2
+            sage: 3*k
+            Hochschild homology vector of dimension 2
         """
         assert len(L) % 2, "length needs to be odd, to reflect Serre duality"
         assert all(L[i] == L[len(L) - i - 1] for i in range(len(L))), "Serre duality is not satisfied"
         self._L = L
+        Element.__init__(self, parent)
 
     @classmethod
     def from_list(cls, L):
@@ -1134,8 +1157,13 @@ class HochschildHomology:
         INPUT:
 
         - ``L`` -- a list of integers representing $\\mathrm{HH}_{-n}$ to $\\mathrm{HH}_n$
+
+        EXAMPLES::
+
+            sage: HochschildHomology.from_list([1,0,22,0,1])
+            Hochschild homology vector of dimension 2
         """
-        return cls(HodgeDiamondRing(), L)
+        return HochschildHomologies()(L)
 
     @classmethod
     def from_positive(cls, L):
@@ -1145,10 +1173,13 @@ class HochschildHomology:
         INPUT:
 
         - ``L`` -- a list of integers representing $\\mathrm{HH}_0$ to $\\mathrm{HH}_n$
-        """
-        double = list(reversed(cls._L))[:-1] + L
 
-        return cls(HodgeDiamondRing(), double)
+        EXAMPLES::
+
+            sage: HochschildHomology.from_positive([22,0,1])
+            Hochschild homology vector of dimension 2
+        """
+        return HochschildHomologies()(L, positive=True)
 
     @classmethod
     def from_polynomial(cls, f):
@@ -1158,22 +1189,42 @@ class HochschildHomology:
         INPUT
 
         - ``f`` -- the Hochschild--Poincaré Laurent polynomial
+
+        EXAMPLES::
+
+            sage: x = LaurentPolynomialRing(ZZ, 'x').gen()
+            sage: HochschildHomology.from_polynomial(x**-2+20+x**2)
+            Hochschild homology vector of dimension 2
         """
-        if f.is_zero():
-            return cls(HodgeDiamondRing(), [0])
-
-        L = [f.dict()[i] if i in f.exponents() else 0 for i in range(-f.degree(), f.degree() + 1)]
-
-        return cls(HodgeDiamondRing(), L)
+        return HochschildHomologies()(f)
 
     @property
     def polynomial(self):
-        return HochschildHomology.R(sum([self[i] * (self.t)**i for i in range(-self.dimension(), self.dimension() + 1)]))
+        """
+        EXAMPLES::
 
-    def __repr__(self):
+            sage: h = HochschildHomology.from_list([1,0,22,0,1])
+            sage: h.polynomial
+            t^-2 + 22 + t^2
+        """
+        return HochschildHomology.R({i: self[i] for i in range(-self.dimension(), self.dimension() + 1)})
+
+    def __repr__(self) -> str:
+        """
+        EXAMPLES::
+
+            sage: HochschildHomology.from_list([1,0,22,0,1])
+            Hochschild homology vector of dimension 2
+        """
         return "Hochschild homology vector of dimension {}".format(self.dimension())
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """
+        EXAMPLES::
+
+            sage: str(HochschildHomology.from_list([1,0,22,0,1]))
+            '  range(-2, 3)   [1, 0, 22, 0, 1]\n+--------------+------------------+'
+        """
         return str(self.pprint())
 
     def __table(self):
@@ -1190,7 +1241,14 @@ class HochschildHomology:
         return self._L
 
     def dimension(self):
-        r"""Largest index ``i`` such that $\\mathrm{HH}_i\\neq 0$"""
+        r"""Largest index ``i`` such that $\\mathrm{HH}_i\\neq 0$
+
+        EXAMPLES::
+
+            sage: h = HochschildHomology.from_list([1,0,22,0,1])
+            sage: h.dimension()
+            2
+        """
         if self.is_zero():
             return -1
 
@@ -1198,39 +1256,42 @@ class HochschildHomology:
                                           if d != 0])
 
     def is_zero(self):
-        return set(self._L) == set([0])
+        """
+        EXAMPLES::
+
+            sage: h = HochschildHomology.from_list([1,0,22,0,1])
+            sage: h.is_zero()
+            False
+        """
+        return all(cf == 0 for cf in self._L)
 
     def euler(self):
-        """Euler characteristic of Hochschild homology"""
-        return self.polynomial(-1)
+        """
+        Euler characteristic of Hochschild homology
 
-    def __add__(self, other):
+        EXAMPLES::
+
+            sage: h = HochschildHomology.from_list([1,0,22,0,1])
+            sage: h.euler()
+            24
+        """
+        return self.polynomial(-ZZ.one())
+
+    def _add_(self, other):
         return HochschildHomology.from_polynomial(self.polynomial + other.polynomial)
 
-    def __radd__(self, other):
-        # to make sum() work as intended, which by default starts with 0
-        if other == 0:
-            return self
-
-        return HochschildHomology.from_polynomial(self.polynomial + other.polynomial)
-
-    def __sub__(self, other):
+    def _sub_(self, other):
         return HochschildHomology.from_polynomial(self.polynomial - other.polynomial)
 
-    def __mul__(self, other):
-        if not isinstance(other, HochschildHomology):
-            # in the rare case someone does X*3 instead of 3*X
-            return other * self
-
+    def _mul_(self, other):
         return HochschildHomology.from_polynomial(self.polynomial * other.polynomial)
-
-    def __rmul__(self, factor):
-        return HochschildHomology.from_polynomial(factor * self.polynomial)
 
     def __pow__(self, i):
         return HochschildHomology.from_polynomial(self.polynomial ** i)
 
     def __eq__(self, other):
+        if not isinstance(other, HochschildHomology):
+            return False
         return self.polynomial == other.polynomial
 
     def __ne__(self, other):
@@ -1239,8 +1300,7 @@ class HochschildHomology:
     def __getitem__(self, i):
         if i > len(self._L) // 2:
             return 0
-        else:
-            return self._L[len(self._L) // 2 - i]
+        return self._L[len(self._L) // 2 - i]
 
     def __iter__(self):
         return self._L.__iter__()
@@ -1249,10 +1309,22 @@ class HochschildHomology:
         r"""
         Hochschild homology of the Ganter--Kapranov symmetric power of a smooth and proper dg category
 
-        This is possibly only a heuristic (I didn't check for proofs in the literature) based on the decomposition of Hochschild homology for a quotient stack, as discussed in the paper of Polishchuk--Van den Bergh
+        This is possibly only a heuristic (I didn't check for proofs
+        in the literature) based on the decomposition of Hochschild
+        homology for a quotient stack, as discussed in the paper of
+        Polishchuk--Van den Bergh.
+
+        EXAMPLES::
+
+            sage: k = K3().hh()
+            sage: k.symmetric_power(2)
+            Hochschild homology vector of dimension 4
+            sage: print(_)
+            range(-4, 5)   [1, 0, 23, 0, 276, 0, 23, 0, 1]
+            +--------------+---------------------------------+
         """
         def summand(f, k):
-            assert [c > 0 for c in f.coefficients()]
+            assert all(c > 0 for c in f.coefficients())
 
             t = HochschildHomology.t
 
@@ -1274,15 +1346,69 @@ class HochschildHomology:
                 g = f.coefficients()[0] * t**(f.exponents()[0])
                 h = f - g
 
-                return sum([summand(g, j) * summand(h, k - j) for j in range(k + 1)])
+                return sum(summand(g, j) * summand(h, k - j) for j in range(k + 1))
 
         # see the object C^{(\lambda)} in the Polishchuk--Van den Bergh paper
-        return HochschildHomology.from_polynomial(sum([prod([summand(self.polynomial, ri) for ri in P.to_exp()]) for P in Partitions(k)]))
+        return HochschildHomology.from_polynomial(sum(prod(summand(self.polynomial, ri) for ri in P.to_exp()) for P in Partitions(k)))
 
     def sym(self, k):
         """Shorthand for ```HochschildHomology.symmetric_power```"""
         return self.symmetric_power(k)
 
+
+class HochschildHomologies(Singleton, Parent):
+    def __init__(self):
+        """
+        TESTS::
+
+            sage: H = HochschildHomologies()
+            sage: TestSuite(H).run()   # not tested (works only in the console)
+        """
+        Parent.__init__(self, category=Rings().Commutative())
+
+    def _repr_(self) -> str:
+        """
+        TESTS::
+
+            sage: HochschildHomologies()
+            Ring of Hochschild homology vectors
+        """
+        return "Ring of Hochschild homology vectors"
+
+    def _element_constructor_(self, *args, **keywords):
+        if len(args) == 1:
+            args = args[0]
+        if args in ZZ:
+            args = [args]
+        if isinstance(args, (tuple, list)):
+            if keywords.get('positive', False):
+                # right half of the list
+                L = list(reversed(args))[:-1] + args
+            else:
+                # full list
+                L = args
+        else:
+            # a Laurent polynomial
+            L = list(args)
+
+        return self.element_class(self, L)
+
+    def one(self):
+        return self.element_class(self, [1])
+
+    def zero(self):
+        return self.element_class(self, [0])
+
+    def _coerce_map_from_(self, R):
+        return R is ZZ
+
+    def an_element(self):
+        return K3().hochschild()
+
+    Element = HochschildHomology
+
+
+# ==== Now a collection of diamonds ====
 
 def zero():
     r"""Hodge diamond for the empty space
