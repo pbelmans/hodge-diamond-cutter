@@ -147,6 +147,7 @@ from sage.rings.integer import Integer
 from sage.rings.integer_ring import ZZ
 from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
+from sage.rings.polynomial.multi_polynomial import MPolynomial
 from sage.rings.power_series_ring import PowerSeriesRing
 from sage.rings.rational_field import QQ
 from sage.structure.parent import Parent
@@ -170,7 +171,7 @@ def _to_matrix(f):
     assert f in HodgeDiamond.R
 
     if f.is_zero():
-        return matrix([[0]])
+        return matrix(ZZ, 1, 1, [0])
 
     # deal with the size of the diamond in this way because of the following example:
     # X = complete_intersection(5, 3)
@@ -202,8 +203,6 @@ class HodgeDiamond(Element):
 
         in most cases though.
         """
-        if m in ZZ:
-            m = matrix([m])
         # matrix representation of the Hodge diamond is used internally
         self._m = m
         self._size = m.ncols() - 1
@@ -239,7 +238,7 @@ class HodgeDiamond(Element):
                             satisfy the conditions satisfied by the Hodge diamond of a
                             smooth projective variety.
         """
-        return HodgeDiamondRing().from_matrix(m, from_variety=from_variety)
+        return HodgeDiamondRing()(m, from_variety=from_variety)
 
     @classmethod
     def from_polynomial(cls, f, from_variety=False):
@@ -273,7 +272,7 @@ class HodgeDiamond(Element):
                             satisfy the conditions satisfied by the Hodge diamond of a
                             smooth projective variety.
         """
-        return HodgeDiamondRing().from_polynomial(f, from_variety=from_variety)
+        return HodgeDiamondRing()(f, from_variety=from_variety)
 
     @property
     def polynomial(self):
@@ -397,7 +396,7 @@ class HodgeDiamond(Element):
             sage: K3() + zero() == K3()
             True
         """
-        return self.parent().from_polynomial(self.polynomial + other.polynomial)
+        return self.parent()(self.polynomial + other.polynomial)
 
     def _sub_(self, other):
         r"""Subtract two Hodge diamonds
@@ -411,7 +410,7 @@ class HodgeDiamond(Element):
             sage: Pn(1) - 1 == lefschetz()
             True
         """
-        return self.parent().from_polynomial(self.polynomial - other.polynomial)
+        return self.parent()(self.polynomial - other.polynomial)
 
     def _mul_(self, other):
         r"""Multiply two Hodge diamonds
@@ -445,7 +444,7 @@ class HodgeDiamond(Element):
             # in the rare case someone does X*3 instead of 3*X
             return other * self
 
-        return self.parent().from_polynomial(self.polynomial * other.polynomial)
+        return self.parent()(self.polynomial * other.polynomial)
 
     def __pow__(self, power):
         r"""Raise a Hodge diamond to a power
@@ -464,7 +463,7 @@ class HodgeDiamond(Element):
             sage: K3()**2 == K3()*K3()
             True
         """
-        return self.parent().from_polynomial(self.polynomial ** power)
+        return self.parent()(self.polynomial ** power)
 
     def __call__(self, i, y=None):
         r"""
@@ -506,7 +505,7 @@ class HodgeDiamond(Element):
         if y is None:
             assert i >= -self.lefschetz_power()
 
-            return self.parent().from_polynomial(self.R(self.polynomial * self.x**i * self.y**i))
+            return self.parent()(self.R(self.polynomial * self.x**i * self.y**i))
         x = i
         return self.polynomial(x, y)
 
@@ -527,7 +526,7 @@ class HodgeDiamond(Element):
             # we could do something smarter, but this is it for now
             return [self.matrix[p, index - p] for p in range(index + 1)]
 
-    def __repr__(self):
+    def _repr_(self):
         r"""Output diagnostic information
 
         This is a one-line string giving some basic information about the Hodge
@@ -1042,7 +1041,7 @@ class HodgeDiamond(Element):
         assert self.arises_from_variety()
         n = self.dimension()
         x, y = self.x, self.y
-        return self.parent().from_polynomial(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
+        return self.parent()(sum(cf * x**(n - exp[0]) * y**exp[1] for exp, cf in self.polynomial.dict().items()))
 
 
 class HodgeDiamondRing(Singleton, Parent):
@@ -1061,28 +1060,25 @@ class HodgeDiamondRing(Singleton, Parent):
         return "Ring of Hodge diamonds"
 
     def _element_constructor_(self, *args, **keywords):
-        return self.element_class(self, *args, **keywords)
+        m = args[0]
+        if m in ZZ:
+            m = matrix(ZZ, 1, 1, [m])
+        elif isinstance(m, MPolynomial):
+            m = _to_matrix(m)
+        elif isinstance(m, (list, tuple)):
+            m = matrix(m)
+        elt = self.element_class(self, m)
+        if keywords.get("from_variety", False):
+            assert elt.arises_from_variety(), \
+                """The matrix does not satisfy the conditions satisfied by the
+                Hodge diamond of a smooth projective variety."""
+        return elt
 
     def from_matrix(self, m, from_variety=False):
         diamond = self.element_class(self, matrix(m))
 
-        if from_variety:
-            assert diamond.arises_from_variety(), \
-                """The matrix does not satisfy the conditions satisfied by the
-                Hodge diamond of a smooth projective variety."""
-
         # get rid of trailing zeroes from the diamond
         diamond.matrix = _to_matrix(diamond.polynomial)
-
-        return diamond
-
-    def from_polynomial(self, f, from_variety=False):
-        diamond = self.element_class(self, _to_matrix(f))
-
-        if from_variety:
-            assert diamond.arises_from_variety(), """The matrix does not
-                satisfy the conditions satisfied by the Hodge diamond of a
-                smooth projective variety."""
 
         return diamond
 
@@ -1209,7 +1205,7 @@ class HochschildHomology(Element):
         """
         return HochschildHomology.R({i: self[i] for i in range(-self.dimension(), self.dimension() + 1)})
 
-    def __repr__(self) -> str:
+    def _repr_(self) -> str:
         """
         EXAMPLES::
 
@@ -2327,7 +2323,8 @@ def hypersurface(degree, dimension):
 
 
 def K3():
-    """Hodge diamond for a K3 surface
+    """
+    Hodge diamond for a K3 surface
 
     EXAMPLES:
 
@@ -2341,7 +2338,9 @@ def K3():
               0        0
                   1
     """
-    return complete_intersection(4, 2)
+    dia = complete_intersection(4, 2)
+    dia.rename('Hodge diamond of K3 surface')
+    return dia
 
 
 def enriques(two=None):
