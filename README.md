@@ -11,7 +11,19 @@ A collection of Python classes and functions in Sage to deal with Hodge diamonds
 
 ## Getting started
 
-It suffices to load ``diamond.py`` in Sage to get started. The documentation with lots of examples can be [read online](https://pbelmans.ncag.info/hodge-diamond-cutter/) or as [a pdf](https://pbelmans.ncag.info/hodge-diamond-cutter/hodgediamondcutter.pdf).
+It suffices to put ``diamond/diamond.py`` in your directory and load it using ``load("diamond.py")`` in Sage to get started.
+
+Alternatively you can install it as follows:
+
+``sage --pip install git+https://github.com/pbelmans/hodge-diamond-cutter.git``
+
+and then you can use
+
+``from diamond import *``
+
+to use it.
+
+The documentation with lots of examples can be [read online](https://pbelmans.ncag.info/hodge-diamond-cutter/) or as [a pdf](https://pbelmans.ncag.info/hodge-diamond-cutter/hodgediamondcutter.pdf).
 
 
 ## How to cite

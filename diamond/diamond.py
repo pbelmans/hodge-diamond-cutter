@@ -57,7 +57,7 @@ and::
 The following are some very basic examples of operations and constructions one
 can use within the Hodge diamond cutter. To get started we do::
 
-    sage: load("diamond.py")
+    sage: from diamond import *
 
 after starting Sage.
 
@@ -224,7 +224,7 @@ class HodgeDiamond(Element):
 
         Hodge diamond of a K3 surface::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: S = HodgeDiamond.from_matrix([[1, 0, 1], [0, 20, 0], [1, 0, 1]])
             sage: S == K3()
             True
@@ -257,7 +257,7 @@ class HodgeDiamond(Element):
 
         Hodge diamond of a K3 surface::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: x, y = (HodgeDiamond.x, HodgeDiamond.y)
             sage: S = HodgeDiamond.from_polynomial(1 + x**2 + 20*x*y + y**2 + x**2 * y**2)
             sage: S == K3()
@@ -286,7 +286,7 @@ class HodgeDiamond(Element):
 
         The Hodge--Poincaré polynomial of a K3 surface::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: print(K3().polynomial)
             x^2*y^2 + x^2 + 20*x*y + y^2 + 1
 
@@ -350,7 +350,7 @@ class HodgeDiamond(Element):
 
         A quartic surface is a K3 surface::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: K3() == hypersurface(4, 2)
             True
         """
@@ -365,7 +365,7 @@ class HodgeDiamond(Element):
 
         The projective line is not a genus 2 curve::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(1) != curve(2)
             True
 
@@ -387,7 +387,7 @@ class HodgeDiamond(Element):
         Hodge diamond of the projective line is the sum of that of a point
         and the Lefschetz diamond::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(1) == 1 + lefschetz()
             True
 
@@ -406,7 +406,7 @@ class HodgeDiamond(Element):
         Hodge diamond of the projective line is the sum of that of a point
         and the Lefschetz diamond, but now we check it the other way around::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(1) - 1 == lefschetz()
             True
         """
@@ -421,7 +421,7 @@ class HodgeDiamond(Element):
 
         The quadric surface is the product of two projective lines::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(1) * Pn(1) == hypersurface(2, 2)
             True
 
@@ -459,7 +459,7 @@ class HodgeDiamond(Element):
 
         The product of 2 K3 surfaces in two ways::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: K3()**2 == K3()*K3()
             True
         """
@@ -487,7 +487,7 @@ class HodgeDiamond(Element):
 
         The Lefschetz class is by definition the twist of the point::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: lefschetz() == point()(1)
             True
 
@@ -541,7 +541,7 @@ class HodgeDiamond(Element):
 
         The projective line::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(1)
             Hodge diamond of size 2 and dimension 1
         """
@@ -556,7 +556,7 @@ class HodgeDiamond(Element):
 
         The projective line::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: print(Pn(1))
                   1
               0       0
@@ -598,7 +598,7 @@ class HodgeDiamond(Element):
 
         The projective line::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(1).pprint()
                   1
               0       0
@@ -646,7 +646,7 @@ class HodgeDiamond(Element):
 
         Constructions satisfy this property::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(5).is_hodge_symmetric()
             True
 
@@ -695,7 +695,7 @@ class HodgeDiamond(Element):
 
         The Hilbert scheme of 4 points on a K3 surface satisfies the symmetry::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: hilbn(K3(), 4).is_serre_symmetric()
             True
 
@@ -718,7 +718,7 @@ class HodgeDiamond(Element):
 
         Betti numbers of a K3 surface::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: K3().betti()
             [1, 0, 22, 0, 1]
 
@@ -745,7 +745,7 @@ class HodgeDiamond(Element):
         There is an interesting link between K3 surfaces and cubic fourfolds
         which can be seen on the level of middle cohomology::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: (hypersurface(3, 4) - lefschetz()**2).middle()
             [0, 1, 20, 1, 0]
             sage: K3().middle()
@@ -771,7 +771,7 @@ class HodgeDiamond(Element):
 
         EXAMPLES:
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: K3().signature()
             -16
         """
@@ -793,7 +793,7 @@ class HodgeDiamond(Element):
 
         The Euler characteristic of projective space grows linearly::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: [Pn(n).euler() for n in range(10)]
             [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 
@@ -819,7 +819,7 @@ class HodgeDiamond(Element):
 
         For projective space it is 1::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: all(Pn(n).holomorphic_euler() == 1 for n in range(10))
             True
 
@@ -848,7 +848,7 @@ class HodgeDiamond(Element):
 
         For a K3 surface we have::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: K3().hirzebruch()
             2*y^2 - 20*y + 2
             sage: K3().hirzebruch().subs(y=-1) == K3().euler()
@@ -924,7 +924,7 @@ class HodgeDiamond(Element):
 
         A point is 0-dimensional::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: point().dimension()
             0
 
@@ -952,7 +952,7 @@ class HodgeDiamond(Element):
 
         The simplest case is projective space, with level zero::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: all(Pn(n).level() == 0 for n in range(10))
             True
 
@@ -987,7 +987,7 @@ class HodgeDiamond(Element):
 
         A cubic surface is the blowup of $\\mathbb{P}^2$ in 6 points::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: Pn(2).blowup(6*point()) == hypersurface(3, 2)
             True
         """
@@ -1010,7 +1010,7 @@ class HodgeDiamond(Element):
 
         A projective bundle on a point is a projective space::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: point().bundle(3) == Pn(2)
             True
 
@@ -1028,7 +1028,7 @@ class HodgeDiamond(Element):
 
         The mirror to a quintic 3-fold is the following::
 
-            sage: load("diamond.py")
+            sage: from diamond import *
             sage: print(hypersurface(5, 3).mirror())
                              1
                         0         0
@@ -1413,7 +1413,7 @@ def zero():
 
     Zero::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(zero())
           0
     """
@@ -1427,7 +1427,7 @@ def point():
 
     The point::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(point())
           1
     """
@@ -1443,7 +1443,7 @@ def lefschetz():
 
     The affine line::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(lefschetz())
               0
           0       0
@@ -1476,7 +1476,7 @@ def Pn(n):
 
     The zero-dimensional case is a point::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: Pn(0) == point()
         True
 
@@ -1502,7 +1502,7 @@ def curve(genus):
 
     A curve of genus 0 is the 1-dimensional projective space::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: curve(0) == Pn(1)
         True
 
@@ -1545,7 +1545,7 @@ def surface(genus, irregularity, h11):
 
     The projective plane::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: Pn(2) == surface(0, 0, 1)
         True
 
@@ -1586,7 +1586,7 @@ def symmetric_power(n, genus):
 
     The symmetric square of a genus 3 curve::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(symmetric_power(2, 3))
                   1
               3        3
@@ -1646,7 +1646,7 @@ def jacobian(genus):
 
     The Jacobian of a genus 3 curve::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(jacobian(3))
                       1
                   3       3
@@ -1685,7 +1685,7 @@ def abelian(dimension):
 
     A 1-dimensional abelian variety is an elliptic curve::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: abelian(1) == curve(1)
         True
 
@@ -1712,7 +1712,7 @@ def kummer_resolution(dimension):
 
     The Kummer resolution of the involution on an abelian surface is a K3 surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: kummer_resolution(2) == K3()
         True
 
@@ -1750,7 +1750,7 @@ def moduli_vector_bundles(rank, degree, genus):
     The case of rank 2, degree 1 and genus 2 is famously the intersection of
     2 quadrics in $\\mathbb{P}^5$::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: moduli_vector_bundles(2, 1, 2) == complete_intersection([2, 2], 3)
         True
 
@@ -1808,7 +1808,7 @@ def seshadris_desingularisation(genus):
 
     For $g=2$ nothing needs to be desingularised, and the answer is $\\mathbb{P}^3$::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: seshadris_desingularisation(2) == Pn(3)
         True
 
@@ -1904,7 +1904,7 @@ def fano_variety_intersection_quadrics_odd(g, i):
     For $i=2$ we recover the moduli space of rank 2 bundles with odd determinant
     on a curve of genus $g$::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: fano_variety_intersection_quadrics_odd(5, 2) == moduli_vector_bundles(2, 1, 5)
         True
 
@@ -1953,7 +1953,7 @@ def fano_variety_intersection_quadrics_even(g, i):
     We have that for i = g-1 we get the moduli space of parabolic bundles on
     $\\mathbb{P}^1$ with weight $1/2$ in $2g+3$ points::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*5) == fano_variety_intersection_quadrics_even(2, 1)
         True
         sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*7) == fano_variety_intersection_quadrics_even(3, 2)
@@ -2007,7 +2007,7 @@ def hilbtwo(X):
 
     We recover the Hilbert square of a surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: hilbtwo(K3()) == hilbn(K3(), 2)
         True
 
@@ -2035,7 +2035,7 @@ def hilbthree(X):
 
     We recover the Hilbert cube of a surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: hilbthree(K3()) == hilbn(K3(), 3)
         True
 
@@ -2069,7 +2069,7 @@ def K3n(n):
 
     For $n=1$ we have a K3 surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: K3n(1) == K3()
         True
 
@@ -2093,7 +2093,7 @@ def generalised_kummer(n):
 
     The first generalised Kummer is just a point::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: generalised_kummer(1) == point()
         True
 
@@ -2136,7 +2136,7 @@ def ogrady6():
 
     The second Betti number is 8::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: ogrady6().betti()[2] == 8
         True
     """
@@ -2162,7 +2162,7 @@ def ogrady10():
 
     The second Betti number is 24::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: ogrady10().betti()[2] == 24
         True
     """
@@ -2279,7 +2279,7 @@ def complete_intersection(degrees, dimension):
 
     For multidegrees $(1,\\ldots,1) we get a lower-dimension projective space::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: complete_intersection(1, 2) == Pn(2)
         True
         sage: complete_intersection([1, 1], 2) == Pn(2)
@@ -2330,7 +2330,7 @@ def K3():
 
     The K3 surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(K3())
                   1
               0        0
@@ -2362,7 +2362,7 @@ def enriques(two=None):
 
     An ordinary Enriques surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(enriques())
                   1
               0        0
@@ -2416,7 +2416,7 @@ def ruled(genus):
     For genus 0 we get Hirzebruch surfaces, whose Hodge diamond is that of
     the quadric surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: ruled(0) == hypersurface(2, 2)
         True
 
@@ -2453,7 +2453,7 @@ def weighted_hypersurface(degree, weights):
 
     Elliptic curves can be realised as hypersurfaces in 3 ways::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: weighted_hypersurface(3, 2) == weighted_hypersurface(3, [1, 1, 1])
         True
         sage: weighted_hypersurface(3, 2) == curve(1)
@@ -2525,7 +2525,7 @@ def cyclic_cover(ramification_degree, cover_degree, weights):
 
     Some K3 surfaces are double covers of $\\mathbb{P}^2$ in a sextic curve::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: cyclic_cover(6, 2, 2) == K3()
         True
 
@@ -2561,7 +2561,7 @@ def partial_flag_variety(D, I):
 
     An absolute baby case is projective space::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: partial_flag_variety("A5", [2,3,4,5]) == Pn(5)
         True
 
@@ -2816,7 +2816,7 @@ def fano_variety_lines_cubic(n):
 
     There are 27 lines on a cubic surface::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: fano_variety_lines_cubic(2) == 27*point()
         True
 
@@ -2853,7 +2853,7 @@ def Mzeronbar(n):
     The first few cases are a point, the projective line, and the blowup
     of $\\mathbb{P}^2$ in 4 points::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: Mzeronbar(3) == point()
         True
         sage: Mzeronbar(4) == Pn(1)
@@ -2904,7 +2904,7 @@ def quiver_moduli(Q, d, mu):
 
     Let's consider moduli spaces for the Kronecker quiver::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: def kronecker(d): return matrix([[0, d], [0, 0]])
 
     For the 2-Kronecker quiver and dimension vector `(1,1)` a representation
@@ -3052,7 +3052,7 @@ def fano_threefold(rho, ID):
 
     The 17th Fano 3-fold of rank 1 is projective threespace::
 
-        sage: load("diamond.py")
+        sage: from diamond import *
         sage: print(fano_threefold(1, 17))
                       1
                   0       0
