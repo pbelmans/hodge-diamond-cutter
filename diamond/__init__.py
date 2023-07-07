@@ -1,1 +1,1 @@
-from .diamond import *
+from diamond.diamond import *

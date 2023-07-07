@@ -161,9 +161,10 @@ def _to_matrix(f):
 
     EXAMPLES::
 
+        sage: from diamond import *
         sage: x,y = polygens(ZZ,'x,y')
         sage: f = 1+x**2+4*x*y+x**2*y**2+y**2
-        sage: _to_matrix(f)
+        sage: diamond._to_matrix(f)
         [1 0 1]
         [0 4 0]
         [1 0 1]
@@ -1049,6 +1050,7 @@ class HodgeDiamondRing(Singleton, Parent):
         """
         TESTS::
 
+            sage: from diamond import *
             sage: H = HodgeDiamondRing()
             sage: TestSuite(H).run()   # not tested (works only in the console)
         """
@@ -1119,11 +1121,13 @@ class HochschildHomology(Element):
 
         EXAMPLES::
 
+            sage: from diamond import *
             sage: HochschildHomology.from_list([1,0,22,0,1])
             Hochschild homology vector of dimension 2
 
         TESTS::
 
+            sage: from diamond import *
             sage: k = K3().hh()
             sage: k + k
             Hochschild homology vector of dimension 2
@@ -1156,6 +1160,7 @@ class HochschildHomology(Element):
 
         EXAMPLES::
 
+            sage: from diamond import *
             sage: HochschildHomology.from_list([1,0,22,0,1])
             Hochschild homology vector of dimension 2
         """
@@ -1172,6 +1177,7 @@ class HochschildHomology(Element):
 
         EXAMPLES::
 
+            sage: from diamond import *
             sage: HochschildHomology.from_positive([22,0,1])
             Hochschild homology vector of dimension 2
         """
@@ -1188,6 +1194,7 @@ class HochschildHomology(Element):
 
         EXAMPLES::
 
+            sage: from diamond import *
             sage: x = LaurentPolynomialRing(ZZ, 'x').gen()
             sage: HochschildHomology.from_polynomial(x**-2+20+x**2)
             Hochschild homology vector of dimension 2
@@ -1199,6 +1206,7 @@ class HochschildHomology(Element):
         """
         EXAMPLES::
 
+            sage: from diamond import *
             sage: h = HochschildHomology.from_list([1,0,22,0,1])
             sage: h.polynomial
             t^-2 + 22 + t^2
@@ -1209,6 +1217,7 @@ class HochschildHomology(Element):
         """
         EXAMPLES::
 
+            sage: from diamond import *
             sage: HochschildHomology.from_list([1,0,22,0,1])
             Hochschild homology vector of dimension 2
         """
@@ -1218,6 +1227,7 @@ class HochschildHomology(Element):
         """
         EXAMPLES::
 
+            sage: from diamond import *
             sage: str(HochschildHomology.from_list([1,0,22,0,1]))
             '  range(-2, 3)   [1, 0, 22, 0, 1]\n+--------------+------------------+'
         """
@@ -1241,6 +1251,7 @@ class HochschildHomology(Element):
 
         EXAMPLES::
 
+            sage: from diamond import *
             sage: h = HochschildHomology.from_list([1,0,22,0,1])
             sage: h.dimension()
             2
@@ -1255,6 +1266,7 @@ class HochschildHomology(Element):
         """
         EXAMPLES::
 
+            sage: from diamond import *
             sage: h = HochschildHomology.from_list([1,0,22,0,1])
             sage: h.is_zero()
             False
@@ -1267,6 +1279,7 @@ class HochschildHomology(Element):
 
         EXAMPLES::
 
+            sage: from diamond import *
             sage: h = HochschildHomology.from_list([1,0,22,0,1])
             sage: h.euler()
             24
@@ -1312,6 +1325,7 @@ class HochschildHomology(Element):
 
         EXAMPLES::
 
+            sage: from diamond import *
             sage: k = K3().hh()
             sage: k.symmetric_power(2)
             Hochschild homology vector of dimension 4
@@ -1357,6 +1371,7 @@ class HochschildHomologies(Singleton, Parent):
         """
         TESTS::
 
+            sage: from diamond import *
             sage: H = HochschildHomologies()
             sage: TestSuite(H).run()   # not tested (works only in the console)
         """
@@ -1366,6 +1381,7 @@ class HochschildHomologies(Singleton, Parent):
         """
         TESTS::
 
+            sage: from diamond import *
             sage: HochschildHomologies()
             Ring of Hochschild homology vectors
         """
