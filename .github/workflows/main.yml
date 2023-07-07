@@ -1,17 +1,20 @@
-name: CI
+name: Unit tests
 on:
   push:
     branches: [ main ]
   pull_request:
   workflow_dispatch:
-    
+
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
     container:
       image: sagemath/sagemath:latest
+      options: --user root
     steps:
       - name: Checkout Hodge diamond cutter
         uses: actions/checkout@v3
+      - name: Install the Hodge diamond cutter
+        run: sage --pip install .
       - name: Run the tests in Hodge diamond cutter
-        run: sage -t hodge-diamond-cutter/diamond/diamond.py
+        run: sage -t diamond/diamond.py
