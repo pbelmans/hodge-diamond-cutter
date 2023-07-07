@@ -2,7 +2,7 @@
 [![releases](https://badgen.net/github/release/pbelmans/hodge-diamond-cutter?color=green)](https://github.com/pbelmans/hodge-diamond-cutter/releases)
 [![license](https://badgen.net/github/license/pbelmans/hodge-diamond-cutter)](https://github.com/pbelmans/hodge-diamond-cutter/blob/master/LICENSE)
 
-[![tests](https://github.com/pbelmans/hodge-diamond-cutter/actions)](https://github.com/pbelmans/hodge-diamond-cutter/actions/workflows/tests.yml/badge.svg)
+[![tests](https://github.com/pbelmans/hodge-diamond-cutter/actions/workflows/tests.yml/badge.svg)](https://github.com/pbelmans/hodge-diamond-cutter/actions)
 
 # Hodge diamond cutter
 
