@@ -2,6 +2,8 @@
 [![releases](https://badgen.net/github/release/pbelmans/hodge-diamond-cutter?color=green)](https://github.com/pbelmans/hodge-diamond-cutter/releases)
 [![license](https://badgen.net/github/license/pbelmans/hodge-diamond-cutter)](https://github.com/pbelmans/hodge-diamond-cutter/blob/master/LICENSE)
 
+[![tests](https://github.com/pbelmans/hodge-diamond-cutter/actions)](https://github.com/pbelmans/hodge-diamond-cutter/actions/workflows/main.yml/badge.svg)
+
 # Hodge diamond cutter
 
 A collection of Python classes and functions in Sage to deal with Hodge diamonds (and Hochschild homology) of smooth projective varieties, together with many constructions.
