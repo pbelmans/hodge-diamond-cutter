@@ -1,12 +1,12 @@
 Documentation for the Hodge diamond cutter
 ==========================================
 
+.. This is currently not working, but I don't feel like spending more time on it.
 .. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+    :maxdepth: 2
+    :caption: Contents
 
-.. automodule:: diamond
-   :no-members:
+.. automodule:: diamond.diamond
 
 Hodge diamonds
 ==============
@@ -78,6 +78,7 @@ The term "Fano variety" can also mean a variety parametrising linear subspaces o
 .. autofunction:: diamond.gushel_mukai
 .. autofunction:: diamond.fano_variety_intersection_quadrics_even
 .. autofunction:: diamond.fano_variety_intersection_quadrics_odd
+.. autofunction:: diamond.fano_variety_lines_cubic
 
 
 Homogeneous varieties and closely related constructions
@@ -113,4 +114,3 @@ Other
 -----
 
 .. autofunction:: diamond.Mzeronbar
-.. autofunction:: diamond.fano_variety_lines_cubic

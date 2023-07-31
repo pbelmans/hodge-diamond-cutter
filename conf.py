@@ -19,9 +19,10 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('/Users/pbelmans/Documents/Project/hodge-diamond-cutter'))
+from sage.env import SAGE_DOC_SRC
+import sage.all
 
-import diamond
+sys.path.insert(0, os.path.abspath("."))
 
 # -- Project information -----------------------------------------------------
 
@@ -43,10 +44,8 @@ extensions = [
     'sphinx.ext.viewcode',
 ]
 
-mathjax_config = {
-    "extensionsr": ["tex2jax.js"],
-    "jax": ['input/TeX', 'output/HTML-CSS'],
-    "tex2jax": {
+mathjax3_config = {
+    "tex": {
         "inlineMath": [['$', '$']],
         "displayMath": [['$$', '$$'], ["\\[", "\\]"]],
     },
