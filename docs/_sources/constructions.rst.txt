@@ -1,27 +1,3 @@
-Documentation for the Hodge diamond cutter
-==========================================
-
-.. This is currently not working, but I don't feel like spending more time on it.
-.. toctree::
-    :maxdepth: 2
-    :caption: Contents
-
-.. automodule:: diamond.diamond
-
-Hodge diamonds
-==============
-
-.. autoclass:: diamond.HodgeDiamond
-    :members:
-    :special-members:
-    :member-order: bysource
-
-Hochschild homology
-===================
-
-.. autoclass:: diamond.HochschildHomology
-    :members:
-    :member-order: bysource
 
 Constructions
 =============
@@ -29,7 +5,7 @@ Constructions
 Elementary constructions
 ------------------------
 
-.. autofunction:: diamond.zero
+.. autofunction:: diamond.diamond.zero
 .. autofunction:: diamond.point
 .. autofunction:: diamond.lefschetz
 .. autofunction:: diamond.Pn
