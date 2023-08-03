@@ -2893,13 +2893,13 @@ def Mzeronbar(n):
 
 
 # make Theta into slope stability
-def mu(Theta):
+def slope(Theta):
     r"""Helper function to turn stability for quiver representations in slope stability
     """
     return lambda d: sum(a * b for (a, b) in zip(Theta, d)) / sum(d)
 
 
-def quiver_moduli(Q, d, mu):
+def quiver_moduli(Q, d, **kwargs):
     r"""
     Hodge diamond for the moduli space of semistable quiver representations
     for a quiver Q, dimension vector d, and slope-stability condition mu.
@@ -2914,7 +2914,11 @@ def quiver_moduli(Q, d, mu):
 
     - ``d`` -- dimension vector
 
-    - ``mu`` -- stability condition, these can be produced using :func:`mu`
+    - ``mu`` -- stability condition, these can be produced using :func:`slope`,
+      if left unspecified then the canonical stability condition is used
+
+    The canonical stability condition for dimension vector `d` is given by
+    the antisymmetrised Euler form pairing with `d`.
 
     EXAMPLES:
 
@@ -2927,23 +2931,44 @@ def quiver_moduli(Q, d, mu):
     is given by 2 scalars, and the stability condition `(1,-1)` encodes that
     they are not both zero. This way we obtain the projective line::
 
-        sage: quiver_moduli(kronecker(2), (1, 1), mu((1, -1))) == Pn(1)
+        sage: quiver_moduli(kronecker(2), (1, 1), mu=slope((1, -1))) == Pn(1)
+        True
+
+    There is only one relevant stability chamber here, which contains the
+    canonical stability condition. Thus we get the same result not specifying
+    the stability function::
+
+        sage: quiver_moduli(kronecker(2), (1, 1)) == Pn(1)
         True
 
     Similar to the first example, the $d$-Kronecker quiver gives rise to
     projective spaces::
 
-        sage: all(quiver_moduli(kronecker(d), (1, 1), mu((1, -1))) == Pn(d - 1) for d in range(3, 10))
+        sage: all(quiver_moduli(kronecker(d), (1, 1)) == Pn(d - 1) for d in range(3, 10))
         True
 
     We can also realise Grassmannians using the $d$-Kronecker quiver, for
-    dimension vector $(1,k)$ and stability condition $(k,1)$ we get the
-    Grassmannian $\\operatorname{Gr}(k,d)$::
+    dimension vector $(1,k)$ and stability condition $(k,1)$ (or the canonical
+    stability condition) we get the Grassmannian $\\operatorname{Gr}(k,d)$::
 
-        sage: quiver_moduli(kronecker(4), (1, 2), mu((2, 1))) == grassmannian(2, 4)
+        sage: quiver_moduli(kronecker(4), (1, 2), mu=slope((2, 1))) == grassmannian(2, 4)
         True
-        sage: quiver_moduli(kronecker(7), (1, 3), mu((3, 1))) == grassmannian(3, 7)
+        sage: quiver_moduli(kronecker(7), (1, 3)) == grassmannian(3, 7)
         True
+
+    Any stability function in the same chamber gives the same variety::
+
+        sage: quiver_moduli(kronecker(7), (1, 3)) == quiver_moduli(kronecker(7), (1, 3), mu=slope((1, -1)))
+        True
+
+    The following is an example of wall-crossing, and thus different varieties::
+
+        sage: M = matrix([[0, 1, 1], [0, 0, 2], [0, 0, 0]])
+        sage: quiver_moduli(M, (1, 1, 1)) == Pn(2).blowup(point())
+        True
+        sage: quiver_moduli(M, (1, 1, 1), mu=slope((1, 0, 0))) == Pn(2)
+        True
+
 
     The flag variety $\\operatorname{Fl}(n,r_1,\\ldots,r_s)$ is also a quiver
     moduli space, for $\\mathrm{A}_s$ quiver prefixed with an $n$-Kronecker
@@ -2951,11 +2976,11 @@ def quiver_moduli(Q, d, mu):
     and stability condition the indicator function at the first vertex::
 
         sage: def flags(n, s): return matrix(ZZ, s+1, s+1, lambda i,j: 0 if i != j-1 else (n if i == 0 else 1))
-        sage: quiver_moduli(flags(4, 1), (1, 1), mu((1, 0))) == Pn(3)
+        sage: quiver_moduli(flags(4, 1), (1, 1)) == Pn(3)
         True
-        sage: quiver_moduli(flags(3, 2), (1, 2, 1), mu((1, 0, 0))) == fano_threefold(2, 32)
+        sage: quiver_moduli(flags(3, 2), (1, 2, 1)) == fano_threefold(2, 32)
         True
-        sage: quiver_moduli(flags(5, 3), (1, 4, 3, 1), mu((1, 0, 0, 0))) == partial_flag_variety("A4", [2])
+        sage: quiver_moduli(flags(5, 3), (1, 4, 3, 1)) == partial_flag_variety("A4", [2])
         True
     """
     K = FunctionField(QQ, 'v')
@@ -3037,6 +3062,12 @@ def quiver_moduli(Q, d, mu):
 
     # see Definition 6.3 and following lemmas
     assert gcd(d) == 1, "dimension vector is not coprime"
+
+    # if mu is not provided we resort to the canonical stability condition
+    mu = kwargs.get("mu", None)
+    if mu is None:
+        A = matrix.identity(len(d)) - Q.adjacency_matrix()
+        mu = slope(vector(d) * A - A * vector(d))
 
     # (0,d)-entry of the inverse of the transfer matrix, as per Corollary 6.9
     T = Td(Q.adjacency_matrix(), d, mu)
