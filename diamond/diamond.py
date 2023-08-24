@@ -1923,11 +1923,21 @@ def fano_variety_intersection_quadrics_odd(g, i):
         sage: from diamond import *
         sage: fano_variety_intersection_quadrics_odd(5, 2) == moduli_vector_bundles(2, 1, 5)
         True
+        sage: fano_variety_intersection_quadrics_odd(12, 3)
+        Hodge diamond of size 51 and dimension 50
 
     """
+    def dim(g, i):
+        r = 2*g + 1
+        k = g - i
+
+        # equation 9 in https://arxiv.org/abs/1903.11294
+        return (k + 1) * (r - k) - 2 * binomial(2 + k, k)
+
+
     def N(i, k, j):
         # some random high bound which works in many cases
-        R = PowerSeriesRing(ZZ, default_prec=10*abs(i) + 10*abs(k) + 20)
+        R = PowerSeriesRing(ZZ, default_prec=2*dim(g, i) + 1)
         q = R.gen(0)
         return (q**(-(j-i+1)*(2*i-1)) * (1 - q**(4*j)) * prod([1 - q**(2*l) for l in range(j-i+2, i+j-1)]) / prod([1 - q**(2*l) for l in range(1, 2*i-1)]))[k]
 
