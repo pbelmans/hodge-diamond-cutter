@@ -134,6 +134,7 @@ from sage.combinat.composition import Compositions
 from sage.combinat.integer_vector import IntegerVectors
 from sage.combinat.partition import Partitions
 from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
+from sage.combinat.q_analogues import q_binomial
 from sage.combinat.subset import Subsets
 from sage.graphs.digraph import DiGraph
 from sage.matrix.constructor import matrix
@@ -2643,13 +2644,29 @@ def grassmannian(k, n):
     - ``k`` -- dimension of the subspaces
 
     - ``n`` -- dimension of the ambient vector space
+
+    EXAMPLES:
+
+    Grassmannians are projective spaces if `k` is one or `n-1`::
+
+        sage: from diamond import *
+        sage: grassmannian(1, 5) == Pn(4)
+        True
+        sage: grassmannian(7, 8) == Pn(7)
+        True
+
+    The Grassmannian of 2-planes in a 4-dimensional vector space is the Kleiin quadric::
+
+        sage: grassmannian(2, 4) == hypersurface(2, 4)
+        True
+
     """
     assert 0 <= k <= n
     if n in [0, k]:
         return point()
-    D = "A" + str(n - 1)
-    index_set = [i for i in range(1, n) if i != k]
-    return partial_flag_variety(D, index_set)
+
+    x, y = HodgeDiamond.x, HodgeDiamond.y
+    return HodgeDiamond.from_polynomial(q_binomial(n, k)(q=x*y))
 
 
 def orthogonal_grassmannian(k, n):
