@@ -1985,11 +1985,21 @@ def fano_variety_intersection_quadrics_even(g, i):
         True
         sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*7) == fano_variety_intersection_quadrics_even(3, 2)
         True
+        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*9) == fano_variety_intersection_quadrics_even(4, 3)
+        True
+
+    For `i=1` however we get the intersection of 2 quadrics::
+
+        sage: fano_variety_intersection_quadrics_even(8, 1) == complete_intersection([2, 2], 14)
+        True
 
     """
     def M(k, j):
         index = k - j * (g - i)
-        return grassmannian(i - j, 2 * g - i - j)[index, index]
+        if index < 0:
+            return 0
+        else:
+            return q_binomial(2 * g - i - j, i - j).padded_list(index + 1)[index]
 
     x, _ = (HodgeDiamond.x, HodgeDiamond.y)
     R = x.parent()
