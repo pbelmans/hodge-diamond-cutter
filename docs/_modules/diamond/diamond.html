@@ -322,6 +322,7 @@
 <span class="kn">from</span> <span class="nn">sage.combinat.integer_vector</span> <span class="kn">import</span> <span class="n">IntegerVectors</span>
 <span class="kn">from</span> <span class="nn">sage.combinat.partition</span> <span class="kn">import</span> <span class="n">Partitions</span>
 <span class="kn">from</span> <span class="nn">sage.combinat.root_system.dynkin_diagram</span> <span class="kn">import</span> <span class="n">DynkinDiagram</span>
+<span class="kn">from</span> <span class="nn">sage.combinat.q_analogues</span> <span class="kn">import</span> <span class="n">q_binomial</span>
 <span class="kn">from</span> <span class="nn">sage.combinat.subset</span> <span class="kn">import</span> <span class="n">Subsets</span>
 <span class="kn">from</span> <span class="nn">sage.graphs.digraph</span> <span class="kn">import</span> <span class="n">DiGraph</span>
 <span class="kn">from</span> <span class="nn">sage.matrix.constructor</span> <span class="kn">import</span> <span class="n">matrix</span>
@@ -2111,11 +2112,21 @@
 <span class="sd">        sage: from diamond import *</span>
 <span class="sd">        sage: fano_variety_intersection_quadrics_odd(5, 2) == moduli_vector_bundles(2, 1, 5)</span>
 <span class="sd">        True</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_odd(12, 3)</span>
+<span class="sd">        Hodge diamond of size 51 and dimension 50</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+        <span class="n">r</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">k</span> <span class="o">=</span> <span class="n">g</span> <span class="o">-</span> <span class="n">i</span>
+
+        <span class="c1"># equation 9 in https://arxiv.org/abs/1903.11294</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">binomial</span><span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+
+
     <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
         <span class="c1"># some random high bound which works in many cases</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">PowerSeriesRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">default_prec</span><span class="o">=</span><span class="mi">10</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="mi">10</span><span class="o">*</span><span class="nb">abs</span><span class="p">(</span><span class="n">k</span><span class="p">)</span> <span class="o">+</span> <span class="mi">20</span><span class="p">)</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">PowerSeriesRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">default_prec</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">dim</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="n">q</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
         <span class="k">return</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">j</span><span class="p">))</span> <span class="o">*</span> <span class="n">prod</span><span class="p">([</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="o">/</span> <span class="n">prod</span><span class="p">([</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)]))[</span><span class="n">k</span><span class="p">]</span>
 
@@ -2162,11 +2173,21 @@
 <span class="sd">        True</span>
 <span class="sd">        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*7) == fano_variety_intersection_quadrics_even(3, 2)</span>
 <span class="sd">        True</span>
+<span class="sd">        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*9) == fano_variety_intersection_quadrics_even(4, 3)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    For `i=1` however we get the intersection of 2 quadrics::</span>
+
+<span class="sd">        sage: fano_variety_intersection_quadrics_even(8, 1) == complete_intersection([2, 2], 14)</span>
+<span class="sd">        True</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">def</span> <span class="nf">M</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">grassmannian</span><span class="p">(</span><span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">,</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">g</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)[</span><span class="n">index</span><span class="p">,</span> <span class="n">index</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="mi">0</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">q_binomial</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">g</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">padded_list</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="n">index</span><span class="p">]</span>
 
     <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">(</span><span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
@@ -2821,13 +2842,29 @@
 <span class="sd">    - ``k`` -- dimension of the subspaces</span>
 
 <span class="sd">    - ``n`` -- dimension of the ambient vector space</span>
+
+<span class="sd">    EXAMPLES:</span>
+
+<span class="sd">    Grassmannians are projective spaces if `k` is one or `n-1`::</span>
+
+<span class="sd">        sage: from diamond import *</span>
+<span class="sd">        sage: grassmannian(1, 5) == Pn(4)</span>
+<span class="sd">        True</span>
+<span class="sd">        sage: grassmannian(7, 8) == Pn(7)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    The Grassmannian of 2-planes in a 4-dimensional vector space is the Kleiin quadric::</span>
+
+<span class="sd">        sage: grassmannian(2, 4) == hypersurface(2, 4)</span>
+<span class="sd">        True</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="mi">0</span> <span class="o">&lt;=</span> <span class="n">k</span> <span class="o">&lt;=</span> <span class="n">n</span>
     <span class="k">if</span> <span class="n">n</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="p">]:</span>
         <span class="k">return</span> <span class="n">point</span><span class="p">()</span>
-    <span class="n">D</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-    <span class="n">index_set</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">k</span><span class="p">]</span>
-    <span class="k">return</span> <span class="n">partial_flag_variety</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">index_set</span><span class="p">)</span></div>
+
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">y</span>
+    <span class="k">return</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_polynomial</span><span class="p">(</span><span class="n">q_binomial</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">k</span><span class="p">)(</span><span class="n">q</span><span class="o">=</span><span class="n">x</span><span class="o">*</span><span class="n">y</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="orthogonal_grassmannian"><a class="viewcode-back" href="../../index.html#diamond.orthogonal_grassmannian">[docs]</a><span class="k">def</span> <span class="nf">orthogonal_grassmannian</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">n</span><span class="p">):</span>
@@ -3081,13 +3118,13 @@
 
 
 <span class="c1"># make Theta into slope stability</span>
-<span class="k">def</span> <span class="nf">mu</span><span class="p">(</span><span class="n">Theta</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">slope</span><span class="p">(</span><span class="n">Theta</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Helper function to turn stability for quiver representations in slope stability</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="nb">sum</span><span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="n">b</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">Theta</span><span class="p">,</span> <span class="n">d</span><span class="p">))</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="quiver_moduli"><a class="viewcode-back" href="../../index.html#diamond.quiver_moduli">[docs]</a><span class="k">def</span> <span class="nf">quiver_moduli</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">mu</span><span class="p">):</span>
+<div class="viewcode-block" id="quiver_moduli"><a class="viewcode-back" href="../../index.html#diamond.quiver_moduli">[docs]</a><span class="k">def</span> <span class="nf">quiver_moduli</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Hodge diamond for the moduli space of semistable quiver representations</span>
 <span class="sd">    for a quiver Q, dimension vector d, and slope-stability condition mu.</span>
@@ -3102,7 +3139,11 @@
 
 <span class="sd">    - ``d`` -- dimension vector</span>
 
-<span class="sd">    - ``mu`` -- stability condition, these can be produced using :func:`mu`</span>
+<span class="sd">    - ``mu`` -- stability condition, these can be produced using :func:`slope`,</span>
+<span class="sd">      if left unspecified then the canonical stability condition is used</span>
+
+<span class="sd">    The canonical stability condition for dimension vector `d` is given by</span>
+<span class="sd">    the antisymmetrised Euler form pairing with `d`.</span>
 
 <span class="sd">    EXAMPLES:</span>
 
@@ -3115,23 +3156,44 @@
 <span class="sd">    is given by 2 scalars, and the stability condition `(1,-1)` encodes that</span>
 <span class="sd">    they are not both zero. This way we obtain the projective line::</span>
 
-<span class="sd">        sage: quiver_moduli(kronecker(2), (1, 1), mu((1, -1))) == Pn(1)</span>
+<span class="sd">        sage: quiver_moduli(kronecker(2), (1, 1), mu=slope((1, -1))) == Pn(1)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    There is only one relevant stability chamber here, which contains the</span>
+<span class="sd">    canonical stability condition. Thus we get the same result not specifying</span>
+<span class="sd">    the stability function::</span>
+
+<span class="sd">        sage: quiver_moduli(kronecker(2), (1, 1)) == Pn(1)</span>
 <span class="sd">        True</span>
 
 <span class="sd">    Similar to the first example, the $d$-Kronecker quiver gives rise to</span>
 <span class="sd">    projective spaces::</span>
 
-<span class="sd">        sage: all(quiver_moduli(kronecker(d), (1, 1), mu((1, -1))) == Pn(d - 1) for d in range(3, 10))</span>
+<span class="sd">        sage: all(quiver_moduli(kronecker(d), (1, 1)) == Pn(d - 1) for d in range(3, 10))</span>
 <span class="sd">        True</span>
 
 <span class="sd">    We can also realise Grassmannians using the $d$-Kronecker quiver, for</span>
-<span class="sd">    dimension vector $(1,k)$ and stability condition $(k,1)$ we get the</span>
-<span class="sd">    Grassmannian $\\operatorname{Gr}(k,d)$::</span>
+<span class="sd">    dimension vector $(1,k)$ and stability condition $(k,1)$ (or the canonical</span>
+<span class="sd">    stability condition) we get the Grassmannian $\\operatorname{Gr}(k,d)$::</span>
 
-<span class="sd">        sage: quiver_moduli(kronecker(4), (1, 2), mu((2, 1))) == grassmannian(2, 4)</span>
+<span class="sd">        sage: quiver_moduli(kronecker(4), (1, 2), mu=slope((2, 1))) == grassmannian(2, 4)</span>
 <span class="sd">        True</span>
-<span class="sd">        sage: quiver_moduli(kronecker(7), (1, 3), mu((3, 1))) == grassmannian(3, 7)</span>
+<span class="sd">        sage: quiver_moduli(kronecker(7), (1, 3)) == grassmannian(3, 7)</span>
 <span class="sd">        True</span>
+
+<span class="sd">    Any stability function in the same chamber gives the same variety::</span>
+
+<span class="sd">        sage: quiver_moduli(kronecker(7), (1, 3)) == quiver_moduli(kronecker(7), (1, 3), mu=slope((1, -1)))</span>
+<span class="sd">        True</span>
+
+<span class="sd">    The following is an example of wall-crossing, and thus different varieties::</span>
+
+<span class="sd">        sage: M = matrix([[0, 1, 1], [0, 0, 2], [0, 0, 0]])</span>
+<span class="sd">        sage: quiver_moduli(M, (1, 1, 1)) == Pn(2).blowup(point())</span>
+<span class="sd">        True</span>
+<span class="sd">        sage: quiver_moduli(M, (1, 1, 1), mu=slope((1, 0, 0))) == Pn(2)</span>
+<span class="sd">        True</span>
+
 
 <span class="sd">    The flag variety $\\operatorname{Fl}(n,r_1,\\ldots,r_s)$ is also a quiver</span>
 <span class="sd">    moduli space, for $\\mathrm{A}_s$ quiver prefixed with an $n$-Kronecker</span>
@@ -3139,11 +3201,11 @@
 <span class="sd">    and stability condition the indicator function at the first vertex::</span>
 
 <span class="sd">        sage: def flags(n, s): return matrix(ZZ, s+1, s+1, lambda i,j: 0 if i != j-1 else (n if i == 0 else 1))</span>
-<span class="sd">        sage: quiver_moduli(flags(4, 1), (1, 1), mu((1, 0))) == Pn(3)</span>
+<span class="sd">        sage: quiver_moduli(flags(4, 1), (1, 1)) == Pn(3)</span>
 <span class="sd">        True</span>
-<span class="sd">        sage: quiver_moduli(flags(3, 2), (1, 2, 1), mu((1, 0, 0))) == fano_threefold(2, 32)</span>
+<span class="sd">        sage: quiver_moduli(flags(3, 2), (1, 2, 1)) == fano_threefold(2, 32)</span>
 <span class="sd">        True</span>
-<span class="sd">        sage: quiver_moduli(flags(5, 3), (1, 4, 3, 1), mu((1, 0, 0, 0))) == partial_flag_variety(&quot;A4&quot;, [2])</span>
+<span class="sd">        sage: quiver_moduli(flags(5, 3), (1, 4, 3, 1)) == partial_flag_variety(&quot;A4&quot;, [2])</span>
 <span class="sd">        True</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">K</span> <span class="o">=</span> <span class="n">FunctionField</span><span class="p">(</span><span class="n">QQ</span><span class="p">,</span> <span class="s1">&#39;v&#39;</span><span class="p">)</span>
@@ -3225,6 +3287,12 @@
 
     <span class="c1"># see Definition 6.3 and following lemmas</span>
     <span class="k">assert</span> <span class="n">gcd</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;dimension vector is not coprime&quot;</span>
+
+    <span class="c1"># if mu is not provided we resort to the canonical stability condition</span>
+    <span class="n">mu</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;mu&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">mu</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">A</span> <span class="o">=</span> <span class="n">matrix</span><span class="o">.</span><span class="n">identity</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">))</span> <span class="o">-</span> <span class="n">Q</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">()</span>
+        <span class="n">mu</span> <span class="o">=</span> <span class="n">slope</span><span class="p">(</span><span class="n">vector</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">*</span> <span class="n">A</span> <span class="o">-</span> <span class="n">A</span> <span class="o">*</span> <span class="n">vector</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
 
     <span class="c1"># (0,d)-entry of the inverse of the transfer matrix, as per Corollary 6.9</span>
     <span class="n">T</span> <span class="o">=</span> <span class="n">Td</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">adjacency_matrix</span><span class="p">(),</span> <span class="n">d</span><span class="p">,</span> <span class="n">mu</span><span class="p">)</span>
