@@ -1946,8 +1946,8 @@ def fano_variety_intersection_quadrics_odd(g, k):
         Hodge diamond of size 51 and dimension 50
 
     """
-    assert g >= 2
-    assert k in range(g)
+    assert g >= 2, "genus needs to be at least 2"
+    assert k in range(g), "non-empty only from 0 to g-1"
 
     if k == g - 1: return jacobian(g)
 
@@ -1988,44 +1988,56 @@ def fano_variety_intersection_quadrics_odd(g, k):
     return HodgeDiamond.from_polynomial(polynomial, from_variety=True)
 
 
-def fano_variety_intersection_quadrics_even(g, i):
+def fano_variety_intersection_quadrics_even(g, k):
     r"""
     Hodge diamond for the Fano variety of $i-1$-planes on the intersection of
-    two quadrics in $\\mathbb{P}^{2g}$, using [1510.05986v3].
+    two quadrics in $\\mathbb{P}^{2g+1}$, using [1510.05986v3].
 
     * [1510.05986v3] Chen--Vilonen--Xue, Springer correspondence, hyperelliptic curves, and cohomology of Fano varieties
 
     INPUT:
 
-    - ``g`` -- half of the dimension of the ambient projective space
+    - ``g`` -- half of the dimension of the quadrics
 
-    - ``i`` -- affine dimension of the linear subspaces on the intersection of quadrics
+    - ``k`` -- dimension of the linear subspaces on the intersection of quadrics, at most $g-1$
 
     EXAMPLES:
 
-    We have that for i = g-1 we get the moduli space of parabolic bundles on
+    For $k=0$ we have the intersection of two quadrics::
+
+        sage: from diamond import *
+        sage: fano_variety_intersection_quadrics_even(2, 0) == complete_intersection([2, 2], 2)
+        True
+        sage: fano_variety_intersection_quadrics_even(5, 0) == complete_intersection([2, 2], 8)
+        True
+
+    We have that for $k = g-2$ we get the moduli space of parabolic bundles on
     $\\mathbb{P}^1$ with weight $1/2$ in $2g+3$ points::
 
         sage: from diamond import *
-        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*5) == fano_variety_intersection_quadrics_even(2, 1)
+        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*5) == fano_variety_intersection_quadrics_even(2, 0)
         True
-        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*7) == fano_variety_intersection_quadrics_even(3, 2)
-        True
-        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*9) == fano_variety_intersection_quadrics_even(4, 3)
+        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*9) == fano_variety_intersection_quadrics_even(4, 2)
         True
 
-    For `i=1` however we get the intersection of 2 quadrics::
+    For $k=g-1$ we get a finite reduced scheme of length $4^g$::
 
-        sage: fano_variety_intersection_quadrics_even(8, 1) == complete_intersection([2, 2], 14)
-        True
+        sage: from diamond import *
+        sage: fano_variety_intersection_quadrics_even(4, 3)
+        256
 
     """
+    assert g >= 2, "genus needs to be at least 2"
+    assert k in range(g), "non-empty only from 0 to g-1"
+
     def M(k, j):
         index = k - j * (g - i)
         if index < 0:
             return 0
         else:
             return q_binomial(2 * g - i - j, i - j).padded_list(index + 1)[index]
+
+    i = k + 1
 
     x, _ = (HodgeDiamond.x, HodgeDiamond.y)
     R = x.parent()
