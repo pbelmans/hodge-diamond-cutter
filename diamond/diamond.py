@@ -1907,27 +1907,50 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     return result
 
 
-def fano_variety_intersection_quadrics_odd(g, i):
+def fano_variety_intersection_quadrics_odd(g, k):
     r"""
-    Hodge diamond for the Fano variety of $g-i$-planes on the intersection of
+    Hodge diamond for the Fano variety of $k$-planes on the intersection of
     two quadrics in $\\mathbb{P}^{2g+1}$, using [MR3689749].
 
-    We have that for i = 2 we get M_C(2,L) as above, for deg L odd.
+    We have that for $k=g-2$ we get M_C(2,L) as above, for deg L odd.
 
     * [MR3689749] Chen--Vilonen--Xue, On the cohomology of Fano varieties and the Springer correspondence, Adv. Math. 318 (2017), 515–533.
 
     EXAMPLES:
 
-    For $i=2$ we recover the moduli space of rank 2 bundles with odd determinant
+    For $k=0$ we have the intersection of two quadrics::
+
+        sage: from diamond import *
+        sage: fano_variety_intersection_quadrics_odd(2, 0) == complete_intersection([2, 2], 3)
+        True
+        sage: fano_variety_intersection_quadrics_odd(5, 0) == complete_intersection([2, 2], 9)
+        True
+
+    For $k=g-2$ we recover the moduli space of rank 2 bundles with odd determinant
     on a curve of genus $g$::
 
         sage: from diamond import *
-        sage: fano_variety_intersection_quadrics_odd(5, 2) == moduli_vector_bundles(2, 1, 5)
+        sage: fano_variety_intersection_quadrics_odd(11, 9) == moduli_vector_bundles(2, 1, 11)
         True
-        sage: fano_variety_intersection_quadrics_odd(12, 3)
+
+    For $k=g-1$ it is the Jacobian of $C$::
+
+        sage: from diamond import *
+        sage: fano_variety_intersection_quadrics_odd(12, 11) == jacobian(12)
+        True
+
+    For other $k$ it is an interesting variety::
+
+        sage: from diamond import *
+        sage: fano_variety_intersection_quadrics_odd(12, 9)
         Hodge diamond of size 51 and dimension 50
 
     """
+    assert g >= 2
+    assert k in range(g)
+
+    if k == g - 1: return jacobian(g)
+
     def dim(g, i):
         r = 2*g + 1
         k = g - i
@@ -1941,6 +1964,9 @@ def fano_variety_intersection_quadrics_odd(g, i):
         R = PowerSeriesRing(ZZ, default_prec=2*dim(g, i) + 1)
         q = R.gen(0)
         return (q**(-(j-i+1)*(2*i-1)) * (1 - q**(4*j)) * prod([1 - q**(2*l) for l in range(j-i+2, i+j-1)]) / prod([1 - q**(2*l) for l in range(1, 2*i-1)]))[k]
+
+    # go back to the notation of Chen--Vilonen--Xue
+    i = g - k
 
     d = (g - i + 1) * (2*i - 1)
 
