@@ -547,7 +547,7 @@ class HodgeDiamond(Element):
             sage: Pn(1)
             Hodge diamond of size 2 and dimension 1
         """
-        return "Hodge diamond of size {} and dimension {}".format(self._size + 1, self.dimension())
+        return f"Hodge diamond of size {self._size + 1} and dimension {self.dimension()}"
 
     def __str__(self):
         r"""Pretty print Hodge diamond
@@ -1222,7 +1222,7 @@ class HochschildHomology(Element):
             sage: HochschildHomology.from_list([1,0,22,0,1])
             Hochschild homology vector of dimension 2
         """
-        return "Hochschild homology vector of dimension {}".format(self.dimension())
+        return f"Hochschild homology vector of dimension {self.dimension()}"
 
     def __str__(self) -> str:
         """
@@ -2727,7 +2727,7 @@ def orthogonal_grassmannian(k, n):
         D = "D" + str(n // 2)
         if k - 1 == n // 2:
             # exceptional case: need submaximal parabolic
-            I = [i for i in range(1, n // 2 - 1)]
+            I = list(range(1, n // 2 - 1))
         else:
             I = [i for i in range(1, n // 2 + 1) if i != k]
         return partial_flag_variety(D, I)
