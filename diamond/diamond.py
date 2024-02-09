@@ -2023,8 +2023,8 @@ def fano_variety_intersection_quadrics_even(g, k):
     For $k=g-1$ we get a finite reduced scheme of length $4^g$::
 
         sage: from diamond import *
-        sage: fano_variety_intersection_quadrics_even(4, 3)
-        256
+        sage: print(fano_variety_intersection_quadrics_even(4, 3))
+          256
 
     """
     assert g >= 2, "genus needs to be at least 2"
