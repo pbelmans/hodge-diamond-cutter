@@ -94,7 +94,7 @@ It also possible to generate LaTeX code::
     \begin{tabular}{ccccc}
      &  & $1$ &  &  \\
      & $0$ &  & $0$ &  \\
-    $1$ &  & $20$ &  & $1$ &  \\
+    $1$ &  & $20$ &  & $1$ \\
      & $0$ &  & $0$ &  \\
      &  & $1$ &  &  \\
     \end{tabular}
