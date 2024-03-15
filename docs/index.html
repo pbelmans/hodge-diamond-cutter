@@ -282,7 +282,7 @@ can use within the Hodge diamond cutter. To get started we do:</p>
 \begin{tabular}{ccccc}
  &amp;  &amp; $1$ &amp;  &amp;  \\
  &amp; $0$ &amp;  &amp; $0$ &amp;  \\
-$1$ &amp;  &amp; $20$ &amp;  &amp; $1$ &amp;  \\
+$1$ &amp;  &amp; $20$ &amp;  &amp; $1$ \\
  &amp; $0$ &amp;  &amp; $0$ &amp;  \\
  &amp;  &amp; $1$ &amp;  &amp;  \\
 \end{tabular}
@@ -329,6 +329,18 @@ and can be used externally to create new polynomials (and thus diamonds)</p>
 <dt class="sig sig-object py" id="diamond.HodgeDiamond.y">
 <span class="sig-name descname"><span class="pre">y</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">y</span></em><a class="headerlink" href="#diamond.HodgeDiamond.y" title="Permalink to this definition">#</a></dt>
 <dd><p>variables in the polynomial ring for Hodge-Poincaré polynomials</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="diamond.HodgeDiamond.hide_zeroes">
+<span class="sig-name descname"><span class="pre">hide_zeroes</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#diamond.HodgeDiamond.hide_zeroes" title="Permalink to this definition">#</a></dt>
+<dd><p>static configuration variable for pretty-printing, see <cite>HodgeDiamond.pprint</cite></p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="diamond.HodgeDiamond.quarter">
+<span class="sig-name descname"><span class="pre">quarter</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#diamond.HodgeDiamond.quarter" title="Permalink to this definition">#</a></dt>
+<dd><p>static configuration variable for pretty-printing, see <cite>HodgeDiamond.pprint</cite></p>
 </dd></dl>
 
 <dl class="py method">
@@ -572,13 +584,19 @@ polynomial, e.g. to find the Euler characteristic:</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="diamond.HodgeDiamond.pprint">
-<span class="sig-name descname"><span class="pre">pprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'table'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diamond/diamond.html#HodgeDiamond.pprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diamond.HodgeDiamond.pprint" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">pprint</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'table'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hide_zeroes</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quarter</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diamond/diamond.html#HodgeDiamond.pprint"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diamond.HodgeDiamond.pprint" title="Permalink to this definition">#</a></dt>
 <dd><p>Pretty print the Hodge diamond</p>
 <p>INPUT:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">format</span></code> – output format (default: <cite>“table”</cite>), if table it pretty prints
 a Hodge diamond; all else defaults to the polynomial</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">hide_zeroes</span></code> (default: False) – whether to hide the zeroes if <cite>“table”</cite>
+is used as format</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">quarter</span></code> (default: False) – whether to only print the top-left quarter
+if <cite>“table”</cite> is used for the format</p></li>
 </ul>
+<p>The parameters <code class="docutils literal notranslate"><span class="pre">hide_zeroes</span></code> and <code class="docutils literal notranslate"><span class="pre">quarter</span></code> can be set using a static
+variable, in which case providing them will override this value (if it is set).</p>
 <p>EXAMPLES:</p>
 <p>The projective line:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
@@ -588,6 +606,36 @@ a Hodge diamond; all else defaults to the polynomial</p></li>
       <span class="mi">1</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">Pn</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="nb">format</span><span class="o">=</span><span class="s2">&quot;polynomial&quot;</span><span class="p">)</span>
 <span class="n">x</span><span class="o">*</span><span class="n">y</span> <span class="o">+</span> <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Don’t print the zeroes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">(</span><span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">curve</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">hide_zeroes</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="mi">1</span>
+  <span class="mi">3</span>       <span class="mi">3</span>
+      <span class="mi">2</span>
+  <span class="mi">3</span>       <span class="mi">3</span>
+      <span class="mi">2</span>
+  <span class="mi">3</span>       <span class="mi">3</span>
+      <span class="mi">1</span>
+</pre></div>
+</div>
+<p>Only print the top-left quarter:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">(</span><span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">curve</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">quarter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+              <span class="mi">1</span>
+          <span class="mi">3</span>
+      <span class="mi">0</span>       <span class="mi">2</span>
+  <span class="mi">0</span>       <span class="mi">3</span>
+</pre></div>
+</div>
+<p>Only print the top-left quarter whilst hiding zeroes:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="p">(</span><span class="n">Pn</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">curve</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span><span class="o">.</span><span class="n">pprint</span><span class="p">(</span><span class="n">hide_zeroes</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">quarter</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+      <span class="mi">1</span>
+  <span class="mi">3</span>
+      <span class="mi">2</span>
+  <span class="mi">3</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -709,6 +757,44 @@ which can be seen on the level of middle cohomology:</p>
 <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span>
 <span class="n">sage</span><span class="p">:</span> <span class="n">K3</span><span class="p">()</span><span class="o">.</span><span class="n">middle</span><span class="p">()</span>
 <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">20</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="diamond.HodgeDiamond.row">
+<span class="sig-name descname"><span class="pre">row</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">truncate</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diamond/diamond.html#HodgeDiamond.row"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diamond.HodgeDiamond.row" title="Permalink to this definition">#</a></dt>
+<dd><p>Get the ith row of the Hodge diamond</p>
+<p>For smooth projective varieties these are the Hodge numbers of the
+Hodge structure on the cohomology in degree <cite>i</cite>.</p>
+<p>Alternatively, you can use <code class="docutils literal notranslate"><span class="pre">HodgeDiamond.__getitem__</span></code> with a single
+index <cite>i</cite> (but then you have to truncate yourself).</p>
+<p>INPUT:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code> – the row of the Hodge diamond</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">truncate</span></code> (default: False) – whether you want to omit leading
+and trailing zeroes</p></li>
+</ul>
+<p>EXAMPLES:</p>
+<p>For a smooth projective variety the middle cohomology is the row
+sitting in the middle dimension:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">middle</span><span class="p">()</span> <span class="o">==</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>If you don’t want to truncate, <code class="docutils literal notranslate"><span class="pre">HodgeDiamond.__getitem__</span></code> gives the
+same functionality:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span> <span class="o">==</span> <span class="n">hypersurface</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)[</span><span class="mi">4</span><span class="p">]</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For the moduli space of vector bundles on a curve, the cohomology
+in degree 3 is the same as the cohomology of the curve in degree 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_vector_bundles</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -1763,52 +1849,77 @@ dimension, so we just use this computation method.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="diamond.fano_variety_intersection_quadrics_even">
-<span class="sig-prename descclassname"><span class="pre">diamond.</span></span><span class="sig-name descname"><span class="pre">fano_variety_intersection_quadrics_even</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diamond/diamond.html#fano_variety_intersection_quadrics_even"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diamond.fano_variety_intersection_quadrics_even" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">diamond.</span></span><span class="sig-name descname"><span class="pre">fano_variety_intersection_quadrics_even</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diamond/diamond.html#fano_variety_intersection_quadrics_even"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diamond.fano_variety_intersection_quadrics_even" title="Permalink to this definition">#</a></dt>
 <dd><p>Hodge diamond for the Fano variety of $i-1$-planes on the intersection of
-two quadrics in $\mathbb{P}^{2g}$, using [1510.05986v3].</p>
+two quadrics in $\mathbb{P}^{2g+1}$, using [1510.05986v3].</p>
 <ul class="simple">
 <li><p>[1510.05986v3] Chen–Vilonen–Xue, Springer correspondence, hyperelliptic curves, and cohomology of Fano varieties</p></li>
 </ul>
 <p>INPUT:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">g</span></code> – half of the dimension of the ambient projective space</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">i</span></code> – affine dimension of the linear subspaces on the intersection of quadrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">g</span></code> – half of the dimension of the quadrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">k</span></code> – dimension of the linear subspaces on the intersection of quadrics, at most $g-1$</p></li>
 </ul>
 <p>EXAMPLES:</p>
-<p>We have that for i = g-1 we get the moduli space of parabolic bundles on
-$\mathbb{P}^1$ with weight $1/2$ in $2g+3$ points:</p>
+<p>For $k=0$ we have the intersection of two quadrics:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_parabolic_vector_bundles_rank_two</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">2</span><span class="p">)</span>
 <span class="kc">True</span>
-<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_parabolic_vector_bundles_rank_two</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">7</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-<span class="kc">True</span>
-<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_parabolic_vector_bundles_rank_two</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">9</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">8</span><span class="p">)</span>
 <span class="kc">True</span>
 </pre></div>
 </div>
-<p>For <cite>i=1</cite> however we get the intersection of 2 quadrics:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">14</span><span class="p">)</span>
+<p>We have that for $k = g-2$ we get the moduli space of parabolic bundles on
+$\mathbb{P}^1$ with weight $1/2$ in $2g+3$ points:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_parabolic_vector_bundles_rank_two</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">5</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
 <span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">moduli_parabolic_vector_bundles_rank_two</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span><span class="p">]</span><span class="o">*</span><span class="mi">9</span><span class="p">)</span> <span class="o">==</span> <span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For $k=g-1$ we get a finite reduced scheme of length $4^g$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="nb">print</span><span class="p">(</span><span class="n">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
+  <span class="mi">256</span>
 </pre></div>
 </div>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="diamond.fano_variety_intersection_quadrics_odd">
-<span class="sig-prename descclassname"><span class="pre">diamond.</span></span><span class="sig-name descname"><span class="pre">fano_variety_intersection_quadrics_odd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diamond/diamond.html#fano_variety_intersection_quadrics_odd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diamond.fano_variety_intersection_quadrics_odd" title="Permalink to this definition">#</a></dt>
-<dd><p>Hodge diamond for the Fano variety of $g-i$-planes on the intersection of
+<span class="sig-prename descclassname"><span class="pre">diamond.</span></span><span class="sig-name descname"><span class="pre">fano_variety_intersection_quadrics_odd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/diamond/diamond.html#fano_variety_intersection_quadrics_odd"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#diamond.fano_variety_intersection_quadrics_odd" title="Permalink to this definition">#</a></dt>
+<dd><p>Hodge diamond for the Fano variety of $k$-planes on the intersection of
 two quadrics in $\mathbb{P}^{2g+1}$, using [MR3689749].</p>
-<p>We have that for i = 2 we get M_C(2,L) as above, for deg L odd.</p>
+<p>We have that for $k=g-2$ we get M_C(2,L) as above, for deg L odd.</p>
 <ul class="simple">
 <li><p>[MR3689749] Chen–Vilonen–Xue, On the cohomology of Fano varieties and the Springer correspondence, Adv. Math. 318 (2017), 515–533.</p></li>
 </ul>
 <p>EXAMPLES:</p>
-<p>For $i=2$ we recover the moduli space of rank 2 bundles with odd determinant
+<p>For $k=0$ we have the intersection of two quadrics:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">3</span><span class="p">)</span>
+<span class="kc">True</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">complete_intersection</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="mi">9</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For $k=g-2$ we recover the moduli space of rank 2 bundles with odd determinant
 on a curve of genus $g$:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="o">==</span> <span class="n">moduli_vector_bundles</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">11</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span> <span class="o">==</span> <span class="n">moduli_vector_bundles</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span>
 <span class="kc">True</span>
-<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For $k=g-1$ it is the Jacobian of $C$:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">11</span><span class="p">)</span> <span class="o">==</span> <span class="n">jacobian</span><span class="p">(</span><span class="mi">12</span><span class="p">)</span>
+<span class="kc">True</span>
+</pre></div>
+</div>
+<p>For other $k$ it is an interesting variety:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sage</span><span class="p">:</span> <span class="kn">from</span> <span class="nn">diamond</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="n">sage</span><span class="p">:</span> <span class="n">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">9</span><span class="p">)</span>
 <span class="n">Hodge</span> <span class="n">diamond</span> <span class="n">of</span> <span class="n">size</span> <span class="mi">51</span> <span class="ow">and</span> <span class="n">dimension</span> <span class="mi">50</span>
 </pre></div>
 </div>

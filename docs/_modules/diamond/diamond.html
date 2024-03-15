@@ -282,7 +282,7 @@
 <span class="sd">    \begin{tabular}{ccccc}</span>
 <span class="sd">     &amp;  &amp; $1$ &amp;  &amp;  \\</span>
 <span class="sd">     &amp; $0$ &amp;  &amp; $0$ &amp;  \\</span>
-<span class="sd">    $1$ &amp;  &amp; $20$ &amp;  &amp; $1$ &amp;  \\</span>
+<span class="sd">    $1$ &amp;  &amp; $20$ &amp;  &amp; $1$ \\</span>
 <span class="sd">     &amp; $0$ &amp;  &amp; $0$ &amp;  \\</span>
 <span class="sd">     &amp;  &amp; $1$ &amp;  &amp;  \\</span>
 <span class="sd">    \end{tabular}</span>
@@ -343,6 +343,8 @@
 <span class="kn">from</span> <span class="nn">sage.structure.element</span> <span class="kn">import</span> <span class="n">Element</span>
 <span class="kn">from</span> <span class="nn">sage.misc.fast_methods</span> <span class="kn">import</span> <span class="n">Singleton</span>
 
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+
 
 <span class="k">def</span> <span class="nf">_to_matrix</span><span class="p">(</span><span class="n">f</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -380,6 +382,11 @@
     <span class="n">R</span> <span class="o">=</span> <span class="n">PolynomialRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="p">(</span><span class="s2">&quot;x&quot;</span><span class="p">,</span> <span class="s2">&quot;y&quot;</span><span class="p">))</span>
     <span class="c1">#: variables in the polynomial ring for Hodge-Poincaré polynomials</span>
     <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">gens</span><span class="p">()</span>
+
+    <span class="c1">#: static configuration variable for pretty-printing, see `HodgeDiamond.pprint`</span>
+    <span class="n">hide_zeroes</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="c1">#: static configuration variable for pretty-printing, see `HodgeDiamond.pprint`</span>
+    <span class="n">quarter</span> <span class="o">=</span> <span class="kc">None</span>
 
 <div class="viewcode-block" id="HodgeDiamond.__init__"><a class="viewcode-back" href="../../index.html#diamond.HodgeDiamond.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
@@ -711,7 +718,7 @@
                     <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">q</span><span class="p">]</span>
                 <span class="k">except</span> <span class="ne">IndexError</span><span class="p">:</span>
                     <span class="k">return</span> <span class="mi">0</span>
-        <span class="c1"># now we assume it&#39;s an integer</span>
+        <span class="c1"># now we assume it&#39;s an integer: this is equivalent to HodgeDiamond.row(p)</span>
         <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
             <span class="c1"># we could do something smarter, but this is it for now</span>
             <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">p</span><span class="p">,</span> <span class="n">index</span> <span class="o">-</span> <span class="n">p</span><span class="p">]</span> <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
@@ -735,7 +742,7 @@
 <span class="sd">            sage: Pn(1)</span>
 <span class="sd">            Hodge diamond of size 2 and dimension 1</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;Hodge diamond of size </span><span class="si">{}</span><span class="s2"> and dimension </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">())</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hodge diamond of size </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_size</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2"> and dimension </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
 
 <div class="viewcode-block" id="HodgeDiamond.__str__"><a class="viewcode-back" href="../../index.html#diamond.HodgeDiamond.__str__">[docs]</a>    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pretty print Hodge diamond</span>
@@ -754,8 +761,21 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pprint</span><span class="p">())</span></div>
 
-    <span class="k">def</span> <span class="nf">__table</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__table</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">hide_zeroes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quarter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Generate a table object for the Hodge diamond&quot;&quot;&quot;</span>
+        <span class="c1"># take the default values from the static variables</span>
+        <span class="k">if</span> <span class="n">hide_zeroes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">hide_zeroes</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">hide_zeroes</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">hide_zeroes</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">hide_zeroes</span>
+
+        <span class="k">if</span> <span class="n">quarter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">quarter</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">quarter</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">quarter</span> <span class="o">=</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">quarter</span>
+
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
         <span class="n">T</span> <span class="o">=</span> <span class="p">[]</span>
 
@@ -770,19 +790,54 @@
 
                 <span class="n">T</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
 
-        <span class="c1"># padding all rows to full length</span>
+        <span class="c1"># making sure all rows have same length</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)):</span>
             <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">d</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">][:</span><span class="mi">2</span><span class="o">*</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># replace zeroes by spaces, if requested</span>
+        <span class="k">if</span> <span class="n">hide_zeroes</span><span class="p">:</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="p">[[</span><span class="n">t</span> <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="mi">0</span> <span class="k">else</span> <span class="s2">&quot;&quot;</span> <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">row</span><span class="p">]</span> <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">T</span><span class="p">]</span>
+
+        <span class="c1"># only print the top-left quarter, if requested</span>
+        <span class="k">if</span> <span class="n">quarter</span><span class="p">:</span>
+            <span class="n">T</span> <span class="o">=</span> <span class="p">[[</span><span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span><span class="o">+</span><span class="mi">1</span><span class="p">)]</span>
+
+        <span class="c1"># determine the minimum number of leading and trailing empty strings</span>
+        <span class="c1"># and remove them to align better to the left</span>
+        <span class="k">if</span> <span class="n">hide_zeroes</span><span class="p">:</span>
+            <span class="n">empty</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">T</span><span class="p">:</span>
+                <span class="p">(</span><span class="n">leading</span><span class="p">,</span> <span class="n">trailing</span><span class="p">)</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+                <span class="n">groups</span> <span class="o">=</span> <span class="p">[(</span><span class="n">k</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">g</span><span class="p">)))</span> <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">g</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">row</span><span class="p">)]</span>
+                <span class="k">if</span> <span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>  <span class="n">leading</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">groups</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span> <span class="n">trailing</span> <span class="o">=</span> <span class="n">groups</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">empty</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">leading</span><span class="p">,</span> <span class="n">trailing</span><span class="p">),)</span>
+
+            <span class="n">leading</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">a</span> <span class="k">for</span> <span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="ow">in</span> <span class="n">empty</span><span class="p">)</span>
+            <span class="n">trailing</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">b</span> <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="ow">in</span> <span class="n">empty</span><span class="p">)</span>
+
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)):</span>
+                <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">T</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">leading</span><span class="p">:</span><span class="nb">len</span><span class="p">(</span><span class="n">T</span><span class="p">)</span> <span class="o">-</span> <span class="n">trailing</span><span class="p">]</span>
 
         <span class="k">return</span> <span class="n">table</span><span class="p">(</span><span class="n">T</span><span class="p">,</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">)</span>
 
-<div class="viewcode-block" id="HodgeDiamond.pprint"><a class="viewcode-back" href="../../index.html#diamond.HodgeDiamond.pprint">[docs]</a>    <span class="k">def</span> <span class="nf">pprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="HodgeDiamond.pprint"><a class="viewcode-back" href="../../index.html#diamond.HodgeDiamond.pprint">[docs]</a>    <span class="k">def</span> <span class="nf">pprint</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;table&quot;</span><span class="p">,</span> <span class="n">hide_zeroes</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">quarter</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Pretty print the Hodge diamond</span>
 
 <span class="sd">        INPUT:</span>
 
 <span class="sd">        - ``format`` -- output format (default: `&quot;table&quot;`), if table it pretty prints</span>
 <span class="sd">          a Hodge diamond; all else defaults to the polynomial</span>
+
+<span class="sd">        - ``hide_zeroes`` (default: False) -- whether to hide the zeroes if `&quot;table&quot;`</span>
+<span class="sd">          is used as format</span>
+
+<span class="sd">        - ``quarter`` (default: False) -- whether to only print the top-left quarter</span>
+<span class="sd">          if `&quot;table&quot;` is used for the format</span>
+
+<span class="sd">        The parameters ``hide_zeroes`` and ``quarter`` can be set using a static</span>
+<span class="sd">        variable, in which case providing them will override this value (if it is set).</span>
 
 <span class="sd">        EXAMPLES:</span>
 
@@ -796,9 +851,39 @@
 <span class="sd">            sage: Pn(1).pprint(format=&quot;polynomial&quot;)</span>
 <span class="sd">            x*y + 1</span>
 
+<span class="sd">        Don&#39;t print the zeroes::</span>
+
+<span class="sd">            sage: from diamond import *</span>
+<span class="sd">            sage: (Pn(2) * curve(3)).pprint(hide_zeroes=True)</span>
+<span class="sd">                  1</span>
+<span class="sd">              3       3</span>
+<span class="sd">                  2</span>
+<span class="sd">              3       3</span>
+<span class="sd">                  2</span>
+<span class="sd">              3       3</span>
+<span class="sd">                  1</span>
+
+<span class="sd">        Only print the top-left quarter::</span>
+
+<span class="sd">            sage: from diamond import *</span>
+<span class="sd">            sage: (Pn(2) * curve(3)).pprint(quarter=True)</span>
+<span class="sd">                          1</span>
+<span class="sd">                      3</span>
+<span class="sd">                  0       2</span>
+<span class="sd">              0       3</span>
+
+<span class="sd">        Only print the top-left quarter whilst hiding zeroes::</span>
+
+<span class="sd">            sage: from diamond import *</span>
+<span class="sd">            sage: (Pn(2) * curve(3)).pprint(hide_zeroes=True, quarter=True)</span>
+<span class="sd">                  1</span>
+<span class="sd">              3</span>
+<span class="sd">                  2</span>
+<span class="sd">              3</span>
+
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="nb">format</span> <span class="o">==</span> <span class="s2">&quot;table&quot;</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__table</span><span class="p">()</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">__table</span><span class="p">(</span><span class="n">hide_zeroes</span><span class="o">=</span><span class="n">hide_zeroes</span><span class="p">,</span> <span class="n">quarter</span><span class="o">=</span><span class="n">quarter</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">polynomial</span></div>
 
@@ -944,6 +1029,53 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_size</span>
         <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="o">-</span> <span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span></div>
+
+<div class="viewcode-block" id="HodgeDiamond.row"><a class="viewcode-back" href="../../index.html#diamond.HodgeDiamond.row">[docs]</a>    <span class="k">def</span> <span class="nf">row</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">truncate</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Get the ith row of the Hodge diamond</span>
+
+<span class="sd">        For smooth projective varieties these are the Hodge numbers of the</span>
+<span class="sd">        Hodge structure on the cohomology in degree `i`.</span>
+
+<span class="sd">        Alternatively, you can use ``HodgeDiamond.__getitem__`` with a single</span>
+<span class="sd">        index `i` (but then you have to truncate yourself).</span>
+
+<span class="sd">        INPUT:</span>
+
+<span class="sd">        - ``i`` -- the row of the Hodge diamond</span>
+
+<span class="sd">        - ``truncate`` (default: False) -- whether you want to omit leading</span>
+<span class="sd">          and trailing zeroes</span>
+
+<span class="sd">        EXAMPLES:</span>
+
+<span class="sd">        For a smooth projective variety the middle cohomology is the row</span>
+<span class="sd">        sitting in the middle dimension::</span>
+
+<span class="sd">            sage: from diamond import *</span>
+<span class="sd">            sage: hypersurface(3, 4).middle() == hypersurface(3, 4).row(4)</span>
+<span class="sd">            True</span>
+
+<span class="sd">        If you don&#39;t want to truncate, ``HodgeDiamond.__getitem__`` gives the</span>
+<span class="sd">        same functionality::</span>
+
+<span class="sd">            sage: from diamond import *</span>
+<span class="sd">            sage: hypersurface(3, 4).row(4) == hypersurface(3, 4)[4]</span>
+<span class="sd">            True</span>
+
+<span class="sd">        For the moduli space of vector bundles on a curve, the cohomology</span>
+<span class="sd">        in degree 3 is the same as the cohomology of the curve in degree 1::</span>
+
+<span class="sd">            sage: from diamond import *</span>
+<span class="sd">            sage: moduli_vector_bundles(3, 1, 9).row(3, truncate=True)</span>
+<span class="sd">            [9, 9]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">row</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">matrix</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">]</span> <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)]</span>
+
+        <span class="k">if</span> <span class="n">truncate</span><span class="p">:</span>
+            <span class="k">while</span> <span class="n">row</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">row</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">row</span></div>
 
 <div class="viewcode-block" id="HodgeDiamond.signature"><a class="viewcode-back" href="../../index.html#diamond.HodgeDiamond.signature">[docs]</a>    <span class="k">def</span> <span class="nf">signature</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot;The signature of the Hodge diamond</span>
@@ -1410,7 +1542,7 @@
 <span class="sd">            sage: HochschildHomology.from_list([1,0,22,0,1])</span>
 <span class="sd">            Hochschild homology vector of dimension 2</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">return</span> <span class="s2">&quot;Hochschild homology vector of dimension </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">())</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;Hochschild homology vector of dimension </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">dimension</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="sd">&quot;&quot;&quot;</span>
@@ -2095,45 +2227,64 @@
     <span class="k">return</span> <span class="n">result</span></div>
 
 
-<div class="viewcode-block" id="fano_variety_intersection_quadrics_odd"><a class="viewcode-back" href="../../index.html#diamond.fano_variety_intersection_quadrics_odd">[docs]</a><span class="k">def</span> <span class="nf">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="fano_variety_intersection_quadrics_odd"><a class="viewcode-back" href="../../index.html#diamond.fano_variety_intersection_quadrics_odd">[docs]</a><span class="k">def</span> <span class="nf">fano_variety_intersection_quadrics_odd</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Hodge diamond for the Fano variety of $g-i$-planes on the intersection of</span>
+<span class="sd">    Hodge diamond for the Fano variety of $k$-planes on the intersection of</span>
 <span class="sd">    two quadrics in $\\mathbb{P}^{2g+1}$, using [MR3689749].</span>
 
-<span class="sd">    We have that for i = 2 we get M_C(2,L) as above, for deg L odd.</span>
+<span class="sd">    We have that for $k=g-2$ we get M_C(2,L) as above, for deg L odd.</span>
 
 <span class="sd">    * [MR3689749] Chen--Vilonen--Xue, On the cohomology of Fano varieties and the Springer correspondence, Adv. Math. 318 (2017), 515–533.</span>
 
 <span class="sd">    EXAMPLES:</span>
 
-<span class="sd">    For $i=2$ we recover the moduli space of rank 2 bundles with odd determinant</span>
+<span class="sd">    For $k=0$ we have the intersection of two quadrics::</span>
+
+<span class="sd">        sage: from diamond import *</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_odd(2, 0) == complete_intersection([2, 2], 3)</span>
+<span class="sd">        True</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_odd(5, 0) == complete_intersection([2, 2], 9)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    For $k=g-2$ we recover the moduli space of rank 2 bundles with odd determinant</span>
 <span class="sd">    on a curve of genus $g$::</span>
 
 <span class="sd">        sage: from diamond import *</span>
-<span class="sd">        sage: fano_variety_intersection_quadrics_odd(5, 2) == moduli_vector_bundles(2, 1, 5)</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_odd(11, 9) == moduli_vector_bundles(2, 1, 11)</span>
 <span class="sd">        True</span>
-<span class="sd">        sage: fano_variety_intersection_quadrics_odd(12, 3)</span>
+
+<span class="sd">    For $k=g-1$ it is the Jacobian of $C$::</span>
+
+<span class="sd">        sage: from diamond import *</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_odd(12, 11) == jacobian(12)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    For other $k$ it is an interesting variety::</span>
+
+<span class="sd">        sage: from diamond import *</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_odd(12, 9)</span>
 <span class="sd">        Hodge diamond of size 51 and dimension 50</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">def</span> <span class="nf">dim</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
-        <span class="n">r</span> <span class="o">=</span> <span class="mi">2</span><span class="o">*</span><span class="n">g</span> <span class="o">+</span> <span class="mi">1</span>
-        <span class="n">k</span> <span class="o">=</span> <span class="n">g</span> <span class="o">-</span> <span class="n">i</span>
+    <span class="k">assert</span> <span class="n">g</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;genus needs to be at least 2&quot;</span>
+    <span class="k">assert</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="s2">&quot;non-empty only from 0 to g-1&quot;</span>
 
-        <span class="c1"># equation 9 in https://arxiv.org/abs/1903.11294</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">k</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span> <span class="o">-</span> <span class="n">k</span><span class="p">)</span> <span class="o">-</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">binomial</span><span class="p">(</span><span class="mi">2</span> <span class="o">+</span> <span class="n">k</span><span class="p">,</span> <span class="n">k</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">k</span> <span class="o">==</span> <span class="n">g</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span> <span class="k">return</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
 
-
-    <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
-        <span class="c1"># some random high bound which works in many cases</span>
-        <span class="n">R</span> <span class="o">=</span> <span class="n">PowerSeriesRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">default_prec</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">dim</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
-        <span class="n">q</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="k">return</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">j</span><span class="p">))</span> <span class="o">*</span> <span class="n">prod</span><span class="p">([</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> <span class="o">/</span> <span class="n">prod</span><span class="p">([</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)]))[</span><span class="n">k</span><span class="p">]</span>
-
+    <span class="c1"># go back to the notation of Chen--Vilonen--Xue</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="n">g</span> <span class="o">-</span> <span class="n">k</span>
+    <span class="c1"># dimension of the Fano variety</span>
     <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
 
-    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
+    <span class="c1"># multiplicity N_i(k, j) as in Theorem 1.1 of [MR3689749]</span>
+    <span class="k">def</span> <span class="nf">N</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
+        <span class="n">R</span> <span class="o">=</span> <span class="n">PowerSeriesRing</span><span class="p">(</span><span class="n">ZZ</span><span class="p">,</span> <span class="n">default_prec</span><span class="o">=</span><span class="mi">2</span><span class="o">*</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">R</span><span class="o">.</span><span class="n">gen</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="o">-</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">))</span> <span class="o">*</span> <span class="p">(</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">4</span><span class="o">*</span><span class="n">j</span><span class="p">))</span> \
+                <span class="o">*</span> <span class="n">prod</span><span class="p">([</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">j</span><span class="o">-</span><span class="n">i</span><span class="o">+</span><span class="mi">2</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="o">-</span><span class="mi">1</span><span class="p">)])</span> \
+                <span class="o">/</span> <span class="n">prod</span><span class="p">([</span><span class="mi">1</span> <span class="o">-</span> <span class="n">q</span><span class="o">**</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">l</span><span class="p">)</span> <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">*</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">)]))[</span><span class="n">k</span><span class="p">]</span>
 
+    <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="p">(</span><span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
     <span class="n">polynomial</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">d</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
@@ -2141,53 +2292,70 @@
             <span class="k">if</span> <span class="n">N</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="o">-</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">continue</span>
 
-            <span class="n">dimensions</span> <span class="o">=</span> <span class="p">(</span><span class="n">symmetric_power</span><span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">,</span> <span class="n">g</span><span class="p">)</span> <span class="o">-</span> <span class="n">symmetric_power</span><span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span> <span class="o">-</span> <span class="mi">2</span><span class="p">,</span> <span class="n">g</span><span class="p">)(</span><span class="mi">1</span><span class="p">))</span><span class="o">.</span><span class="n">middle</span><span class="p">()</span>
-            <span class="n">exterior</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">dimensions</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="n">m</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="p">((</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">-</span> <span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">((</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
-            <span class="n">polynomial</span> <span class="o">=</span> <span class="n">polynomial</span> <span class="o">+</span> <span class="n">N</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span> <span class="o">-</span> <span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">*</span> <span class="n">exterior</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="p">((</span><span class="n">k</span> <span class="o">-</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="p">((</span><span class="n">k</span> <span class="o">-</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># the `g-j`th exterior power of the first cohomology of the curve</span>
+            <span class="c1"># is the `g-j`th cohomology of the Jacobian</span>
+            <span class="n">dimensions</span> <span class="o">=</span> <span class="n">jacobian</span><span class="p">(</span><span class="n">g</span><span class="p">)</span><span class="o">.</span><span class="n">row</span><span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span>
+            <span class="c1"># turn the dimensions into a polynomial</span>
+            <span class="n">piece</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">([</span><span class="n">dimensions</span><span class="p">[</span><span class="n">m</span><span class="p">]</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="n">m</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="p">((</span><span class="n">g</span><span class="o">-</span><span class="n">j</span><span class="p">)</span><span class="o">-</span><span class="n">m</span><span class="p">)</span> <span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)])</span>
+            <span class="c1"># the appropriate Lefschetz twist to put it in the right cohomological degree</span>
+            <span class="n">twist</span> <span class="o">=</span> <span class="n">x</span><span class="o">**</span><span class="p">((</span><span class="n">k</span> <span class="o">-</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="p">((</span><span class="n">k</span> <span class="o">-</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">))</span><span class="o">/</span><span class="mi">2</span><span class="p">)</span>
 
-            <span class="k">assert</span> <span class="n">binomial</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">g</span><span class="p">,</span> <span class="n">g</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span> <span class="o">==</span> <span class="n">exterior</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>  <span class="c1"># checking the Betti numbers</span>
+            <span class="c1"># they reindex using `d-k`</span>
+            <span class="n">polynomial</span> <span class="o">=</span> <span class="n">polynomial</span> <span class="o">+</span> <span class="n">N</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">d</span><span class="o">-</span><span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">)</span> <span class="o">*</span> <span class="n">piece</span> <span class="o">*</span> <span class="n">twist</span>
 
     <span class="k">return</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">from_polynomial</span><span class="p">(</span><span class="n">polynomial</span><span class="p">,</span> <span class="n">from_variety</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="fano_variety_intersection_quadrics_even"><a class="viewcode-back" href="../../index.html#diamond.fano_variety_intersection_quadrics_even">[docs]</a><span class="k">def</span> <span class="nf">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">i</span><span class="p">):</span>
+<div class="viewcode-block" id="fano_variety_intersection_quadrics_even"><a class="viewcode-back" href="../../index.html#diamond.fano_variety_intersection_quadrics_even">[docs]</a><span class="k">def</span> <span class="nf">fano_variety_intersection_quadrics_even</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">k</span><span class="p">):</span>
     <span class="sa">r</span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">    Hodge diamond for the Fano variety of $i-1$-planes on the intersection of</span>
-<span class="sd">    two quadrics in $\\mathbb{P}^{2g}$, using [1510.05986v3].</span>
+<span class="sd">    two quadrics in $\\mathbb{P}^{2g+1}$, using [1510.05986v3].</span>
 
 <span class="sd">    * [1510.05986v3] Chen--Vilonen--Xue, Springer correspondence, hyperelliptic curves, and cohomology of Fano varieties</span>
 
 <span class="sd">    INPUT:</span>
 
-<span class="sd">    - ``g`` -- half of the dimension of the ambient projective space</span>
+<span class="sd">    - ``g`` -- half of the dimension of the quadrics</span>
 
-<span class="sd">    - ``i`` -- affine dimension of the linear subspaces on the intersection of quadrics</span>
+<span class="sd">    - ``k`` -- dimension of the linear subspaces on the intersection of quadrics, at most $g-1$</span>
 
 <span class="sd">    EXAMPLES:</span>
 
-<span class="sd">    We have that for i = g-1 we get the moduli space of parabolic bundles on</span>
+<span class="sd">    For $k=0$ we have the intersection of two quadrics::</span>
+
+<span class="sd">        sage: from diamond import *</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_even(2, 0) == complete_intersection([2, 2], 2)</span>
+<span class="sd">        True</span>
+<span class="sd">        sage: fano_variety_intersection_quadrics_even(5, 0) == complete_intersection([2, 2], 8)</span>
+<span class="sd">        True</span>
+
+<span class="sd">    We have that for $k = g-2$ we get the moduli space of parabolic bundles on</span>
 <span class="sd">    $\\mathbb{P}^1$ with weight $1/2$ in $2g+3$ points::</span>
 
 <span class="sd">        sage: from diamond import *</span>
-<span class="sd">        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*5) == fano_variety_intersection_quadrics_even(2, 1)</span>
+<span class="sd">        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*5) == fano_variety_intersection_quadrics_even(2, 0)</span>
 <span class="sd">        True</span>
-<span class="sd">        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*7) == fano_variety_intersection_quadrics_even(3, 2)</span>
-<span class="sd">        True</span>
-<span class="sd">        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*9) == fano_variety_intersection_quadrics_even(4, 3)</span>
+<span class="sd">        sage: moduli_parabolic_vector_bundles_rank_two(0, [1/2]*9) == fano_variety_intersection_quadrics_even(4, 2)</span>
 <span class="sd">        True</span>
 
-<span class="sd">    For `i=1` however we get the intersection of 2 quadrics::</span>
+<span class="sd">    For $k=g-1$ we get a finite reduced scheme of length $4^g$::</span>
 
-<span class="sd">        sage: fano_variety_intersection_quadrics_even(8, 1) == complete_intersection([2, 2], 14)</span>
-<span class="sd">        True</span>
+<span class="sd">        sage: from diamond import *</span>
+<span class="sd">        sage: print(fano_variety_intersection_quadrics_even(4, 3))</span>
+<span class="sd">          256</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">g</span> <span class="o">&gt;=</span> <span class="mi">2</span><span class="p">,</span> <span class="s2">&quot;genus needs to be at least 2&quot;</span>
+    <span class="k">assert</span> <span class="n">k</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">g</span><span class="p">),</span> <span class="s2">&quot;non-empty only from 0 to g-1&quot;</span>
+
     <span class="k">def</span> <span class="nf">M</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">j</span><span class="p">):</span>
         <span class="n">index</span> <span class="o">=</span> <span class="n">k</span> <span class="o">-</span> <span class="n">j</span> <span class="o">*</span> <span class="p">(</span><span class="n">g</span> <span class="o">-</span> <span class="n">i</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">return</span> <span class="mi">0</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="n">q_binomial</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">g</span> <span class="o">-</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">,</span> <span class="n">i</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span><span class="o">.</span><span class="n">padded_list</span><span class="p">(</span><span class="n">index</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)[</span><span class="n">index</span><span class="p">]</span>
+
+    <span class="n">i</span> <span class="o">=</span> <span class="n">k</span> <span class="o">+</span> <span class="mi">1</span>
 
     <span class="n">x</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="p">(</span><span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">HodgeDiamond</span><span class="o">.</span><span class="n">y</span><span class="p">)</span>
     <span class="n">R</span> <span class="o">=</span> <span class="n">x</span><span class="o">.</span><span class="n">parent</span><span class="p">()</span>
@@ -2889,7 +3057,7 @@
         <span class="n">D</span> <span class="o">=</span> <span class="s2">&quot;D&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">k</span> <span class="o">-</span> <span class="mi">1</span> <span class="o">==</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span><span class="p">:</span>
             <span class="c1"># exceptional case: need submaximal parabolic</span>
-            <span class="n">I</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)]</span>
+            <span class="n">I</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">))</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="n">I</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">n</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">k</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">partial_flag_variety</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">I</span><span class="p">)</span>
