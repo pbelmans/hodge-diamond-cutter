@@ -1998,27 +1998,20 @@ def fano_variety_intersection_quadrics_odd(g, k):
 
     if k == g - 1: return jacobian(g)
 
-    def dim(g, i):
-        r = 2*g + 1
-        k = g - i
-
-        # equation 9 in https://arxiv.org/abs/1903.11294
-        return (k + 1) * (r - k) - 2 * binomial(2 + k, k)
-
-
-    def N(i, k, j):
-        # some random high bound which works in many cases
-        R = PowerSeriesRing(ZZ, default_prec=2*dim(g, i) + 1)
-        q = R.gen(0)
-        return (q**(-(j-i+1)*(2*i-1)) * (1 - q**(4*j)) * prod([1 - q**(2*l) for l in range(j-i+2, i+j-1)]) / prod([1 - q**(2*l) for l in range(1, 2*i-1)]))[k]
-
     # go back to the notation of Chen--Vilonen--Xue
     i = g - k
-
+    # dimension of the Fano variety
     d = (g - i + 1) * (2*i - 1)
 
-    x, y = (HodgeDiamond.x, HodgeDiamond.y)
+    # multiplicity N_i(k, j) as in Theorem 1.1 of [MR3689749]
+    def N(i, k, j):
+        R = PowerSeriesRing(ZZ, default_prec=2*d + 1)
+        q = R.gen(0)
+        return (q**(-(j-i+1)*(2*i-1)) * (1 - q**(4*j)) \
+                * prod([1 - q**(2*l) for l in range(j-i+2, i+j-1)]) \
+                / prod([1 - q**(2*l) for l in range(1, 2*i-1)]))[k]
 
+    x, y = (HodgeDiamond.x, HodgeDiamond.y)
     polynomial = 0
 
     for k in range(2*d + 1):
@@ -2026,11 +2019,16 @@ def fano_variety_intersection_quadrics_odd(g, k):
             if N(i, d - k, j) == 0:
                 continue
 
-            dimensions = (symmetric_power(g - j, g) - symmetric_power(g - j - 2, g)(1)).middle()
-            exterior = sum([dimensions[m] * x**m * y**((g - j) - m) for m in range((g - j) + 1)])
-            polynomial = polynomial + N(i, d - k, j) * exterior * x**((k - (g - j))/2) * y**((k - (g - j))/2)
+            # the `g-j`th exterior power of the first cohomology of the curve
+            # is the `g-j`th cohomology of the Jacobian
+            dimensions = jacobian(g).row(g - j)
+            # turn the dimensions into a polynomial
+            piece = sum([dimensions[m] * x**m * y**((g-j)-m) for m in range(g - j + 1)])
+            # the appropriate Lefschetz twist to put it in the right cohomological degree
+            twist = x**((k - (g - j))/2) * y**((k - (g - j))/2)
 
-            assert binomial(2*g, g - j) == exterior(1, 1)  # checking the Betti numbers
+            # they reindex using `d-k`
+            polynomial = polynomial + N(i, d-k, j) * piece * twist
 
     return HodgeDiamond.from_polynomial(polynomial, from_variety=True)
 
