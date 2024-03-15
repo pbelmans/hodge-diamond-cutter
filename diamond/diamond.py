@@ -523,7 +523,7 @@ class HodgeDiamond(Element):
                     return self.matrix[p, q]
                 except IndexError:
                     return 0
-        # now we assume it's an integer
+        # now we assume it's an integer: this is equivalent to HodgeDiamond.row(p)
         except TypeError:
             # we could do something smarter, but this is it for now
             return [self.matrix[p, index - p] for p in range(index + 1)]
@@ -566,7 +566,7 @@ class HodgeDiamond(Element):
         """
         return str(self.pprint())
 
-    def __table(self):
+    def __table(self, hide_zeroes=False):
         r"""Generate a table object for the Hodge diamond"""
         d = self._size
         T = []
@@ -586,9 +586,14 @@ class HodgeDiamond(Element):
         for i in range(len(T)):
             T[i].extend([""] * (2 * d - len(T[i]) + 1))
 
+        # replace zeroes by spaces, if requested
+        # TODO write unit tests!
+        if hide_zeroes:
+            T = [[t if t != 0 else "" for t in row] for row in T]
+
         return table(T, align="center")
 
-    def pprint(self, format="table"):
+    def pprint(self, format="table", hide_zeroes=False):
         r"""Pretty print the Hodge diamond
 
         INPUT:
