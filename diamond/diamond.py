@@ -610,7 +610,7 @@ class HodgeDiamond(Element):
 
         """
         if format == "table":
-            return self.__table()
+            return self.__table(hide_zeroes=hide_zeroes)
         else:
             return self.polynomial
 
@@ -756,6 +756,53 @@ class HodgeDiamond(Element):
         """
         d = self._size
         return [self.matrix[i, d - i] for i in range(d + 1)]
+
+    def row(self, i, truncate=False):
+        r"""Get the ith row of the Hodge diamond
+
+        For smooth projective varieties these are the Hodge numbers of the
+        Hodge structure on the cohomology in degree `i`.
+
+        Alternatively, you can use ``HodgeDiamond.__getitem__`` with a single
+        index `i` (but then you have to truncate yourself).
+
+        INPUT:
+
+        - ``i`` -- the row of the Hodge diamond
+
+        - ``truncate`` (default: False) -- whether you want to omit leading
+          and trailing zeroes
+
+        EXAMPLES:
+
+        For a smooth projective variety the middle cohomology is the row
+        sitting in the middle dimension::
+
+            sage: from diamond import *
+            sage: hypersurface(3, 4).middle() == hypersurface(3, 4).row(4)
+            True
+
+        If you don't want to truncate, ``HodgeDiamond.__getitem__`` gives the
+        same functionality::
+
+            sage: from diamond import *
+            sage: hypersurface(3, 4).row(4) == hypersurface(3, 4)[4]
+            True
+
+        For the moduli space of vector bundles on a curve, the cohomology
+        in degree 3 is the same as the cohomology of the curve in degree 1::
+
+            sage: from diamond import *
+            sage: moduli_vector_bundles(3, 1, 9).row(3, truncate=True)
+            [9, 9]
+        """
+        row = [self.matrix[j, i - j] for j in range(i + 1)]
+
+        if truncate:
+            while row[0] == 0 and row[-1] == 0:
+                row = row[1:-1]
+
+        return row
 
     def signature(self):
         r"""The signature of the Hodge diamond
