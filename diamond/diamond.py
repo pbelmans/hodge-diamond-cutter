@@ -998,7 +998,7 @@ class HodgeDiamond(Element):
         return self.polynomial.subs(x=-1)
 
     def homological_unit(self):
-        r"""Dimensions of $\\mathrm{H}^\bullet(X,O_X)$
+        r"""Dimensions of $\\mathrm{H}^\\bullet(X,\\mathcal{O}_X)$
 
         A notion introduced by Abuaf.
         """
