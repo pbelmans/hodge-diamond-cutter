@@ -195,6 +195,11 @@ class HodgeDiamond(Element):
     #: variables in the polynomial ring for Hodge-Poincaré polynomials
     x, y = R.gens()
 
+    #: static configuration variable for pretty-printing, see `HodgeDiamond.pprint`
+    hide_zeroes = None
+    #: static configuration variable for pretty-printing, see `HodgeDiamond.pprint`
+    quarter = None
+
     def __init__(self, parent, m):
         r"""
         Constructor for a Hodge diamond if you know what you are doing
@@ -568,8 +573,21 @@ class HodgeDiamond(Element):
         """
         return str(self.pprint())
 
-    def __table(self, hide_zeroes=False, quarter=False):
+    def __table(self, hide_zeroes=None, quarter=None):
         r"""Generate a table object for the Hodge diamond"""
+        # take the default values from the static variables
+        if hide_zeroes is None:
+            if HodgeDiamond.hide_zeroes is None:
+                hide_zeroes = False
+            else:
+                hide_zeroes = HodgeDiamond.hide_zeroes
+
+        if quarter is None:
+            if HodgeDiamond.quarter is None:
+                quarter = False
+            else:
+                quarter = HodgeDiamond.quarter
+
         d = self._size
         T = []
 
@@ -616,7 +634,7 @@ class HodgeDiamond(Element):
 
         return table(T, align="center")
 
-    def pprint(self, format="table", hide_zeroes=False, quarter=False):
+    def pprint(self, format="table", hide_zeroes=None, quarter=None):
         r"""Pretty print the Hodge diamond
 
         INPUT:
@@ -629,6 +647,9 @@ class HodgeDiamond(Element):
 
         - ``quarter`` (default: False) -- whether to only print the top-left quarter
           if `"table"` is used for the format
+
+        The parameters ``hide_zeroes`` and ``quarter`` can be set using a static
+        variable, in which case providing them will override this value (if it is set).
 
         EXAMPLES:
 
