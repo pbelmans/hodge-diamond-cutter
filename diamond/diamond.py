@@ -155,6 +155,8 @@ from sage.structure.parent import Parent
 from sage.structure.element import Element
 from sage.misc.fast_methods import Singleton
 
+from itertools import groupby
+
 
 def _to_matrix(f):
     r"""
@@ -566,7 +568,7 @@ class HodgeDiamond(Element):
         """
         return str(self.pprint())
 
-    def __table(self, hide_zeroes=False):
+    def __table(self, hide_zeroes=False, quarter=False):
         r"""Generate a table object for the Hodge diamond"""
         d = self._size
         T = []
@@ -588,19 +590,45 @@ class HodgeDiamond(Element):
             T[i] = T[i][:2*d + 1]
 
         # replace zeroes by spaces, if requested
-        # TODO write unit tests!
         if hide_zeroes:
             T = [[t if t != 0 else "" for t in row] for row in T]
 
+        # only print the top-left quarter, if requested
+        if quarter:
+            T = [[T[i][j] for j in range(d+1)] for i in range(d+1)]
+
+        # determine the minimum number of leading and trailing empty strings
+        # and remove them to align better to the left
+        if hide_zeroes:
+            empty = []
+            for row in T:
+                (leading, trailing) = (0, 0)
+                groups = [(k, len(list(g))) for k, g in groupby(row)]
+                if groups[0][0] == "":  leading = groups[0][1]
+                if groups[-1][0] == "": trailing = groups[-1][1]
+                empty.append((leading, trailing),)
+
+            leading = min(a for (a, _) in empty)
+            trailing = min(b for (_, b) in empty)
+
+            for i in range(len(T)):
+                T[i] = T[i][leading:len(T) - trailing]
+
         return table(T, align="center")
 
-    def pprint(self, format="table", hide_zeroes=False):
+    def pprint(self, format="table", hide_zeroes=False, quarter=False):
         r"""Pretty print the Hodge diamond
 
         INPUT:
 
         - ``format`` -- output format (default: `"table"`), if table it pretty prints
           a Hodge diamond; all else defaults to the polynomial
+
+        - ``hide_zeroes`` (default: False) -- whether to hide the zeroes if `"table"`
+          is used as format
+
+        - ``quarter`` (default: False) -- whether to only print the top-left quarter
+          if `"table"` is used for the format
 
         EXAMPLES:
 
@@ -614,9 +642,39 @@ class HodgeDiamond(Element):
             sage: Pn(1).pprint(format="polynomial")
             x*y + 1
 
+        Don't print the zeroes::
+
+            sage: from diamond import *
+            sage: (Pn(2) * curve(3)).pprint(hide_zeroes=True)
+                  1
+              3       3
+                  2
+              3       3
+                  2
+              3       3
+                  1
+
+        Only print the top-left quarter::
+
+            sage: from diamond import *
+            sage: (Pn(2) * curve(3)).pprint(quarter=True)
+                          1
+                      3
+                  0       2
+              0       3
+
+        Only print the top-left quarter whilst hiding zeroes::
+
+            sage: from diamond import *
+            sage: (Pn(2) * curve(3)).pprint(hide_zeroes=True, quarter=True)
+                  1
+              3
+                  2
+              3
+
         """
         if format == "table":
-            return self.__table(hide_zeroes=hide_zeroes)
+            return self.__table(hide_zeroes=hide_zeroes, quarter=quarter)
         else:
             return self.polynomial
 
