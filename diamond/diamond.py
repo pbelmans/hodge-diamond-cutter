@@ -195,9 +195,9 @@ class HodgeDiamond(Element):
     #: variables in the polynomial ring for Hodge-Poincaré polynomials
     x, y = R.gens()
 
-    #: static configuration variable for pretty-printing, see `HodgeDiamond.pprint`
+    #: static configuration variable for pretty-printing, see :func:`HodgeDiamond.pprint`
     hide_zeroes = None
-    #: static configuration variable for pretty-printing, see `HodgeDiamond.pprint`
+    #: static configuration variable for pretty-printing, see :func:`HodgeDiamond.pprint`
     quarter = None
 
     def __init__(self, parent, m):
