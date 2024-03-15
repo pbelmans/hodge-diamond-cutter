@@ -582,9 +582,10 @@ class HodgeDiamond(Element):
 
                 T.append(row)
 
-        # padding all rows to full length
+        # making sure all rows have same length
         for i in range(len(T)):
             T[i].extend([""] * (2 * d - len(T[i]) + 1))
+            T[i] = T[i][:2*d + 1]
 
         # replace zeroes by spaces, if requested
         # TODO write unit tests!
