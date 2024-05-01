@@ -546,6 +546,9 @@ class HodgeDiamond(Element):
         * :meth:`HodgeDiamond.pprint`
         * :meth:`HodgeDiamond.polynomial`
 
+        It is also possible to override this output by using the built-in
+        functionality for parents and renaming.
+
         EXAMPLES:
 
         The projective line::
@@ -553,8 +556,20 @@ class HodgeDiamond(Element):
             sage: from diamond import *
             sage: Pn(1)
             Hodge diamond of size 2 and dimension 1
+
+        We give it a more descriptive name::
+
+            sage: P1 = Pn(1)
+            sage: P1.rename("The projective line")
+            sage: P1
+            The projective line
+
         """
         return f"Hodge diamond of size {self._size + 1} and dimension {self.dimension()}"
+
+    @property
+    def name(self):
+        return self.__repr__()
 
     def __str__(self):
         r"""Pretty print Hodge diamond
