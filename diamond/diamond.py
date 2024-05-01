@@ -1417,7 +1417,7 @@ class HochschildHomology(Element):
 
             sage: from diamond import *
             sage: str(HochschildHomology.from_list([1,0,22,0,1]))
-            '  range(-2, 3)   [1, 0, 22, 0, 1]\n├──────────────┼──────────────────┤+'
+            '  range(-2, 3)   [1, 0, 22, 0, 1]\n├──────────────┼──────────────────┤'
         """
         return str(self.pprint())
 
