@@ -3,6 +3,7 @@
 [![license](https://badgen.net/github/license/pbelmans/hodge-diamond-cutter)](https://github.com/pbelmans/hodge-diamond-cutter/blob/master/LICENSE)
 
 [![tests](https://github.com/pbelmans/hodge-diamond-cutter/actions/workflows/tests.yml/badge.svg)](https://github.com/pbelmans/hodge-diamond-cutter/actions)
+[![code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
 
 # Hodge diamond cutter
 
