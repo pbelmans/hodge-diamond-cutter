@@ -2856,6 +2856,10 @@ def weighted_hypersurface(degree, weights):
         [1, 19, 1]
 
     """
+    # weights should be interpreted as dimension of unweighted P^n
+    if isinstance(weights, Integer):
+        weights = [1] * (weights + 1)
+
     n = len(weights) - 1
 
     def hij(d, W, i, j):
