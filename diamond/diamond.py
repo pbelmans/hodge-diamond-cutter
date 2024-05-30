@@ -2857,19 +2857,24 @@ def weighted_hypersurface(degree, weights):
 
     """
     n = len(weights) - 1
+
     def hij(d, W, i, j):
-        if i + j != n - 1 and i != j: return 0
-        if i + j != n - 1 and i == j: return 1
+        if i + j != n - 1 and i != j:
+            return 0
+        if i + j != n - 1 and i == j:
+            return 1
 
         w = sum(W)
 
-        R = PowerSeriesRing(ZZ, default_prec=j*d + d + 1)
+        R = PowerSeriesRing(ZZ, default_prec=j * d + d + 1)
         t = R.gen(0)
 
-        H = prod((1 - t**(d - wi)) / (1 - t**wi) for wi in W)
+        H = prod((1 - t ** (d - wi)) / (1 - t**wi) for wi in W)
 
-        if i + j == n - 1 and i != j: return H[j*d + d - w]
-        if i + j == n - 1 and i == j: return H[j*d + d - w] + 1
+        if i + j == n - 1 and i != j:
+            return H[j * d + d - w]
+        if i + j == n - 1 and i == j:
+            return H[j * d + d - w] + 1
 
     M = matrix.identity(n)
     for i in range(n):
