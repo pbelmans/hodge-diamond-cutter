@@ -2819,11 +2819,8 @@ def weighted_hypersurface(degree, weights):
     """
     Hodge diamond for a weighted hypersurface of degree ``d`` in ``P(w_0,...,w_n)``
 
-    Implementation taken from
-    https://github.com/jxxcarlson/math_research/blob/master/hodge.sage.
-    If I'm not mistaken, the generalisation to weighted complete intersection
-    depends on which polynomials are used, not just the degrees, even if the
-    result is smooth?
+    This implements Theorem 7.2 of Fletcher's notes, Working with weighted complete
+    intersections.
 
     INPUT:
 
@@ -2850,40 +2847,33 @@ def weighted_hypersurface(degree, weights):
 
         sage: fano_threefold(1, 1) == weighted_hypersurface(6, [1,1,1,1,3])
         True
+
+    If the variety is only quasismooth, not smooth, then we have to interpret
+    the Hodge numbers accordingly. For instance, number 2 on Reid's list of 95 K3s
+    has middle Hodge number 19, because the surface is has one node.
+
+        sage: weighted_hypersurface(5, [1, 1, 1, 2]).middle()
+        [1, 19, 1]
+
     """
-    R = PolynomialRing(QQ, "t")
-    t = R.gen()
-    F = R.fraction_field()
+    n = len(weights) - 1
+    def hij(d, W, i, j):
+        if i + j != n - 1 and i != j: return 0
+        if i + j != n - 1 and i == j: return 1
 
-    def poincare_function(L):
-        return F.prod([(1 - t**a) / (1 - t**b) for a, b in L])
+        w = sum(W)
 
-    def jacobian_weights(degree, weights):
-        for weight in weights:
-            yield (degree - weight, weight)
+        R = PowerSeriesRing(ZZ, default_prec=j*d + d + 1)
+        t = R.gen(0)
 
-    def poincare(degree, weights):
-        return poincare_function(jacobian_weights(degree, weights))
+        H = prod((1 - t**(d - wi)) / (1 - t**wi) for wi in W)
 
-    # weights should be interpreted as dimension of unweighted P^n
-    if isinstance(weights, Integer):
-        weights = [1] * (weights + 1)
+        if i + j == n - 1 and i != j: return H[j*d + d - w]
+        if i + j == n - 1 and i == j: return H[j*d + d - w] + 1
 
-    P = poincare(degree, weights)
-    n = len(weights)
-    vdeg = sum(weights)
-    tdeg = (n + 1) * degree - vdeg + 1
-    formal_t = PowerSeriesRing(QQ, "t").gen().O(tdeg + 1)
-    T = P(formal_t)
-    middle = [T[(q + 1) * degree - vdeg] for q in range(n - 1)]
-
-    # adding in non-primitive cohomology if necessary
-    if len(middle) % 2:
-        middle[len(middle) // 2] += 1
-
-    M = matrix.identity(n - 1)
-    for i in range(n - 1):
-        M[i, n - i - 2] = middle[i]
+    M = matrix.identity(n)
+    for i in range(n):
+        M[i, n - i - 1] = hij(degree, weights, i, n - i - 1)
 
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
