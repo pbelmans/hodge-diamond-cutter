@@ -66,3 +66,5 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # a list of builtin themes.
 #
 html_theme = 'furo'
+html_logo = 'logo.png'
+html_favicon = 'favicon.ico'
