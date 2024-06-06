@@ -1,0 +1,59 @@
+name: Documentation
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: sagemath/sagemath:latest
+      options: --user root
+    steps:
+      - name: Install make, TeX Live and Sphinx
+        run: |
+          sudo apt-get update
+          # install this first to avoid user interaction in install
+          sudo apt-get install -y tzdata
+          sudo apt-get install -y make
+          sudo apt-get install -y texlive
+          sudo apt-get install -y texlive-latex-extra
+          sudo apt-get install -y latexmk
+          sudo apt-get install -y python3-sphinx
+      - name: Checkout Hodge diamond cutter
+        uses: actions/checkout@v3
+      - name: Install Hodge diamond cutter
+        run: sage --pip install .
+      - name: Run Sphinx
+        run: |
+          make html
+          make latexpdf
+      - name: Create artifact
+        run: |
+          mkdir -p github-artifacts/docs
+          mv _build/latex/hodgediamondcutter.pdf ./github-artifacts/documentation.pdf
+          mv _build/html/* ./github-artifacts
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: docs
+          path: ./github-artifacts
+  deploy:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - uses: actions/download-artifact@v3
+        with:
+          path: github-artifacts
+      - name: Move docs
+        run: mkdir -p github-deploy && mv github-artifacts/*/* github-deploy
+      - name: Deploy on orphan branch
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./github-deploy
+          publish_branch: docs
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'
+          force_orphan: true
