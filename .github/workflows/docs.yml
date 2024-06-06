@@ -15,10 +15,10 @@ jobs:
           # install this first to avoid user interaction in install
           sudo apt-get install -y tzdata
           sudo apt-get install -y make
-          sudo apt-get install -y texlive
-          sudo apt-get install -y texlive-latex-extra
-          sudo apt-get install -y latexmk
-          sudo apt-get install -y python3-sphinx
+          #sudo apt-get install -y texlive
+          #sudo apt-get install -y texlive-latex-extra
+          #sudo apt-get install -y latexmk
+          #sudo apt-get install -y python3-sphinx
       - name: Checkout Hodge diamond cutter
         uses: actions/checkout@v3
       - name: Install Hodge diamond cutter
@@ -26,11 +26,11 @@ jobs:
       - name: Run Sphinx
         run: |
           make html
-          make latexpdf
+          #make latexpdf
       - name: Create artifact
         run: |
           mkdir -p github-artifacts/docs
-          mv _build/latex/hodgediamondcutter.pdf ./github-artifacts/documentation.pdf
+          #mv _build/latex/hodgediamondcutter.pdf ./github-artifacts/documentation.pdf
           mv _build/html/* ./github-artifacts
       - name: Upload artifact
         uses: actions/upload-artifact@v3
