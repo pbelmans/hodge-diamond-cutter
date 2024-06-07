@@ -1,0 +1,748 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; Hodge diamond cutter v1.2 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=3ee479438cf8b5e0d341" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=a746c00c" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=384b581d" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=3ee479438cf8b5e0d341"></script>
+
+    <script src="_static/documentation_options.js?v=38d79a3d"></script>
+    <script src="_static/doctools.js?v=888ff710"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=efea14e4"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <link rel="icon" href="_static/favicon.ico"/>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+<script defer data-domain="cutter.ncag.info" src="https://plausible.io/js/script.js"></script>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="_static/logo.png" class="logo__image only-light" alt="Hodge diamond cutter v1.2 documentation - Home"/>
+    <script>document.write(`<img src="_static/logo.png" class="logo__image only-dark" alt="Hodge diamond cutter v1.2 documentation - Home"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn navbar-btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch nav-link" data-mode="light"><i class="fa-solid fa-sun fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="dark"><i class="fa-solid fa-moon fa-lg"></i></span>
+    <span class="theme-switch nav-link" data-mode="auto"><i class="fa-solid fa-circle-half-stroke fa-lg"></i></span>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#J"><strong>J</strong></a>
+ | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#O"><strong>O</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#Q"><strong>Q</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#W"><strong>W</strong></a>
+ | <a href="#X"><strong>X</strong></a>
+ | <a href="#Y"><strong>Y</strong></a>
+ | <a href="#Z"><strong>Z</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.__call__">__call__() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.__eq__">__eq__() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.__getitem__">__getitem__() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.__hash__">__hash__ (diamond.HodgeDiamond attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.__init__">__init__() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.__ne__">__ne__() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.__pow__">__pow__() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.__str__">__str__() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.__weakref__">__weakref__ (diamond.HodgeDiamond attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.abelian">abelian() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.arises_from_variety">arises_from_variety() (diamond.HodgeDiamond method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.betti">betti() (diamond.HodgeDiamond method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.blowup">blowup() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.bundle">bundle() (diamond.HodgeDiamond method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.complete_intersection">complete_intersection() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.curve">curve() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.cyclic_cover">cyclic_cover() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    diamond.diamond
+
+      <ul>
+        <li><a href="index.html#module-diamond.diamond">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HochschildHomology.dimension">dimension() (diamond.HochschildHomology method)</a>
+
+      <ul>
+        <li><a href="index.html#diamond.HodgeDiamond.dimension">(diamond.HodgeDiamond method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.enriques">enriques() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HochschildHomology.euler">euler() (diamond.HochschildHomology method)</a>
+
+      <ul>
+        <li><a href="index.html#diamond.HodgeDiamond.euler">(diamond.HodgeDiamond method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.fano_threefold">fano_threefold() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.fano_variety_intersection_quadrics_even">fano_variety_intersection_quadrics_even() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.fano_variety_intersection_quadrics_odd">fano_variety_intersection_quadrics_odd() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.fano_variety_lines_cubic">fano_variety_lines_cubic() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HochschildHomology.from_list">from_list() (diamond.HochschildHomology class method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.from_matrix">from_matrix() (diamond.HodgeDiamond class method)</a>
+</li>
+      <li><a href="index.html#diamond.HochschildHomology.from_polynomial">from_polynomial() (diamond.HochschildHomology class method)</a>
+
+      <ul>
+        <li><a href="index.html#diamond.HodgeDiamond.from_polynomial">(diamond.HodgeDiamond class method)</a>
+</li>
+      </ul></li>
+      <li><a href="index.html#diamond.HochschildHomology.from_positive">from_positive() (diamond.HochschildHomology class method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.generalised_grassmannian">generalised_grassmannian() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.generalised_kummer">generalised_kummer() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.grassmannian">grassmannian() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.gushel_mukai">gushel_mukai() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.hh">hh() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.hide_zeroes">hide_zeroes (diamond.HodgeDiamond attribute)</a>
+</li>
+      <li><a href="index.html#diamond.hilbn">hilbn() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.hirzebruch">hirzebruch() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.hochschild">hochschild() (diamond.HodgeDiamond method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HochschildHomology">HochschildHomology (class in diamond)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond">HodgeDiamond (class in diamond)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.holomorphic_euler">holomorphic_euler() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.homological_unit">homological_unit() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.horospherical">horospherical() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.hypersurface">hypersurface() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.is_hodge_symmetric">is_hodge_symmetric() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.is_serre_symmetric">is_serre_symmetric() (diamond.HodgeDiamond method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HochschildHomology.is_zero">is_zero() (diamond.HochschildHomology method)</a>
+
+      <ul>
+        <li><a href="index.html#diamond.HodgeDiamond.is_zero">(diamond.HodgeDiamond method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="J">J</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.jacobian">jacobian() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.K3">K3() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.K3n">K3n() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.kummer_resolution">kummer_resolution() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.lagrangian_grassmannian">lagrangian_grassmannian() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.lefschetz">lefschetz() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.lefschetz_power">lefschetz_power() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.level">level() (diamond.HodgeDiamond method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.matrix">matrix (diamond.HodgeDiamond property)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.middle">middle() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.mirror">mirror() (diamond.HodgeDiamond method)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="index.html#module-diamond.diamond">diamond.diamond</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.moduli_parabolic_vector_bundles_rank_two">moduli_parabolic_vector_bundles_rank_two() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.moduli_vector_bundles">moduli_vector_bundles() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.Mzeronbar">Mzeronbar() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.nestedhilbn">nestedhilbn() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="O">O</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.odd_symplectic_grassmannian">odd_symplectic_grassmannian() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.ogrady10">ogrady10() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.ogrady6">ogrady6() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.orthogonal_grassmannian">orthogonal_grassmannian() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.partial_flag_variety">partial_flag_variety() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.Pn">Pn() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.point">point() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HochschildHomology.polynomial">polynomial (diamond.HochschildHomology property)</a>
+
+      <ul>
+        <li><a href="index.html#diamond.HodgeDiamond.polynomial">(diamond.HodgeDiamond property)</a>
+</li>
+      </ul></li>
+      <li><a href="index.html#diamond.HodgeDiamond.pprint">pprint() (diamond.HodgeDiamond method)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Q">Q</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.quarter">quarter (diamond.HodgeDiamond attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.quiver_moduli">quiver_moduli() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.quot_scheme_curve">quot_scheme_curve() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.R">R (diamond.HodgeDiamond attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.row">row() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.ruled">ruled() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.seshadris_desingularisation">seshadris_desingularisation() (in module diamond)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.signature">signature() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.HodgeDiamond.size">size() (diamond.HodgeDiamond method)</a>
+</li>
+      <li><a href="index.html#diamond.surface">surface() (in module diamond)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HochschildHomology.sym">sym() (diamond.HochschildHomology method)</a>
+</li>
+      <li><a href="index.html#diamond.HochschildHomology.symmetric_power">symmetric_power() (diamond.HochschildHomology method)</a>
+
+      <ul>
+        <li><a href="index.html#diamond.symmetric_power">(in module diamond)</a>
+</li>
+      </ul></li>
+      <li><a href="index.html#diamond.symplectic_grassmannian">symplectic_grassmannian() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="W">W</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.weighted_hypersurface">weighted_hypersurface() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="X">X</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.x">x (diamond.HodgeDiamond attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Y">Y</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.HodgeDiamond.y">y (diamond.HodgeDiamond attribute)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="Z">Z</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="index.html#diamond.zero">zero() (in module diamond)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Pieter Belmans
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2021, Pieter Belmans.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=3ee479438cf8b5e0d341"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=3ee479438cf8b5e0d341"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
