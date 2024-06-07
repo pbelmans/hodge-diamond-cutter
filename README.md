@@ -11,8 +11,8 @@ A collection of Python classes and functions in Sage to deal with Hodge diamonds
 
 You can read its documentation as
 
-* [a webpage](https://pbelmans.ncag.info/hodge-diamond-cutter)
-* [a pdf](https://pbelmans.ncag.info/hodge-diamond-cutter/hodgediamondcutter.pdf)
+* [a webpage](https://cutter.ncag.info)
+* [a pdf](https://cutter.ncag.info/documentation.pdf)
 
 
 ## Getting started

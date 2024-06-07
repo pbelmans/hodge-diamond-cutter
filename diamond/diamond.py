@@ -2,6 +2,9 @@ r"""
 A tool to work with Hodge diamonds, comes with many varieties and constructions
 built into it.
 
+* `repository <https://github.com/pbelmans/hodge-diamond-cutter>`_
+* `documentation <https://cutter.ncag.info>`_
+
 Hodge diamonds encode the Hodge numbers of a variety, and provide interesting
 information about its structure. They provide a numerical incarnation of many
 operations one can perform in algebraic geometry, such as blowups, projective
@@ -105,11 +108,12 @@ be compared to the built-in one::
     sage: print(S == K3())
     True
 
-Check out the [documentation](https://pbelmans.ncag.info/hodge-diamond-cutter)
+Check out the `documentation <https://cutter.ncag.info>`_
 for all the available functionality.
 
 If you use the software in your work, please cite it as explained on
-[Zenodo](https://doi.org/10.5281/zenodo.3893509).
+`Zenodo <https://doi.org/10.5281/zenodo.3893509>`_, or in
+`the README file <https://github.com/pbelmans/hodge-diamond-cutter?tab=readme-ov-file#how-to-cite>`_.
 
 AUTHORS:
 
