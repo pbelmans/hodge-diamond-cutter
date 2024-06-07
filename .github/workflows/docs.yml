@@ -35,7 +35,7 @@ jobs:
           make latexpdf
       - name: Make sure CNAME is there
         run:
-          echo "cutter.ncag.info" > CNAME
+          echo "cutter.ncag.info" > _build/html/CNAME
       - name: Create artifact
         run: |
           mkdir -p github-artifacts/docs
