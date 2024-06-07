@@ -1,6 +1,10 @@
 name: Documentation
 on:
   workflow_dispatch:
+  push:
+    branches: [ master ]
+    paths:
+      - ".github/workflows/docs.yml"
 
 jobs:
   build:
