@@ -51,6 +51,8 @@ mathjax3_config = {
     },
 }
 
+plausible_domain = "cutter.ncag.info"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
 
@@ -69,9 +71,6 @@ html_theme = "furo"
 html_logo = "logo.png"
 html_favicon = "favicon.ico"
 
-html_js_files = [
-    (
-        "https://plausible.io/js/script.js",
-        {"data-domain": "cutter.ncag.info", "defer": "defer"},
-    ),
-]
+# -- Options for LaTeX output ------------------------------------------------
+
+latex_engine = "lualatex"

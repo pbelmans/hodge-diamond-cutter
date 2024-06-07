@@ -1416,8 +1416,10 @@ class HochschildHomology(Element):
         EXAMPLES::
 
             sage: from diamond import *
-            sage: str(HochschildHomology.from_list([1,0,22,0,1]))
-            '  range(-2, 3)   [1, 0, 22, 0, 1]\n├──────────────┼──────────────────┤'
+            sage: print(HochschildHomology.from_list([1,0,22,0,1]))
+              -2   -1   0    1   2
+            ├────┼────┼────┼───┼───┤
+              1    0    22   0   1
         """
         return str(self.pprint())
 
@@ -1425,7 +1427,7 @@ class HochschildHomology(Element):
         if self.is_zero():
             return table([[0], [0]], header_row=True)
 
-        indices = range(-self.dimension(), self.dimension() + 1)
+        indices = list(range(-self.dimension(), self.dimension() + 1))
 
         return table([indices, [self[i] for i in indices]], header_row=True)
 
@@ -1443,6 +1445,7 @@ class HochschildHomology(Element):
             sage: h = HochschildHomology.from_list([1,0,22,0,1])
             sage: h.dimension()
             2
+
         """
         if self.is_zero():
             return -1
@@ -1517,8 +1520,9 @@ class HochschildHomology(Element):
             sage: k.symmetric_power(2)
             Hochschild homology vector of dimension 4
             sage: print(_)
-            range(-4, 5)   [1, 0, 23, 0, 276, 0, 23, 0, 1]
-            ├──────────────┼─────────────────────────────────┤
+              -4   -3   -2   -1   0     1   2    3   4
+            ├────┼────┼────┼────┼─────┼───┼────┼───┼───┤
+              1    0    23   0    276   0   23   0   1
         """
 
         def summand(f, k):
