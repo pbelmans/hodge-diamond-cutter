@@ -31,7 +31,7 @@ jobs:
         run: |
           mkdir -p github-artifacts/docs
           #mv _build/latex/hodgediamondcutter.pdf ./github-artifacts/documentation.pdf
-          mv _build/html/* ./github-artifacts
+          mv _build/html/* ./github-artifacts/docs
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
