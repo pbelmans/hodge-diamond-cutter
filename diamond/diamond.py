@@ -1418,18 +1418,17 @@ class HochschildHomology(Element):
             sage: from diamond import *
             sage: print(HochschildHomology.from_list([1,0,22,0,1]))
               -2   -1   0    1   2
-            ├────┼────┼────┼───┼───┤
               1    0    22   0   1
         """
         return str(self.pprint())
 
     def __table(self):
         if self.is_zero():
-            return table([[0], [0]], header_row=True)
+            return table([[0], [0]])
 
         indices = list(range(-self.dimension(), self.dimension() + 1))
 
-        return table([indices, [self[i] for i in indices]], header_row=True)
+        return table([indices, [self[i] for i in indices]])
 
     def pprint(self, output="table"):
         if output == "table":
@@ -1521,7 +1520,6 @@ class HochschildHomology(Element):
             Hochschild homology vector of dimension 4
             sage: print(_)
               -4   -3   -2   -1   0     1   2    3   4
-            ├────┼────┼────┼────┼─────┼───┼────┼───┼───┤
               1    0    23   0    276   0   23   0   1
         """
 

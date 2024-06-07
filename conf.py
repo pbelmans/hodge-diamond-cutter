@@ -72,5 +72,3 @@ html_logo = "logo.png"
 html_favicon = "favicon.ico"
 
 # -- Options for LaTeX output ------------------------------------------------
-
-latex_engine = "lualatex"
