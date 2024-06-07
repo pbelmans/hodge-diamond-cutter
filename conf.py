@@ -68,3 +68,7 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 html_theme = 'furo'
 html_logo = 'logo.png'
 html_favicon = 'favicon.ico'
+
+html_js_files = [
+    ('https://plausible.io/js/script.js', {"data-domain": "cutter.ncag.info", "defer": "defer"}),
+]
