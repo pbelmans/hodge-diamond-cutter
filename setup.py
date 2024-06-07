@@ -1,8 +1,8 @@
 import setuptools
 
 setuptools.setup(
-        name="hodge",
-        version="1.1",
+        name="diamond",
+        version="1.2",
         author="Pieter Belmans",
         author_email="pieter.belmans@uni.lu",
         description="Compute and manipulate Hodge diamonds for many classes of smooth projective varieties",
