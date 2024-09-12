@@ -1,4 +1,5 @@
 import pprint
+
 import fanography
 
 fanos = fanography.application.fanos

@@ -123,6 +123,8 @@ AUTHORS:
   documentation
 """
 
+from itertools import groupby
+
 # ****************************************************************************
 #       Copyright (C) 2021 Pieter Belmans <pieterbelmans@gmail.com>
 #
@@ -138,13 +140,14 @@ from sage.categories.rings import Rings
 from sage.combinat.composition import Compositions
 from sage.combinat.integer_vector import IntegerVectors
 from sage.combinat.partition import Partitions
-from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
 from sage.combinat.q_analogues import q_binomial
+from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
 from sage.combinat.subset import Subsets
 from sage.graphs.digraph import DiGraph
 from sage.matrix.constructor import matrix
 from sage.matrix.special import diagonal_matrix
 from sage.misc.cachefunc import cached_function
+from sage.misc.fast_methods import Singleton
 from sage.misc.misc_c import prod
 from sage.misc.table import table
 from sage.modules.free_module_element import vector
@@ -152,15 +155,12 @@ from sage.rings.function_field.constructor import FunctionField
 from sage.rings.integer import Integer
 from sage.rings.integer_ring import ZZ
 from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
-from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.polynomial.multi_polynomial import MPolynomial
+from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
 from sage.rings.power_series_ring import PowerSeriesRing
 from sage.rings.rational_field import QQ
-from sage.structure.parent import Parent
 from sage.structure.element import Element
-from sage.misc.fast_methods import Singleton
-
-from itertools import groupby
+from sage.structure.parent import Parent
 
 
 def _to_matrix(f):
