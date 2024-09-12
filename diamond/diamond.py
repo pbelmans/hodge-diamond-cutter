@@ -200,9 +200,11 @@ class HodgeDiamond(Element):
     #: variables in the polynomial ring for Hodge-Poincaré polynomials
     x, y = R.gens()
 
-    #: static configuration variable for pretty-printing, see :func:`HodgeDiamond.pprint`
+    #: static configuration variable for pretty-printing,
+    #: see :func:`HodgeDiamond.pprint`
     hide_zeroes = None
-    #: static configuration variable for pretty-printing, see :func:`HodgeDiamond.pprint`
+    #: static configuration variable for pretty-printing,
+    #: see :func:`HodgeDiamond.pprint`
     quarter = None
 
     def __init__(self, parent, m):
@@ -273,7 +275,8 @@ class HodgeDiamond(Element):
 
             sage: from diamond import *
             sage: x, y = (HodgeDiamond.x, HodgeDiamond.y)
-            sage: S = HodgeDiamond.from_polynomial(1 + x**2 + 20*x*y + y**2 + x**2 * y**2)
+            sage: P = 1 + x**2 + 20*x*y + y**2 + x**2 * y**2
+            sage: S = HodgeDiamond.from_polynomial(P)
             sage: S == K3()
             True
 
@@ -1141,12 +1144,15 @@ class HodgeDiamond(Element):
 
         For intersections of 2 quadrics it alternates between zero and one::
 
-            sage: all(complete_intersection([2,2], 2*n).level() == 0 for n in range(5))
+            sage: even = [complete_intersection([2, 2], 2*n) for n in range(10)]
+            sage: all(Q.level() == 0 for Q in even)
             True
-            sage: all(complete_intersection([2,2], 2*n+1).level() == 1 for n in range(5))
+            sage: odd = [complete_intersection([2, 2], 2*n + 1) for n in range(10)]
+            sage: all(Q.level() == 1 for Q in odd)
             True
 
-        A Calabi-Yau variety (e.g. a hypersurface of degree $n+1$ in $\\mathbb{P}^n$) has maximal level::
+        A Calabi-Yau variety (e.g. a hypersurface of degree $n+1$ in $\\mathbb{P}^n$)
+        has maximal level::
 
             sage: all(hypersurface(n+2, n).level() == n for n in range(10))
             True
@@ -1185,7 +1191,8 @@ class HodgeDiamond(Element):
     def bundle(self, rank):
         r"""Compute the Hodge diamond of a projective bundle
 
-        This applies the bundle formula from Hodge theory without any consistency checks.
+        This applies the bundle formula from Hodge theory without any consistency
+        checks.
 
         INPUT:
 
@@ -1259,8 +1266,9 @@ class HodgeDiamondRing(Singleton, Parent):
             m = matrix(m)
         elt = self.element_class(self, m)
         if keywords.get("from_variety", False):
-            assert elt.arises_from_variety(), """The matrix does not satisfy the conditions satisfied by the
-                Hodge diamond of a smooth projective variety."""
+            assert (
+                elt.arises_from_variety()
+            ), "The matrix does not satisfy the conditions satisfied by the Hodge diamond of a smooth projective variety."
         return elt
 
     def from_matrix(self, m, from_variety=False):
@@ -1301,11 +1309,13 @@ class HochschildHomology(Element):
 
     def __init__(self, parent, L):
         r"""
-        Constructor for Hochschild homology dimensions of smooth and proper dg categories, so that Serre duality holds.
+        Constructor for Hochschild homology dimensions of smooth and proper dg
+        categories, so that Serre duality holds.
 
         INPUT:
 
-        - ``L`` -- a list of integers of length 2n+1 representing $\\mathrm{HH}_{-n}$ to $\\mathrm{HH}_n$, such that ``L[i] == L[2n - i]``
+        - ``L`` -- a list of integers of length 2n+1 representing $\\mathrm{HH}_{-n}$
+            to $\\mathrm{HH}_n$, such that ``L[i] == L[2n - i]``
 
         EXAMPLES::
 
@@ -1346,7 +1356,8 @@ class HochschildHomology(Element):
 
         INPUT:
 
-        - ``L`` -- a list of integers representing $\\mathrm{HH}_{-n}$ to $\\mathrm{HH}_n$
+        - ``L`` -- a list of integers representing $\\mathrm{HH}_{-n}$ to
+            $\\mathrm{HH}_n$
 
         EXAMPLES::
 
@@ -1359,7 +1370,8 @@ class HochschildHomology(Element):
     @classmethod
     def from_positive(cls, L):
         r"""
-        Constructor for Hochschild homology dimensions from a list when only the positive part is given.
+        Constructor for Hochschild homology dimensions from a list when only the
+        positive part is given.
 
         INPUT:
 
@@ -1376,7 +1388,8 @@ class HochschildHomology(Element):
     @classmethod
     def from_polynomial(cls, f):
         """
-        Constructor for Hochschild homology dimensions from Hochschild--Poincaré Laurent polynomial
+        Constructor for Hochschild homology dimensions from Hochschild--Poincaré
+        Laurent polynomial
 
         INPUT
 
