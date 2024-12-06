@@ -2613,11 +2613,14 @@ def hilbn(surface, n):
     M = matrix(2 * n + 1)
     for p in range(2 * n + 1):
         for q in range(2 * n + 1):
-            M[p, q] = coeff_n.coefficient(
-                [min(p, 2 * n - q), min(q, 2 * n - p)]
-            )  # use Serre duality
+            if surface.arises_from_variety():
+                M[p, q] = coeff_n.coefficient(
+                    [min(p, 2 * n - q), min(q, 2 * n - p)]
+                )  # use Serre duality
+            else:
+                M[p, q] = coeff_n.coefficient([p, q])  # don't use Serre duality
 
-    return HodgeDiamond.from_matrix(M, from_variety=True)
+    return HodgeDiamond.from_matrix(M, from_variety=surface.arises_from_variety())
 
 
 def nestedhilbn(surface, n):
