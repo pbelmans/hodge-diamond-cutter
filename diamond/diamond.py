@@ -1113,8 +1113,13 @@ class HodgeDiamond(Element):
                   1
             sage: lefschetz().dimension()
             0
+
+        Dimension of a non-algebraic surface::
+
+            sage: inoue().dimension()
+            2
+
         """
-        assert self.is_hodge_symmetric()
         if self.is_zero():
             return -1
         return (
