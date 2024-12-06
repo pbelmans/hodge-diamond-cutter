@@ -7,6 +7,8 @@
 
 # Hodge diamond cutter
 
+<img align="right" src="https://cutter.ncag.info/_static/logo.png">
+
 A collection of Python classes and functions in Sage to deal with Hodge diamonds (and Hochschild homology) of smooth projective varieties, together with many constructions.
 
 You can read its documentation as
