@@ -2833,6 +2833,16 @@ def ruled(genus):
     return surface(0, genus, 2)
 
 
+def inoue():
+    r"""Hodge diamond of an Inoue surface"""
+    return HodgeDiamond.from_matrix([[1, 1, 0], [0, 0, 0], [0, 1, 1]])
+
+
+def hopf():
+    r"""Hodge diamond of a Hopf surface"""
+    return inoue()
+
+
 def weighted_hypersurface(degree, weights):
     """
     Hodge diamond for a weighted hypersurface of degree ``d`` in ``P(w_0,...,w_n)``
