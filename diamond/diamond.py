@@ -2583,7 +2583,6 @@ def hilbn(surface, n):
 
     - ``n`` -- number of points
     """
-    assert surface.arises_from_variety()
     assert surface.dimension() == 2
 
     ring_ab = PolynomialRing(ZZ, "a,b")
