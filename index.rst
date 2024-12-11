@@ -59,6 +59,10 @@ Surfaces and moduli spaces of sheaves on them
 .. autofunction:: diamond.enriques
 .. autofunction:: diamond.hilbn
 .. autofunction:: diamond.nestedhilbn
+.. autofunction:: diamond.hopf
+.. autofunction:: diamond.inoue
+.. autofunction:: diamond.kodaira_primary
+.. autofunction:: diamond.kodaira_secondary
 
 
 Abelian varieties and related objects
