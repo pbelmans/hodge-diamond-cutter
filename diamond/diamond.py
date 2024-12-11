@@ -2851,6 +2851,16 @@ def hopf():
     return inoue()
 
 
+def kodaira_primary():
+    r"""Hodge diamond of a primary Kodaira surface"""
+    return HodgeDiamond.from_matrix([[1, 1, 1], [2, 2, 2], [1, 1, 1]])
+
+
+def kodaira_secondary():
+    r"""Hodge diamond of a secondary Kodaira surface"""
+    return HodgeDiamond.from_matrix([[1, 0, 0], [1, 0, 1], [0, 0, 1]])
+
+
 def weighted_hypersurface(degree, weights):
     """
     Hodge diamond for a weighted hypersurface of degree ``d`` in ``P(w_0,...,w_n)``
