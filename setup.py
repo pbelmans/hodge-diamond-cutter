@@ -9,4 +9,13 @@ setuptools.setup(
     url="https://github.com/pbelmans/hodge-diamond-cutter",
     packages=setuptools.find_packages(),
     zip_safe=False,
+    extras_require={
+        'passagemath': [
+            'passagemath-graphs',
+            'passagemath-groups',
+            'passagemath-modules',
+            'passagemath-repl',
+            'passagemath-singular',
+        ],
+    },
 )
