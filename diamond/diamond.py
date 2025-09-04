@@ -3351,11 +3351,12 @@ def BrauerSeveri(g, n, Ns):
         Proposition 2.3.23 in Baumann's thesis"""
         # TODO do alternating sum over V_int(I, N)
         # this corresponds to Lemma 2.4.1
+        return zero()
 
     assert all(n == sum(N) for N in Ns), "ramification must be summing to degree"
 
     # cut-and-paste the ramified fibers into the class
-    return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum(BSp(N) for N in Ns)
+    return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum([BSp(N) for N in Ns], zero())
 
 
 def Mzeronbar(n):
