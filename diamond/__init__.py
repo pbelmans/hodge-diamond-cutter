@@ -1,6 +1,7 @@
 from diamond import diamond
 from diamond.diamond import (
     K3,
+    BrauerSeveri,
     HochschildHomologies,
     HochschildHomology,
     HodgeDiamond,
@@ -56,6 +57,7 @@ from diamond.diamond import (
 )
 
 __all__ = [
+    "BrauerSeveri",
     "HochschildHomologies",
     "HochschildHomology",
     "HodgeDiamond",
