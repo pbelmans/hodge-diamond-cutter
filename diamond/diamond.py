@@ -3301,6 +3301,21 @@ def BrauerSeveri(g, n, Ns):
     TODO tests
     - unramified case is projective bundle
     - various examples from Baumann's thesis
+
+    EXAMPLES:
+
+    The unramified case is a projective bundle::
+
+        sage: from diamond import *
+        sage: BrauerSeveri(5, 3, []) == curve(5) * Pn(2)
+        True
+
+    This is a non-standard conic bundle over `P^1`, thus isomorphic to
+    the blowup of `P^2` in 2 points::
+
+        sage: BrauerSeveri(0, 2, [(1, 1)]) == Pn(2).blowup(2 * point())
+        True
+
     """
 
     def s(N, i, j):
