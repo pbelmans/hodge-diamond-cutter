@@ -3371,7 +3371,9 @@ def BrauerSeveri(g, n, Ns):
     assert all(n == sum(N) for N in Ns), "ramification must be summing to degree"
 
     # cut-and-paste the ramified fibers into the class
-    return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum([BSp(N) for N in Ns], zero())
+    return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum(
+        [BSp(N) for N in Ns], zero()
+    )
 
 
 def Mzeronbar(n):
