@@ -3285,6 +3285,79 @@ def fano_variety_lines_cubic(n):
     return (hilbtwo(X) - Pn(n) * X)(-2)
 
 
+def BrauerSeveri(g, n, Ns):
+    r"""
+    Hodge diamond for the Brauer--Severi variety of an hereditary order on curve
+
+    The curve is a smooth projective curve of genus `g`.
+    The order is of degree `n`.
+    The ramification data `Ns`of the hereditary order are described by giving a list
+    of ramification data, which is one integer vector for each ramified point.
+
+    The variable `e` is always `len(N)`
+
+    TODO document the reference, and explain the assertions
+
+    TODO tests
+    - unramified case is projective bundle
+    - various examples from Baumann's thesis
+    """
+
+    def s(N, i, j):
+        r"""Equation (2.15) in Baumann's thesis"""
+        # TODO implement this
+        pass
+
+    def m(i, N, k):
+        r"""Line following Equation (2.16) in Baumann's thesis"""
+        # TODO start from ith entry, reverse N and take k entries out of there
+        # TODO have some fun with slices
+        pass
+
+    def V(i, N, k):
+        r"""Lemma 2.3.28 from Baumann's thesis"""
+        assert i in range(1, len(N) + 1)
+        assert k in range(1, len(N) + 1)
+
+        # in this case we have Proposition 2.4.2
+        if k == len(N):
+            n = sum(N)
+
+            return Pn(n - 1) + sum(
+                V(i, N, k) * (Pn(n - s(N, i, j)) - point()) for j in range(1, len(N))
+            )
+
+        # Equation (2.72) applies if k is strictly smaller than e
+        return V(i, m(i, N, k), k)
+
+    def V_int(I, N):
+        r"""Theorem 2.3.29 in Baumann's thesis
+
+        This computes the Hodge diamond of the intersection of the auxiliary varieties
+        indexed by `i_1<...<i_k` for `k<=e`.
+        """
+        # TODO check that the number of indices is between 1 and e
+        # TODO implement the formula, it is a product of Vs
+
+        # reminder to self: no need for a base case, just a complicated product formula
+        # TODO create a vector of indices for the third entry
+        # TODO then compute the product in Equation (2.75)
+        return prod([], point())
+        pass
+
+    def BSp(N):
+        r"""The class of a single ramified fiber.
+
+        Proposition 2.3.23 in Baumann's thesis"""
+        # TODO do alternating sum over V_int(I, N)
+        # this corresponds to Lemma 2.4.1
+
+    assert all(n == sum(N) for N in Ns), "ramification must be summing to degree"
+
+    # cut-and-paste the ramified fibers into the class
+    return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum(BSp(N) for N in Ns)
+
+
 def Mzeronbar(n):
     r"""
     Hodge diamond for the moduli space of $n$-pointed stable curves of genus 0
