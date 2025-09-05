@@ -3320,20 +3320,20 @@ def BrauerSeveri(g, n, Ns):
     def s(N, i, j):
         r"""Equation (2.15) in Baumann's thesis
 
-        EXAMPLES
+        EXAMPLES:
 
-        Example 2.3.3 in Baumann's thesis:
+        Example 2.3.3 in Baumann's thesis::
 
             sage: from diamond import *
             sage: N = [3,1,4,2]
             sage: s1 = [2,6,7,10]
-            sage: s(N,1,1) == s1[0]
+            sage: BrauerSeveri.s(N,1,1) == s1[0]
             True
-            sage: s(N,1,2) == s1[1]
+            sage: BrauerSeveri.s(N,1,2) == s1[1]
             True
-            sage: s(N,1,3) == s1[2]
+            sage: BrauerSeveri.s(N,1,3) == s1[2]
             True
-            sage: s(N,1,4) == s1[3]
+            sage: BrauerSeveri.s(N,1,4) == s1[3]
             True
         """
         assert i in range(1, len(N) + 1)
@@ -3342,6 +3342,8 @@ def BrauerSeveri(g, n, Ns):
         N_permuted = N[i - 1 :] + N[: i - 1]
         r"""Sum of last j entries in N_permuted"""
         return sum(N_permuted[k] for k in range(len(N) - j, len(N)))
+
+    BrauerSeveri.s = s
 
     def m(i, N, k):
         r"""Line following Equation (2.16) in Baumann's thesis"""
