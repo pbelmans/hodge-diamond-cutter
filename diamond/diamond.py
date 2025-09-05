@@ -3335,6 +3335,33 @@ def BrauerSeveri(g, n, Ns):
             True
             sage: BrauerSeveri.s(N,1,4) == s1[3]
             True
+            sage: s2 = [3,5,9,10]
+            sage: BrauerSeveri.s(N,2,1) == s2[0]
+            True
+            sage: BrauerSeveri.s(N,2,2) == s2[1]
+            True
+            sage: BrauerSeveri.s(N,2,3) == s2[2]
+            True
+            sage: BrauerSeveri.s(N,2,4) == s2[3]
+            True
+            sage: s3 = [1,4,6,10]
+            sage: BrauerSeveri.s(N,3,1) == s3[0]
+            True
+            sage: BrauerSeveri.s(N,3,2) == s3[1]
+            True
+            sage: BrauerSeveri.s(N,3,3) == s3[2]
+            True
+            sage: BrauerSeveri.s(N,3,4) == s3[3]
+            True
+            sage: s4 = [4,5,8,10]
+            sage: BrauerSeveri.s(N,4,1) == s4[0]
+            True
+            sage: BrauerSeveri.s(N,4,2) == s4[1]
+            True
+            sage: BrauerSeveri.s(N,4,3) == s4[2]
+            True
+            sage: BrauerSeveri.s(N,4,4) == s4[3]
+            True
         """
         assert i in range(1, len(N) + 1)
         assert j in range(1, len(N) + 1)
