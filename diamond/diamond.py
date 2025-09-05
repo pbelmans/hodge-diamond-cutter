@@ -3315,24 +3315,27 @@ def BrauerSeveri(g, n, Ns):
 
         sage: BrauerSeveri(0, 2, [(1, 1)]) == Pn(2).blowup(2 * point())
         True
-
-    Example 2.3.3 in Baumann's thesis:
-
-        sage: from diamond import *
-        sage: N = [3,1,4,2]
-        sage: s1 = [2,6,7,10]
-        sage: s(N,1,1) == s1[0]
-        True
-        sage: s(N,1,2) == s1[1]
-        True
-        sage: s(N,1,3) == s1[2]
-        True
-        sage: s(N,1,4) == s1[3]
-        True
     """
 
     def s(N, i, j):
-        r"""Equation (2.15) in Baumann's thesis"""
+        r"""Equation (2.15) in Baumann's thesis
+
+        EXAMPLES
+
+        Example 2.3.3 in Baumann's thesis:
+
+            sage: from diamond import *
+            sage: N = [3,1,4,2]
+            sage: s1 = [2,6,7,10]
+            sage: s(N,1,1) == s1[0]
+            True
+            sage: s(N,1,2) == s1[1]
+            True
+            sage: s(N,1,3) == s1[2]
+            True
+            sage: s(N,1,4) == s1[3]
+            True
+        """
         assert i in range(1, len(N) + 1)
         assert j in range(1, len(N) + 1)
         r"""Use formula for s after Equation (2.17) in Baumann's thesis"""
