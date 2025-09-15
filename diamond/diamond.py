@@ -3322,7 +3322,7 @@ def BrauerSeveri(g, n, Ns):
 
         EXAMPLES:
 
-        Example 2.3.3 in Baumann's thesis::
+        Example 2.3.3 in Baumann's thesis:
 
             sage: from diamond import *
             sage: N = [3,1,4,2]
@@ -3342,10 +3342,25 @@ def BrauerSeveri(g, n, Ns):
     BrauerSeveri.s = s
 
     def m(i, N, k):
-        r"""Line following Equation (2.16) in Baumann's thesis"""
-        # TODO start from ith entry, reverse N and take k entries out of there
-        # TODO have some fun with slices
-        pass
+        r"""Line following Equation (2.16) in Baumann's thesis
+
+        EXAMPLES:
+
+        Example 2.3.3 in Baumann's thesis:
+
+            sage: from diamond import *
+            sage: N = [3,1,4,2]
+            sage for i in range(4):
+            ....:     M = N[i :] + N[: i]
+            ....:     M.reverse() == BrauerSeveri.m(i+1,N,4)
+            True
+        """
+        assert i in range(1, len(N) + 1)
+        assert k in range(1, len(N) + 1)
+        m = [s(N, i, 1)]
+        for j in range(2, k):
+            m.append(s(N, i, j) - s(N, i, j - 1))
+        return m
 
     def V(i, N, k):
         r"""Lemma 2.3.28 from Baumann's thesis"""
