@@ -3362,6 +3362,8 @@ def BrauerSeveri(g, n, Ns):
             m.append(s(N, i, j) - s(N, i, j - 1))
         return m
 
+    BrauerSeveri.m = m
+
     def V(i, N, k):
         r"""Lemma 2.3.28 from Baumann's thesis"""
         assert i in range(1, len(N) + 1)
