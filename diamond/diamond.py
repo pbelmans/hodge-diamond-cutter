@@ -3351,8 +3351,8 @@ def BrauerSeveri(g, n, Ns):
             sage: from diamond import *
             sage: N = [3,1,4,2]
             ....:     M = N[i :] + N[: i]
-            ....:     M.reverse() == BrauerSeveri.m(i+1,N,4)
             sage: for i in range(4):
+            ....:     list(reversed(M)), BrauerSeveri.m(i + 1, N, 4)
             True
         """
         assert i in range(1, len(N) + 1)
