@@ -3329,7 +3329,7 @@ def BrauerSeveri(g, n, Ns):
             sage: s = [[2,6,7,10],[3,5,9,10],[1,4,6,10],[4,5,8,10]]
             sage: for i in range(4):
             ....:     for j in range(4):
-            ....:         BrauerSeveri.s(M,i+1,j+1) == s[i][j]
+            sage: all(BrauerSeveri.s(N, i + 1, j + 1) == s[i][j] for i in range(4) for j in range(4))
             True
         """
         assert i in range(1, len(N) + 1)
