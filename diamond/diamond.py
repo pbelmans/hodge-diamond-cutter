@@ -3325,10 +3325,8 @@ def BrauerSeveri(g, n, Ns):
         Example 2.3.3 in Baumann's thesis:
 
             sage: from diamond import *
-            sage: N = [3,1,4,2]
-            sage: s = [[2,6,7,10],[3,5,9,10],[1,4,6,10],[4,5,8,10]]
-            sage: for i in range(4):
-            ....:     for j in range(4):
+            sage: N = [3, 1, 4, 2]
+            sage: s = [[2, 6, 7, 10], [3, 5, 9, 10], [1, 4, 6, 10], [4, 5, 8, 10]]
             sage: all(BrauerSeveri.s(N, i + 1, j + 1) == s[i][j] for i in range(4) for j in range(4))
             True
         """
@@ -3349,9 +3347,9 @@ def BrauerSeveri(g, n, Ns):
         Example 2.3.3 in Baumann's thesis:
 
             sage: from diamond import *
-            sage: N = [3,1,4,2]
-            ....:     M = N[i :] + N[: i]
+            sage: N = [3, 1, 4, 2]
             sage: for i in range(4):
+            ....:     M = N[i:] + N[:i]
             ....:     list(reversed(M)), BrauerSeveri.m(i + 1, N, 4)
             True
         """
