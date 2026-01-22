@@ -3317,95 +3317,110 @@ def BrauerSeveri(g, n, Ns):
         True
     """
 
-    def s(N, i, j):
-        r"""Equation (2.15) in Baumann's thesis
-
-        EXAMPLES:
-
-        Example 2.3.3 in Baumann's thesis:
-
-            sage: from diamond import *
-            sage: N = [3, 1, 4, 2]
-            sage: s = [[2, 6, 7, 10], [3, 5, 9, 10], [1, 4, 6, 10], [4, 5, 8, 10]]
-            sage: all(BrauerSeveri.s(N, i + 1, j + 1) == s[i][j] for i in range(4) for j in range(4))
-            True
-        """
-        assert i in range(1, len(N) + 1)
-        assert j in range(1, len(N) + 1)
-        r"""Use formula for s after Equation (2.17) in Baumann's thesis"""
-        N_permuted = N[i - 1 :] + N[: i - 1]
-        r"""Sum of last j entries in N_permuted"""
-        return sum(N_permuted[k] for k in range(len(N) - j, len(N)))
-
-    BrauerSeveri.s = s
-
-    def m(i, N, k):
-        r"""Line following Equation (2.16) in Baumann's thesis
-
-        EXAMPLES:
-
-        Example 2.3.3 in Baumann's thesis:
-
-            sage: from diamond import *
-            sage: N = [3, 1, 4, 2]
-            sage: for i in range(4):
-            ....:     M = N[i:] + N[:i]
-            ....:     list(reversed(M)), BrauerSeveri.m(i + 1, N, 4)
-            True
-        """
-        assert i in range(1, len(N) + 1)
-        assert k in range(1, len(N) + 1)
-        m = [s(N, i, 1)]
-        for j in range(2, k):
-            m.append(s(N, i, j) - s(N, i, j - 1))
-        return m
-
-    BrauerSeveri.m = m
-
-    def V(i, N, k):
-        r"""Lemma 2.3.28 from Baumann's thesis"""
-        assert i in range(1, len(N) + 1)
-        assert k in range(1, len(N) + 1)
-
-        # in this case we have Proposition 2.4.2
-        if k == len(N):
-            n = sum(N)
-
-            return Pn(n - 1) + sum(
-                V(i, N, k) * (Pn(n - s(N, i, j)) - point()) for j in range(1, len(N))
-            )
-
-        # Equation (2.72) applies if k is strictly smaller than e
-        return V(i, m(i, N, k), k)
-
-    def V_int(I, N):
-        r"""Theorem 2.3.29 in Baumann's thesis
-
-        This computes the Hodge diamond of the intersection of the auxiliary varieties
-        indexed by `i_1<...<i_k` for `k<=e`.
-        """
-        # TODO check that the number of indices is between 1 and e
-        # TODO implement the formula, it is a product of Vs
-
-        # reminder to self: no need for a base case, just a complicated product formula
-        # TODO create a vector of indices for the third entry
-        # TODO then compute the product in Equation (2.75)
-        return prod([], point())
-        pass
-
-    def BSp(N):
-        r"""The class of a single ramified fiber.
-
-        Proposition 2.3.23 in Baumann's thesis"""
-        # TODO do alternating sum over V_int(I, N)
-        # this corresponds to Lemma 2.4.1
-        return zero()
-
     assert all(n == sum(N) for N in Ns), "ramification must be summing to degree"
 
     # cut-and-paste the ramified fibers into the class
     return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum(
-        [BSp(N) for N in Ns], zero()
+        [__BS_fiber(N) for N in Ns], zero()
+    )
+
+
+def __BS_s(N, i, j):
+    r"""Equation (2.15) in Baumann's thesis
+
+    EXAMPLES:
+
+    Example 2.3.3 in Baumann's thesis:
+
+        sage: from diamond import *
+        sage: N = [3, 1, 4, 2]
+        sage: s = [[2, 6, 7, 10], [3, 5, 9, 10], [1, 4, 6, 10], [4, 5, 8, 10]]
+        sage: all(BrauerSeveri.s(N, i + 1, j + 1) == s[i][j] for i in range(4) for j in range(4))
+        True
+    """
+    assert i in range(1, len(N) + 1)
+    assert j in range(1, len(N) + 1)
+
+    r"""Use formula for s after Equation (2.17) in Baumann's thesis"""
+    N_permuted = N[i - 1 :] + N[: i - 1]
+
+    r"""Sum of last j entries in N_permuted"""
+    return sum(N_permuted[k] for k in range(len(N) - j, len(N)))
+
+
+def __BS_m(i, N, k):
+    r"""Line following Equation (2.16) in Baumann's thesis
+
+    EXAMPLES:
+
+    Example 2.3.3 in Baumann's thesis:
+
+        sage: from diamond import *
+        sage: N = [3, 1, 4, 2]
+        sage: for i in range(4):
+        ....:     M = N[i:] + N[:i]
+        ....:     list(reversed(M)), BrauerSeveri.m(i + 1, N, 4)
+        True
+    """
+    assert i in range(1, len(N) + 1)
+    assert k in range(1, len(N) + 1)
+
+    m = [__BS_s(N, i, 1)]
+    for j in range(2, k):
+        m.append(__BS_s(N, i, j) - __BS_s(N, i, j - 1))
+
+    return m
+
+
+def __BS_V(i, N, k):
+    r"""Lemma 2.3.28 from Baumann's thesis"""
+    assert i in range(1, len(N) + 1)
+    assert k in range(1, len(N) + 1)
+
+    # TODO some base case is missing here!
+
+    # in this case we have Proposition 2.4.2
+    if k == len(N):
+        n = sum(N)
+
+        return Pn(n - 1) + sum(
+            __BS_V(i, N, k) * (Pn(n - __BS_s(N, i, j)) - point())
+            for j in range(1, len(N))
+        )
+
+    # Equation (2.72) applies if k is strictly smaller than e
+    # TODO that's not what the condition before (2.72) says?
+    return __BS_V(i, __BS_m(i, N, k), k)
+
+
+def __BS_intersection(I, N):
+    r"""Theorem 2.3.29 in Baumann's thesis
+
+    This computes the Hodge diamond of the intersection of the auxiliary varieties
+    indexed by `i_1<...<i_k` for `k<=e`.
+    """
+    assert all(i in range(1, len(N) + 1) for i in I)
+    assert all(I[j] < I[j + 1] for j in range(len(I) - 1))
+
+    # create a vector of indices for the third entry in Equation (2.75)
+    indices = [(I[j + 1] - I[j]) for j in range(len(I) - 1)] + [len(N) - I[-1] + I[0]]
+    # the product in Equation (2.75)
+    return prod(
+        [__BS_V(I[(j + 1) % len(I)], N, indices[j]) for j in range(len(I))], point()
+    )
+
+
+def __BS_fiber(N):
+    r"""The class of a single ramified fiber.
+
+    Proposition 2.3.23 in Baumann's thesis is the main result actually,
+    giving a description of the Brauer--Severi fiber with ramification data `N`,
+    using the inclusion-exclusion principle from Lemma 2.4.1,
+    which reduces the computation to the auxiliary varieties `V(I, N)`,
+    and then further to the `V(i, N, k)`.
+    """
+    return sum(
+        (-1) ** len(I) * __BS_intersection(I, N) for I in Subsets(len(N)) if len(I) > 0
     )
 
 
