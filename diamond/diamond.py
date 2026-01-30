@@ -3183,10 +3183,10 @@ def horospherical(D, y=0, z=0):
         if n == 3 and y == 1:
             dimension = 9
         else:
-            dimension = n * (n + 3) / 2
+            dimension = int(n * (n + 3) / 2)
     elif D[0] == "C":
         assert n >= 2 and y in range(2, n + 1) and z == y - 1
-        dimension = y * (2 * n + 1 - y) - y * (y - 1) / 2
+        dimension = int(y * (2 * n + 1 - y) - y * (y - 1) / 2)
     elif D == "F4":
         assert y == 2 and z == 3
         dimension = 23
