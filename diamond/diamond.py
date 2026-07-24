@@ -769,14 +769,13 @@ class HodgeDiamond(Element):
 
         The Hopf surface over the complex numbers::
 
-            sage: S = HodgeDiamond.from_matrix([[1, 0, 0], [1, 0, 1], [0, 0, 1]])
-            sage: print(S)
+            sage: print(hopf())
                       1
-                  0       1
-              0       0       0
                   1       0
+              0       0       0
+                  0       1
                       1
-            sage: S.is_hodge_symmetric()
+            sage: hopf().is_hodge_symmetric()
             False
 
         Classical and singular Enriques surfaces in characteristic 2
@@ -1805,7 +1804,7 @@ def symmetric_power(n, genus):
 
     For the proof, see Example 1.1(1) of [MR2777820]. An earlier reference, probably in Macdonald, should exist.
 
-    * [MR2777820] Laurentiu--Schuermann, Hirzebruch invariants of symmetric products. Topology of algebraic varieties and singularities, 163–177, Contemp. Math., 538, Amer. Math. Soc., 2011.
+    * [MR2777820] Maxim--Schürmann, Hirzebruch invariants of symmetric products. Topology of algebraic varieties and singularities, 163–177, Contemp. Math., 538, Amer. Math. Soc., 2011.
 
     INPUT:
 
@@ -2643,7 +2642,7 @@ def nestedhilbn(surface, n):
         for p in range(3):
             for q in range(3):
                 s_pq = surface[p, q]
-                if p + q % 2:
+                if (p + q) % 2:
                     term = (1 + x ** (p + k - 1) * y ** (q + k - 1) * t**k).O(n + 1)
                     series *= term**s_pq
                 else:
@@ -2852,13 +2851,21 @@ def hopf():
 
 
 def kodaira_primary():
-    r"""Hodge diamond of a primary Kodaira surface"""
-    return HodgeDiamond.from_matrix([[1, 1, 1], [2, 2, 2], [1, 1, 1]])
+    r"""Hodge diamond of a primary Kodaira surface
+
+    These are non-Kähler surfaces with $\\mathrm{b}_1=3$, so Hodge symmetry
+    fails: $\\mathrm{h}^{1,0}=1$ and $\\mathrm{h}^{0,1}=2$.
+    """
+    return HodgeDiamond.from_matrix([[1, 2, 1], [1, 2, 1], [1, 2, 1]])
 
 
 def kodaira_secondary():
-    r"""Hodge diamond of a secondary Kodaira surface"""
-    return HodgeDiamond.from_matrix([[1, 0, 0], [1, 0, 1], [0, 0, 1]])
+    r"""Hodge diamond of a secondary Kodaira surface
+
+    These are non-Kähler surfaces with $\\mathrm{b}_1=1$ and $\\mathrm{b}_2=0$,
+    so they have the same Hodge diamond as the Hopf and Inoue surfaces.
+    """
+    return HodgeDiamond.from_matrix([[1, 1, 0], [0, 0, 0], [0, 1, 1]])
 
 
 def weighted_hypersurface(degree, weights):
@@ -3183,10 +3190,10 @@ def horospherical(D, y=0, z=0):
         if n == 3 and y == 1:
             dimension = 9
         else:
-            dimension = n * (n + 3) / 2
+            dimension = int(n * (n + 3) / 2)
     elif D[0] == "C":
         assert n >= 2 and y in range(2, n + 1) and z == y - 1
-        dimension = y * (2 * n + 1 - y) - y * (y - 1) / 2
+        dimension = int(y * (2 * n + 1 - y) - y * (y - 1) / 2)
     elif D == "F4":
         assert y == 2 and z == 3
         dimension = 23
@@ -3204,11 +3211,23 @@ def odd_symplectic_grassmannian(k, n):
     r"""
     Hodge diamond of the odd symplectic Grassmannian $\\operatorname{SGr}(k,n)$
 
-    Here $n$ is odd. This is just shorthand for a call to :func:`horospherical_variety`
-    for type C, with parameters $\lfloor n/2\rlfloor$, and $Y$ and $Z$ determined
+    Here $n$ is odd. This is just shorthand for a call to :func:`horospherical`
+    for type C, with parameters $\\lfloor n/2\\rfloor$, and $Y$ and $Z$ determined
     by $k$ and $k - 1$.
+
+    EXAMPLES:
+
+    For $k=1$ every line is isotropic, so we recover projective space::
+
+        sage: from diamond import *
+        sage: odd_symplectic_grassmannian(1, 5) == Pn(4)
+        True
     """
     assert n % 2 == 1
+
+    # for k=1 every line is isotropic, so this is just projective space
+    if k == 1:
+        return Pn(n - 1)
 
     return horospherical("C" + str(n // 2), k, k - 1)
 
