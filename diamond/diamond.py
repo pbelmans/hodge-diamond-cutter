@@ -3345,7 +3345,7 @@ def brauer_severi(g, n, Ns):
         sage: brauer_severi(5, 3, []) == curve(5) * Pn(2)
         True
 
-    A conic bundle over $\\mathbb{P}^1$ with two nodal fibres is the blowup of
+    A conic bundle over $\\mathbb{P}^1$ with one nodal fibre is the blowup of
     $\\mathbb{P}^2$ in two points::
 
         sage: brauer_severi(0, 2, [(1, 1)]) == Pn(2).blowup(2 * point())
