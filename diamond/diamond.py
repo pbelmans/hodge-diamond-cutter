@@ -646,7 +646,7 @@ class HodgeDiamond(Element):
         if hide_zeroes:
             empty = []
             for row in T:
-                (leading, trailing) = (0, 0)
+                leading, trailing = (0, 0)
                 groups = [(k, len(list(g))) for k, g in groupby(row)]
                 if groups[0][0] == "":
                     leading = groups[0][1]
@@ -3245,9 +3245,7 @@ def gushel_mukai(n):
     - ``n`` - the dimension, where $n=1,\\ldots,6$
     """
 
-    assert n in range(
-        1, 7
-    ), """There is no Gushel--Mukai variety of this
+    assert n in range(1, 7), """There is no Gushel--Mukai variety of this
         dimension"""
 
     if n == 1:
