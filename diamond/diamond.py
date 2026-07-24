@@ -1804,7 +1804,7 @@ def symmetric_power(n, genus):
 
     For the proof, see Example 1.1(1) of [MR2777820]. An earlier reference, probably in Macdonald, should exist.
 
-    * [MR2777820] Laurentiu--Schuermann, Hirzebruch invariants of symmetric products. Topology of algebraic varieties and singularities, 163–177, Contemp. Math., 538, Amer. Math. Soc., 2011.
+    * [MR2777820] Maxim--Schürmann, Hirzebruch invariants of symmetric products. Topology of algebraic varieties and singularities, 163–177, Contemp. Math., 538, Amer. Math. Soc., 2011.
 
     INPUT:
 
