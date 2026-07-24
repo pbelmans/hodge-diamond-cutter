@@ -2643,7 +2643,7 @@ def nestedhilbn(surface, n):
         for p in range(3):
             for q in range(3):
                 s_pq = surface[p, q]
-                if p + q % 2:
+                if (p + q) % 2:
                     term = (1 + x ** (p + k - 1) * y ** (q + k - 1) * t**k).O(n + 1)
                     series *= term**s_pq
                 else:
