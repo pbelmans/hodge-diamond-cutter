@@ -2852,13 +2852,21 @@ def hopf():
 
 
 def kodaira_primary():
-    r"""Hodge diamond of a primary Kodaira surface"""
-    return HodgeDiamond.from_matrix([[1, 1, 1], [2, 2, 2], [1, 1, 1]])
+    r"""Hodge diamond of a primary Kodaira surface
+
+    These are non-Kähler surfaces with $\\mathrm{b}_1=3$, so Hodge symmetry
+    fails: $\\mathrm{h}^{1,0}=1$ and $\\mathrm{h}^{0,1}=2$.
+    """
+    return HodgeDiamond.from_matrix([[1, 2, 1], [1, 2, 1], [1, 2, 1]])
 
 
 def kodaira_secondary():
-    r"""Hodge diamond of a secondary Kodaira surface"""
-    return HodgeDiamond.from_matrix([[1, 0, 0], [1, 0, 1], [0, 0, 1]])
+    r"""Hodge diamond of a secondary Kodaira surface
+
+    These are non-Kähler surfaces with $\\mathrm{b}_1=1$ and $\\mathrm{b}_2=0$,
+    so they have the same Hodge diamond as the Hopf and Inoue surfaces.
+    """
+    return HodgeDiamond.from_matrix([[1, 1, 0], [0, 0, 0], [0, 1, 1]])
 
 
 def weighted_hypersurface(degree, weights):
