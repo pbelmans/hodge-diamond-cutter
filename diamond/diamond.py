@@ -3304,143 +3304,217 @@ def fano_variety_lines_cubic(n):
     return (hilbtwo(X) - Pn(n) * X)(-2)
 
 
-def BrauerSeveri(g, n, Ns):
+def brauer_severi(g, n, Ns):
     r"""
-    Hodge diamond for the Brauer--Severi variety of an hereditary order on curve
+    Hodge diamond of the Brauer--Severi scheme of a hereditary order on a curve
 
-    The curve is a smooth projective curve of genus `g`.
-    The order is of degree `n`.
-    The ramification data `Ns`of the hereditary order are described by giving a list
-    of ramification data, which is one integer vector for each ramified point.
+    Let $\\mathcal{A}$ be a hereditary $\\mathcal{O}_C$-order of degree ``n`` on a
+    smooth projective curve $C$ of genus ``g``. Its Brauer--Severi scheme (or
+    Artin model) $f\\colon\\operatorname{BS}(\\mathcal{A})\\to C$ is a smooth
+    projective variety of dimension ``n``; away from the ramification locus it is
+    a $\\mathbb{P}^{n-1}$-bundle over $C$.
 
-    The variable `e` is always `len(N)`
+    The ramification is encoded by ``Ns``, a list with one entry per ramified
+    point. Each entry is the ramification datum $\\mathbf{n}=(n_1,\\ldots,n_e)$ at
+    that point, an integer vector summing to ``n`` (so $e$ is the ramification
+    index); unramified points are omitted.
 
-    TODO document the reference, and explain the assertions
+    The class in the Grothendieck ring is computed by cut-and-paste: a
+    $\\mathbb{P}^{n-1}$-bundle over the unramified locus, plus the class of each
+    ramified fibre. The fibre is obtained from Theorem 2.3.29 (intersections of
+    Artin's auxiliary varieties) via inclusion--exclusion, following Chapter 2
+    of [Baumann].
 
-    TODO tests
-    - unramified case is projective bundle
-    - various examples from Baumann's thesis
+    * [Baumann] Baumann, The geometry of hereditary orders and beyond,
+      PhD thesis, University of Luxembourg, 2025.
+
+    INPUT:
+
+    - ``g`` -- genus of the base curve
+
+    - ``n`` -- degree of the hereditary order
+
+    - ``Ns`` -- list of ramification data, one integer vector (summing to ``n``)
+      per ramified point
 
     EXAMPLES:
 
-    The unramified case is a projective bundle::
+    Without ramification we recover a projective bundle over the curve::
 
         sage: from diamond import *
-        sage: BrauerSeveri(5, 3, []) == curve(5) * Pn(2)
+        sage: brauer_severi(5, 3, []) == curve(5) * Pn(2)
         True
 
-    This is a non-standard conic bundle over `P^1`, thus isomorphic to
-    the blowup of `P^2` in 2 points::
+    A conic bundle over $\\mathbb{P}^1$ with two nodal fibres is the blowup of
+    $\\mathbb{P}^2$ in two points::
 
-        sage: BrauerSeveri(0, 2, [(1, 1)]) == Pn(2).blowup(2 * point())
+        sage: brauer_severi(0, 2, [(1, 1)]) == Pn(2).blowup(2 * point())
         True
+
+    A degree-2 order over an elliptic curve, ramified in three points::
+
+        sage: print(brauer_severi(1, 2, [(1, 1)] * 3))
+                  1
+              1       1
+          0       5       0
+              1       1
+                  1
     """
+    Ns = [tuple(N) for N in Ns]
+    assert all(n == sum(N) for N in Ns), "ramification data must sum to the degree"
 
-    assert all(n == sum(N) for N in Ns), "ramification must be summing to degree"
-
-    # cut-and-paste the ramified fibers into the class
     return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum(
-        [__BS_fiber(N) for N in Ns], zero()
+        (__BS_fiber(N) for N in Ns), zero()
     )
 
 
 def __BS_s(N, i, j):
-    r"""Equation (2.15) in Baumann's thesis
+    r"""Partial sum $s_{i,j}$ of the ramification datum ``N``, (2.15) in [Baumann]
 
     EXAMPLES:
 
-    Example 2.3.3 in Baumann's thesis:
+    Example 2.3.3 in [Baumann]::
 
         sage: from diamond import *
-        sage: N = [3, 1, 4, 2]
+        sage: N = (3, 1, 4, 2)
         sage: s = [[2, 6, 7, 10], [3, 5, 9, 10], [1, 4, 6, 10], [4, 5, 8, 10]]
-        sage: all(BrauerSeveri.s(N, i + 1, j + 1) == s[i][j] for i in range(4) for j in range(4))
+        sage: all(brauer_severi.s(N, i + 1, j + 1) == s[i][j]
+        ....:     for i in range(4) for j in range(4))
         True
     """
+    N = tuple(N)
     assert i in range(1, len(N) + 1)
     assert j in range(1, len(N) + 1)
 
-    r"""Use formula for s after Equation (2.17) in Baumann's thesis"""
-    N_permuted = N[i - 1 :] + N[: i - 1]
-
-    r"""Sum of last j entries in N_permuted"""
-    return sum(N_permuted[k] for k in range(len(N) - j, len(N)))
+    # sum of the last j entries of the cyclic shift putting n_i first
+    shifted = N[i - 1 :] + N[: i - 1]
+    return sum(shifted[len(N) - j :])
 
 
-def __BS_m(i, N, k):
-    r"""Line following Equation (2.16) in Baumann's thesis
+def __BS_m(N, i, k):
+    r"""The $k$-th cut $m(i,\\mathbf{n},k)$ of ``N``, equation (2.16) in [Baumann]
+
+    This is the ``k``-tuple $(n_{i-k},\\ldots,n_{i-1})$ (indices modulo $e$),
+    obtained as the last ``k`` entries of the cyclic shift putting $n_i$ first.
 
     EXAMPLES:
 
-    Example 2.3.3 in Baumann's thesis:
+    The reductions appearing in Example 2.4.3 of [Baumann]::
 
         sage: from diamond import *
-        sage: N = [3, 1, 4, 2]
-        sage: for i in range(4):
-        ....:     M = N[i:] + N[:i]
-        ....:     list(reversed(M)), BrauerSeveri.m(i + 1, N, 4)
+        sage: N = (3, 1, 4, 2)
+        sage: brauer_severi.m(N, 3, 1)
+        (1,)
+        sage: brauer_severi.m(N, 3, 2)
+        (3, 1)
+        sage: brauer_severi.m(N, 3, 3)
+        (2, 3, 1)
+    """
+    N = tuple(N)
+    assert i in range(1, len(N) + 1)
+    assert k in range(1, len(N) + 1)
+
+    shifted = N[i - 1 :] + N[: i - 1]
+    return shifted[len(N) - k :]
+
+
+@cached_function
+def __BS_V(N):
+    r"""Class of the top Artin auxiliary variety $V_{1,\\mathbf{n},e}$, where
+    $e=\\operatorname{len}(N)$, via Proposition 2.4.2 in [Baumann]
+
+    Every auxiliary variety reduces to this one because $V_{i,\\mathbf{n},k}\\cong
+    V_{1,m(i,\\mathbf{n},k),k}$ (Lemma 2.3.28), so the recursion runs over the
+    cuts ``__BS_m``.
+
+    EXAMPLES:
+
+    The four auxiliary varieties $V_{i,\\mathbf{n},4}$ from Example 2.4.3 in
+    [Baumann]::
+
+        sage: from diamond import *
+        sage: x, y = HodgeDiamond.x, HodgeDiamond.y
+        sage: N = (3, 1, 4, 2)
+        sage: coeffs = {1: [1, 4, 9, 14, 17, 17, 14, 9, 4, 1],
+        ....:           2: [1, 3, 6, 9, 11, 11, 9, 6, 3, 1],
+        ....:           3: [1, 4, 9, 15, 19, 19, 15, 9, 4, 1],
+        ....:           4: [1, 4, 8, 12, 15, 15, 12, 8, 4, 1]}
+        sage: all(brauer_severi.V(brauer_severi.m(N, i, 4)).polynomial
+        ....:     == sum(c * (x * y)**j for j, c in enumerate(coeffs[i]))
+        ....:     for i in range(1, 5))
         True
     """
-    assert i in range(1, len(N) + 1)
-    assert k in range(1, len(N) + 1)
+    N = tuple(N)
+    degree = sum(N)
 
-    m = [__BS_s(N, i, 1)]
-    for j in range(2, k):
-        m.append(__BS_s(N, i, j) - __BS_s(N, i, j - 1))
-
-    return m
-
-
-def __BS_V(i, N, k):
-    r"""Lemma 2.3.28 from Baumann's thesis"""
-    assert i in range(1, len(N) + 1)
-    assert k in range(1, len(N) + 1)
-
-    # TODO some base case is missing here!
-
-    # in this case we have Proposition 2.4.2
-    if k == len(N):
-        n = sum(N)
-
-        return Pn(n - 1) + sum(
-            __BS_V(i, N, k) * (Pn(n - __BS_s(N, i, j)) - point())
-            for j in range(1, len(N))
+    # base of the recursion: for e = 1 this is just projective space
+    result = Pn(degree - 1)
+    # Proposition 2.4.2: blow up in V_{1,M,k} of codimension degree - s_{1,k}
+    for k in range(1, len(N)):
+        M = N[len(N) - k :]  # = m(1, N, k), the last k entries
+        result = result + __BS_V(M) * sum(
+            (point()(t) for t in range(1, degree - sum(M))), zero()
         )
-
-    # Equation (2.72) applies if k is strictly smaller than e
-    # TODO that's not what the condition before (2.72) says?
-    return __BS_V(i, __BS_m(i, N, k), k)
+    return result
 
 
 def __BS_intersection(I, N):
-    r"""Theorem 2.3.29 in Baumann's thesis
+    r"""Class of the intersection of the components indexed by $i_1<\\ldots<i_k$
+    of the ramified fibre, Theorem 2.3.29 in [Baumann]
 
-    This computes the Hodge diamond of the intersection of the auxiliary varieties
-    indexed by `i_1<...<i_k` for `k<=e`.
+    By Theorem 2.3.29 this intersection is a product of Artin auxiliary
+    varieties.
     """
-    assert all(i in range(1, len(N) + 1) for i in I)
-    assert all(I[j] < I[j + 1] for j in range(len(I) - 1))
+    N = tuple(N)
+    I = tuple(sorted(I))
+    e, k = len(N), len(I)
 
-    # create a vector of indices for the third entry in Equation (2.75)
-    indices = [(I[j + 1] - I[j]) for j in range(len(I) - 1)] + [len(N) - I[-1] + I[0]]
-    # the product in Equation (2.75)
-    return prod(
-        [__BS_V(I[(j + 1) % len(I)], N, indices[j]) for j in range(len(I))], point()
-    )
+    # ramification index of each factor, equation (2.75), with wraparound
+    gaps = [I[j + 1] - I[j] for j in range(k - 1)] + [e - I[-1] + I[0]]
+    return prod((__BS_V(__BS_m(N, I[(j + 1) % k], gaps[j])) for j in range(k)), point())
 
 
 def __BS_fiber(N):
-    r"""The class of a single ramified fiber.
+    r"""Class of a single ramified fibre with ramification datum ``N``
 
-    Proposition 2.3.23 in Baumann's thesis is the main result actually,
-    giving a description of the Brauer--Severi fiber with ramification data `N`,
-    using the inclusion-exclusion principle from Lemma 2.4.1,
-    which reduces the computation to the auxiliary varieties `V(I, N)`,
-    and then further to the `V(i, N, k)`.
+    The fibre is the union of its irreducible components (Proposition 2.3.23 in
+    [Baumann]); its class follows by inclusion--exclusion (Lemma 2.4.1) from the
+    intersections computed in ``__BS_intersection``.
+
+    EXAMPLES:
+
+    The fibre for the ramification datum of Example 2.4.3, equation (2.112) in
+    [Baumann]::
+
+        sage: from diamond import *
+        sage: x, y = HodgeDiamond.x, HodgeDiamond.y
+        sage: brauer_severi.fiber((3, 1, 4, 2)).polynomial == sum(
+        ....:     c * (x * y)**j
+        ....:     for j, c in enumerate([1, 4, 9, 15, 20, 22, 20, 15, 9, 4]))
+        True
+
+    For a totally ramified point the fibre is $(1+L)^n-L^n$::
+
+        sage: all(brauer_severi.fiber((1,) * n).polynomial
+        ....:     == (1 + x * y)**n - (x * y)**n for n in range(2, 6))
+        True
     """
+    N = tuple(N)
     return sum(
-        (-1) ** len(I) * __BS_intersection(I, N) for I in Subsets(len(N)) if len(I) > 0
+        (
+            (-1) ** (len(I) + 1) * __BS_intersection(I, N)
+            for I in Subsets(len(N))
+            if len(I) > 0
+        ),
+        zero(),
     )
+
+
+# expose the internal helpers under the public name, for documentation and testing
+brauer_severi.s = __BS_s
+brauer_severi.m = __BS_m
+brauer_severi.V = __BS_V
+brauer_severi.fiber = __BS_fiber
 
 
 def Mzeronbar(n):

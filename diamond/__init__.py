@@ -1,7 +1,6 @@
 from diamond import diamond
 from diamond.diamond import (
     K3,
-    BrauerSeveri,
     HochschildHomologies,
     HochschildHomology,
     HodgeDiamond,
@@ -10,6 +9,7 @@ from diamond.diamond import (
     Mzeronbar,
     Pn,
     abelian,
+    brauer_severi,
     complete_intersection,
     curve,
     cyclic_cover,
@@ -57,7 +57,6 @@ from diamond.diamond import (
 )
 
 __all__ = [
-    "BrauerSeveri",
     "HochschildHomologies",
     "HochschildHomology",
     "HodgeDiamond",
@@ -67,6 +66,7 @@ __all__ = [
     "Mzeronbar",
     "Pn",
     "abelian",
+    "brauer_severi",
     "complete_intersection",
     "curve",
     "cyclic_cover",
