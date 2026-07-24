@@ -769,14 +769,13 @@ class HodgeDiamond(Element):
 
         The Hopf surface over the complex numbers::
 
-            sage: S = HodgeDiamond.from_matrix([[1, 0, 0], [1, 0, 1], [0, 0, 1]])
-            sage: print(S)
+            sage: print(hopf())
                       1
-                  0       1
-              0       0       0
                   1       0
+              0       0       0
+                  0       1
                       1
-            sage: S.is_hodge_symmetric()
+            sage: hopf().is_hodge_symmetric()
             False
 
         Classical and singular Enriques surfaces in characteristic 2
