@@ -3362,6 +3362,11 @@ def brauer_severi(g, n, Ns):
     """
     Ns = [tuple(N) for N in Ns]
     assert all(n == sum(N) for N in Ns), "ramification data must sum to the degree"
+    # positive parts: the ramification index len(N) is then automatically at most
+    # the degree n, with equality exactly for the totally ramified datum (1,...,1)
+    assert all(
+        all(part >= 1 for part in N) for N in Ns
+    ), "ramification data must be positive integers"
 
     return Pn(n - 1) * (curve(g) - len(Ns) * point()) + sum(
         (__BS_fiber(N) for N in Ns), zero()
