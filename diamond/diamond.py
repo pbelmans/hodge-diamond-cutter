@@ -3212,11 +3212,23 @@ def odd_symplectic_grassmannian(k, n):
     r"""
     Hodge diamond of the odd symplectic Grassmannian $\\operatorname{SGr}(k,n)$
 
-    Here $n$ is odd. This is just shorthand for a call to :func:`horospherical_variety`
-    for type C, with parameters $\lfloor n/2\rlfloor$, and $Y$ and $Z$ determined
+    Here $n$ is odd. This is just shorthand for a call to :func:`horospherical`
+    for type C, with parameters $\\lfloor n/2\\rfloor$, and $Y$ and $Z$ determined
     by $k$ and $k - 1$.
+
+    EXAMPLES:
+
+    For $k=1$ every line is isotropic, so we recover projective space::
+
+        sage: from diamond import *
+        sage: odd_symplectic_grassmannian(1, 5) == Pn(4)
+        True
     """
     assert n % 2 == 1
+
+    # for k=1 every line is isotropic, so this is just projective space
+    if k == 1:
+        return Pn(n - 1)
 
     return horospherical("C" + str(n // 2), k, k - 1)
 
