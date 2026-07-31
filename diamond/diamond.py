@@ -2191,25 +2191,22 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     """
     total = sum(alpha)
     N = len(alpha)
-    rN = range(N)
 
-    def d(j, alpha):
-        return len(
-            [
-                1
-                for I in Subsets(rN)
-                if (len(I) - j) % 2 == 0
-                and j - 1 < (len(I) + total - 2 * sum(alpha[i] for i in I)) < j + 1
-            ]
-        )
+    # A subset lands in the band of every integer j within distance one of its value,
+    # of which there are at most two, so one pass over the powerset tallies all of the
+    # bands at once, rather than sweeping the powerset once per band.
+    d = [0] * (N + 1)
+    for I in Subsets(range(N)):
+        value = QQ(len(I) + total - 2 * sum(alpha[i] for i in I))
+        for j in range(max(0, value.ceil() - 1), min(N, value.floor() + 1) + 1):
+            if (len(I) - j) % 2 == 0 and j - 1 < value < j + 1:
+                d[j] += 1
 
-    def c(j, alpha):
-        return binomial(N, j) - d(j, alpha)
+    def c(j):
+        return binomial(N, j) - d[j]
 
-    def b(j, alpha):
-        return sum(((i + 2) // 2) * c(j - i, alpha) for i in range(j + 1))
-
-    N = len(alpha)
+    def b(j):
+        return sum(((i + 2) // 2) * c(j - i) for i in range(j + 1))
 
     if genus == 0:
         M = zero()
@@ -2218,9 +2215,8 @@ def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     elif genus >= 2:
         M = moduli_vector_bundles(2, 1, genus)
 
-    result = M * (Pn(1) ** N) + sum(
-        [b(j, alpha) * jacobian(genus)(genus + j) for j in range(N - 2)]
-    )
+    J = jacobian(genus)
+    result = M * (Pn(1) ** N) + sum([b(j) * J(genus + j) for j in range(N - 2)])
     assert result.arises_from_variety()
 
     return result
