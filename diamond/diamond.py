@@ -913,12 +913,22 @@ class HodgeDiamond(Element):
             sage: from diamond import *
             sage: moduli_vector_bundles(3, 1, 9).row(3, truncate=True)
             [9, 9]
+
+        Both ends are stripped independently, so a row of zeroes truncates
+        to nothing, and a row which is not symmetric keeps no zeroes::
+
+            sage: K3().row(1, truncate=True)
+            []
+            sage: hopf().row(1, truncate=True)
+            [1]
         """
         row = [self.matrix[j, i - j] for j in range(i + 1)]
 
         if truncate:
-            while row[0] == 0 and row[-1] == 0:
-                row = row[1:-1]
+            nonzero = [j for j, entry in enumerate(row) if entry != 0]
+            if not nonzero:
+                return []
+            row = row[nonzero[0] : nonzero[-1] + 1]
 
         return row
 
