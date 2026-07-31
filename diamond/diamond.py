@@ -2100,17 +2100,16 @@ def moduli_vector_bundles(rank, degree, genus):
         )
         return (x * y) ** exponent
 
-    return HodgeDiamond.from_polynomial(
-        R(
-            sum(
-                [
-                    one(C, g) * two(C, g) * three(C, g) * four(C, d, g)
-                    for C in Compositions(r)
-                ]
-            )
-        ),
-        from_variety=True,
+    total = sum(
+        [one(C, g) * two(C, g) * three(C, g) * four(C, d, g) for C in Compositions(r)]
     )
+
+    # the sum lives in the fraction field, and coercing it into R directly hits
+    # Sage's recursion limit for larger rank and genus, while taking the
+    # numerator of the (necessarily trivial) fraction is immediate
+    assert total.denominator() == 1, "result needs to be a polynomial"
+
+    return HodgeDiamond.from_polynomial(R(total.numerator()), from_variety=True)
 
 
 def seshadris_desingularisation(genus):
