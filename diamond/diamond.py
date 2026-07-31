@@ -394,6 +394,19 @@ class HodgeDiamond(Element):
         """
         return not self == other
 
+    def __hash__(self):
+        r"""Hash the Hodge diamond, consistently with equality
+
+        Defining ``__eq__`` without this makes the class unhashable.
+
+        EXAMPLES::
+
+            sage: from diamond import *
+            sage: len({K3(), hypersurface(4, 2), Pn(2)})
+            2
+        """
+        return hash(self.polynomial)
+
     def _add_(self, other):
         r"""Add two Hodge diamonds together
 
@@ -1539,6 +1552,19 @@ class HochschildHomology(Element):
 
     def __ne__(self, other):
         return not self == other
+
+    def __hash__(self):
+        r"""Hash the Hochschild homology, consistently with equality
+
+        Defining ``__eq__`` without this makes the class unhashable.
+
+        EXAMPLES::
+
+            sage: from diamond import *
+            sage: len({K3().hh(), K3().hh(), point().hh()})
+            2
+        """
+        return hash(self.polynomial)
 
     def __getitem__(self, i):
         if i > len(self._L) // 2:
