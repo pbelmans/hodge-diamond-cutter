@@ -1135,19 +1135,20 @@ class HodgeDiamond(Element):
             sage: inoue().dimension()
             2
 
+        It is symmetric in $p$ and $q$, also when Hodge symmetry fails::
+
+            sage: HodgeDiamond.from_matrix([[1, 0, 0], [0, 0, 0], [1, 0, 0]]).dimension()
+            2
+
+        The empty diamond has dimension $-1$::
+
+            sage: zero().dimension()
+            -1
+
         """
         if self.is_zero():
             return -1
-        return (
-            max(
-                [
-                    i
-                    for i in range(self.matrix.ncols())
-                    if not self.matrix.column(i).is_zero()
-                ]
-            )
-            - self.lefschetz_power()
-        )
+        return self.size() - self.lefschetz_power()
 
     def level(self):
         r"""Compute the level (or complexity) of the Hodge diamond
