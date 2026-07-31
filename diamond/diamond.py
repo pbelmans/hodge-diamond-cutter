@@ -2000,12 +2000,9 @@ def kummer_resolution(dimension):
     """
     g = dimension
 
+    f = jacobian(g).polynomial
     invariant = sum(
-        [
-            jacobian(g).polynomial.monomial_coefficient(m) * m
-            for m in jacobian(g).polynomial.monomials()
-            if m.degree() % 2 == 0
-        ]
+        [f.monomial_coefficient(m) * m for m in f.monomials() if m.degree() % 2 == 0]
     )
     return HodgeDiamond.from_polynomial(invariant) + sum(
         [2 ** (2 * g) * point()(i) for i in range(1, g)]
