@@ -1178,9 +1178,15 @@ class HodgeDiamond(Element):
 
             sage: all(hypersurface(n+2, n).level() == n for n in range(10))
             True
+
+        The empty diamond has level zero::
+
+            sage: zero().level()
+            0
         """
         return max(
-            abs(m.degrees()[0] - m.degrees()[1]) for m in self.polynomial.monomials()
+            (abs(m.degrees()[0] - m.degrees()[1]) for m in self.polynomial.monomials()),
+            default=0,
         )
 
     def blowup(self, other, codim=None):
