@@ -1004,8 +1004,15 @@ class HodgeDiamond(Element):
 
             sage: all(K3n(n).holomorphic_euler() == n+1 for n in range(5))
             True
+
+        It is the alternating sum of :meth:`HodgeDiamond.homological_unit`, so
+        it can differ from the alternating sum of the $\\mathrm{h}^{i,0}$ when
+        Hodge symmetry fails::
+
+            sage: hopf().holomorphic_euler()
+            0
         """
-        return ZZ.sum((-1) ** i * self.matrix[i, 0] for i in range(self.matrix.nrows()))
+        return ZZ.sum((-1) ** q * self.matrix[0, q] for q in range(self.matrix.ncols()))
 
     def hirzebruch(self):
         r"""Hirzebruch's \chi_y genus
