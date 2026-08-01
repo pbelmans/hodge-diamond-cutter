@@ -3736,9 +3736,7 @@ def gushel_mukai(n):
     - ``n`` - the dimension, where $n=1,\\ldots,6$
     """
 
-    assert n in range(
-        1, 7
-    ), """There is no Gushel--Mukai variety of this
+    assert n in range(1, 7), """There is no Gushel--Mukai variety of this
         dimension"""
 
     if n == 1:
