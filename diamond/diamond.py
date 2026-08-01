@@ -3023,6 +3023,105 @@ def nestedhilbn(surface, n):
     return HodgeDiamond.from_matrix(M, from_variety=True)
 
 
+def enriques_hilbn_cover(n):
+    r"""
+    Hodge diamond of the universal covering space of the Hilbert scheme of ``n`` points on a complex Enriques surface $S$
+
+    By Theorem 3.1 of [MR2863907] the Hilbert scheme has fundamental group of order 2,
+    so the covering is étale of degree 2, and by Proposition 1.6 of [MR2578804] it is a
+    Calabi-Yau variety of dimension $2n$ for $n\geq 2$.
+
+    Let $L$ be the non-trivial rank one local system on $S$, the one belonging to its K3
+    double cover, so that $\mathrm{H}^\bullet(S,L)$ is the anti-invariant part of the
+    cohomology of that K3 surface. By Corollary 1.3 of [MR2578804] the cohomology of the
+    covering space is $\mathrm{H}^\bullet(S^{[n]})\oplus\mathrm{H}^\bullet(S^{[n]},L^{[n]})$,
+    and the twisted summand is Göttsche's product with the Hodge numbers of $S$ replaced by
+    those of $\mathrm{H}^\bullet(S,L^{\otimes k})$ in the factor of multiplicity $k$. Since
+    $L$ has order 2 this changes only the factors of odd multiplicity.
+
+    * [MR2578804] Nieper-Wißkirchen, Twisted cohomology of the Hilbert schemes of points on surfaces. Doc. Math. 14 (2009), 749--770.
+    * [MR2863907] Oguiso--Schröer, Enriques manifolds. J. Reine Angew. Math. 661 (2011), 215--235.
+
+    For $n=2$ the Hodge numbers are also computed in [MR3778120]. They agree with the ones
+    below except for $\mathrm{h}^{2,2}$, which is printed as 131 there. The Euler
+    characteristic favours the 132 below: an étale double cover doubles the Euler
+    characteristic, so it has to be twice the 90 of ``hilbn(enriques(), 2)``, whereas 131
+    gives 179.
+
+    * [MR3778120] Hayashi, Universal covering Calabi-Yau manifolds of the Hilbert schemes of $n$-points of Enriques surfaces. Asian J. Math. 21 (2017), no. 6, 1099--1120.
+
+    INPUT:
+
+    - ``n`` -- number of points
+
+    EXAMPLES:
+
+    For 1 point the covering space is the K3 surface covering the Enriques surface::
+
+        sage: from diamond import *
+        sage: enriques_hilbn_cover(1) == K3()
+        True
+
+    The Calabi-Yau fourfold covering the Hilbert square::
+
+        sage: print(enriques_hilbn_cover(2))
+                            1
+                       0         0
+                  0        12        0
+              0        0         0        0
+          1       10       132       10       1
+              0        0         0        0
+                  0        12        0
+                       0         0
+                            1
+
+    The covering map is étale of degree 2, so it doubles the Euler characteristic::
+
+        sage: S = enriques()
+        sage: all(enriques_hilbn_cover(n).euler() == 2 * hilbn(S, n).euler() for n in range(1, 6))
+        True
+
+    The second Betti number is 12 for 2 points, but the covering involution acts trivially
+    on the second cohomology from 3 points on, so it drops to 11 there, as in [MR3778120]::
+
+        sage: [enriques_hilbn_cover(n).betti()[2] for n in range(1, 6)]
+        [22, 12, 11, 11, 11]
+    """
+    assert n >= 1
+
+    S = enriques()
+    # the anti-invariant part of the cohomology of the K3 surface covering S
+    twist = K3() - S
+
+    ring_ab = PolynomialRing(ZZ, "a,b")
+    a, b = ring_ab.gens()
+    R = PowerSeriesRing(ring_ab, "t", default_prec=n + 1)
+    t = R.gen().O(n + 1)
+
+    # Göttsche's product as in hilbn, but the factor of multiplicity k uses the Hodge
+    # numbers of H^*(S, L^{\otimes k}), and L^{\otimes k} is trivial for even k
+    series = R.one().O(n + 1)
+    for k in range(1, n + 1):
+        hodge = twist if k % 2 else S
+        for p in range(3):
+            for q in range(3):
+                eps_pq = (-1) ** (p + q + 1)
+                term = (1 + eps_pq * a ** (p + k - 1) * b ** (q + k - 1) * t**k).O(
+                    n + 1
+                )
+                series *= term ** (eps_pq * hodge[p, q])
+
+    coeff_n = series[n]
+
+    # read off the twisted summand from the (truncated) series
+    M = matrix(2 * n + 1)
+    for p in range(2 * n + 1):
+        for q in range(2 * n + 1):
+            M[p, q] = coeff_n.coefficient([p, q])
+
+    return HodgeDiamond.from_matrix(hilbn(S, n).matrix + M, from_variety=True)
+
+
 def complete_intersection(degrees, dimension):
     r"""
     Hodge diamond for a complete intersection of multidegree $(d_1,\\ldots,d_k)$ in $\\mathbb{P}^{n+k}$

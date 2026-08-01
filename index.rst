@@ -62,6 +62,7 @@ Surfaces and moduli spaces of sheaves on them
 .. autofunction:: diamond.enriques
 .. autofunction:: diamond.hilbn
 .. autofunction:: diamond.nestedhilbn
+.. autofunction:: diamond.enriques_hilbn_cover
 .. autofunction:: diamond.hopf
 .. autofunction:: diamond.inoue
 .. autofunction:: diamond.kodaira_primary
