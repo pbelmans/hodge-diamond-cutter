@@ -3132,6 +3132,20 @@ def orthogonal_grassmannian(k, n):
 
     - ``n`` -- dimension of the ambient vector space
 
+    EXAMPLES:
+
+    Isotropic lines form a quadric hypersurface::
+
+        sage: from diamond import *
+        sage: all(orthogonal_grassmannian(1, n) == hypersurface(2, n - 2)
+        ....:     for n in range(4, 10))
+        True
+
+    The dimension is $k(n-k)-\\binom{k+1}{2}$::
+
+        sage: [orthogonal_grassmannian(k, 10).dimension() for k in range(1, 5)]
+        [8, 13, 15, 14]
+
     """
     if n % 2 == 0:
         assert k < n // 2
@@ -3140,8 +3154,9 @@ def orthogonal_grassmannian(k, n):
 
     if n % 2 == 0:
         D = "D" + str(n // 2)
-        if k - 1 == n // 2:
-            # exceptional case: need submaximal parabolic
+        if k == n // 2 - 1:
+            # an isotropic subspace of dimension n/2 - 1 lies in exactly one maximal
+            # isotropic subspace of each of the two families, so both fork vertices go
             I = list(range(1, n // 2 - 1))
         else:
             I = [i for i in range(1, n // 2 + 1) if i != k]
