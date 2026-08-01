@@ -1442,6 +1442,18 @@ class HochschildHomology(Element):
             sage: x = LaurentPolynomialRing(ZZ, 'x').gen()
             sage: HochschildHomology.from_polynomial(x**-2+20+x**2)
             Hochschild homology vector of dimension 2
+
+        A polynomial violating Serre duality is rejected, rather than being
+        reread as a shifted one which happens to be symmetric::
+
+            sage: HochschildHomology.from_polynomial(x**3)
+            Traceback (most recent call last):
+            ...
+            AssertionError: Serre duality is not satisfied
+            sage: HochschildHomology.from_polynomial(x**2 + 1)
+            Traceback (most recent call last):
+            ...
+            AssertionError: Serre duality is not satisfied
         """
         return HochschildHomologies()(f)
 
@@ -1666,8 +1678,11 @@ class HochschildHomologies(Singleton, Parent):
                 # full list
                 L = args
         else:
-            # a Laurent polynomial
-            L = list(args)
+            # a Laurent polynomial, read off over a range symmetric about zero, so that
+            # one violating Serre duality is rejected rather than silently reread as a
+            # shifted one which happens to be symmetric
+            n = max(abs(args.valuation()), abs(args.degree()))
+            L = [args[i] for i in range(-n, n + 1)]
 
         return self.element_class(self, L)
 
