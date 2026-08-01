@@ -3179,8 +3179,24 @@ def symplectic_grassmannian(k, n):
 
     - ``n`` -- dimension of the ambient vector space
 
+    EXAMPLES:
+
+    Every line is isotropic for a symplectic form, so for $k=1$ we get
+    projective space::
+
+        sage: from diamond import *
+        sage: all(symplectic_grassmannian(1, 2*n) == Pn(2*n - 1)
+        ....:     for n in range(1, 6))
+        True
+
+    The dimension is $k(n-k)-\\binom{k}{2}$::
+
+        sage: [symplectic_grassmannian(k, 8).dimension() for k in range(1, 5)]
+        [7, 11, 12, 10]
+
     """
     assert n % 2 == 0
+    assert 0 <= k <= n // 2
 
     D = "C" + str(n // 2)
     I = [i for i in range(1, n // 2 + 1) if i != k]
