@@ -2279,17 +2279,20 @@ def moduli_higgs_bundles(rank, degree, genus):
     Conjectural Hodge diamond for the moduli space of semistable Higgs bundles
     of given rank and degree on a curve of a given genus.
 
-    This is Conjecture 5.6 of [math/0406380], in the motivic form of
-    Conjecture 2 of [1104.5698], which is what is implemented. It is a
-    *conjecture*: the answer is proven only in rank 2 by Hitchin's computation,
-    in rank 3 by Gothen's, and in rank 4 for small genus. You have been warned.
+    This is Conjecture 5.6 of [MR2166085], in the motivic form of Conjecture 2
+    of [MR2975380], which is what is implemented. Its specialisation to the
+    Poincaré polynomial is a theorem in every rank, by Schiffmann and by Mellit,
+    but the motivic refinement computed here is still a *conjecture*, verified in
+    rank 2 by Hitchin's computation, in rank 3 by Gothen's, and in rank 4 for
+    small genus. You have been warned.
 
-    * [math/0406380] Hausel--Rodriguez-Villegas, Mixed Hodge polynomials of character varieties
-    * [1104.5698] Mozgovoy, Solutions of the motivic ADHM recursion formula
+    * [MR2166085] Hausel, Mirror symmetry and Langlands duality in the non-abelian Hodge theory of a curve. Geometric methods in algebra and number theory, 193-217, Progr. Math., 235, Birkhauser, 2005.
+
+    * [MR2975380] Mozgovoy, Solutions of the motivic ADHM recursion formula. Int. Math. Res. Not. IMRN 2012, no. 18, 4218-4244.
 
     The moduli space is smooth of dimension $2n^2(g-1)+2$, but it is not
     projective, so what a Hodge diamond can mean for it needs saying. Its
-    cohomology is nevertheless pure, by Theorem 2.1 of [math/0406380]: $H^k$
+    cohomology is nevertheless pure, by Theorem 2.1 of [MR2166085]: $H^k$
     carries a pure Hodge structure of weight $k$, so Hodge numbers
     $\mathrm{h}^{p,q}$ with $p+q=k$ make sense as they do for a projective
     variety. What is returned are the Hodge numbers of cohomology *with compact
@@ -2308,9 +2311,12 @@ def moduli_higgs_bundles(rank, degree, genus):
     $\\mathrm{h}_{\\mathrm{c}}^{d,d}=1$.
 
     The answer does not depend on the degree, only on its being coprime to the
-    rank. Hausel--Rodriguez-Villegas state their conjecture for the moduli space
-    attached to $\mathrm{PGL}_n$, which differs from this one by the factor
-    ``jacobian(genus)(genus)`` of the cotangent bundle to the Jacobian.
+    rank. Hausel states the conjecture for the moduli space attached to
+    $\mathrm{PGL}_n$, whose formula differs from this one by the factor
+    ``jacobian(genus)(genus)`` of the cotangent bundle to the Jacobian. That is a
+    relation between the two formulas, not a decomposition of the variety: the
+    $\mathrm{GL}_n$ moduli space is a quotient by the $n$-torsion of the
+    Jacobian, not a product.
 
     INPUT:
 
