@@ -45,6 +45,7 @@ Curves and moduli spaces of sheaves on them
 .. autofunction:: diamond.symmetric_power
 .. autofunction:: diamond.jacobian
 .. autofunction:: diamond.moduli_vector_bundles
+.. autofunction:: diamond.moduli_higgs_bundles
 .. autofunction:: diamond.seshadris_desingularisation
 .. autofunction:: diamond.narasimhan_ramanans_desingularisation
 .. autofunction:: diamond.kirwans_desingularisation

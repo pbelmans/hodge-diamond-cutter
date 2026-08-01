@@ -134,7 +134,7 @@ from itertools import groupby
 # (at your option) any later version.
 #                  https://www.gnu.org/licenses/
 # ****************************************************************************
-from sage.arith.misc import binomial, factorial, gcd
+from sage.arith.misc import binomial, divisors, factorial, gcd, moebius
 from sage.categories.cartesian_product import cartesian_product
 from sage.categories.rings import Rings
 from sage.combinat.composition import Compositions
@@ -2274,6 +2274,213 @@ def kirwans_desingularisation(genus):
     return narasimhan_ramanans_desingularisation(g).blowup(centre, codim=3)
 
 
+def moduli_higgs_bundles(rank, degree, genus):
+    r"""
+    Conjectural Hodge diamond for the moduli space of semistable Higgs bundles
+    of given rank and degree on a curve of a given genus.
+
+    This is Conjecture 5.6 of [math/0406380], in the motivic form of
+    Conjecture 2 of [1104.5698], which is what is implemented. It is a
+    *conjecture*: the answer is proven only in rank 2 by Hitchin's computation,
+    in rank 3 by Gothen's, and in rank 4 for small genus. You have been warned.
+
+    * [math/0406380] Hausel--Rodriguez-Villegas, Mixed Hodge polynomials of character varieties
+    * [1104.5698] Mozgovoy, Solutions of the motivic ADHM recursion formula
+
+    The moduli space is smooth of dimension $2n^2(g-1)+2$, but it is not
+    projective, so what a Hodge diamond can mean for it needs saying. Its
+    cohomology is nevertheless pure, by Theorem 2.1 of [math/0406380]: $H^k$
+    carries a pure Hodge structure of weight $k$, so Hodge numbers
+    $\mathrm{h}^{p,q}$ with $p+q=k$ make sense as they do for a projective
+    variety. What is returned are the Hodge numbers of cohomology *with compact
+    support*, which is what the class in the Grothendieck ring computes, so
+    that the entry in position $(p,q)$ is
+    $\dim\mathrm{Gr}^p_F\mathrm{H}^{p+q}_{\mathrm{c}}$. Poincaré duality
+    recovers the ordinary ones as
+    $\mathrm{h}^{p,q}=\mathrm{h}_{\mathrm{c}}^{d-p,d-q}$, with $d$ the
+    dimension. The diamond is Hodge symmetric but not Serre symmetric, and does
+    not arise from a smooth projective variety.
+
+    Beware that :meth:`HodgeDiamond.dimension` returns $d/2$ rather than $d$: the
+    whole class is divisible by $\\mathbb{L}^{d/2}$, and the convention there is to
+    untwist by the maximal power of the Lefschetz class before measuring. Use
+    $2n^2(g-1)+2$ for $d$, or read it off the top corner, which is
+    $\\mathrm{h}_{\\mathrm{c}}^{d,d}=1$.
+
+    The answer does not depend on the degree, only on its being coprime to the
+    rank. Hausel--Rodriguez-Villegas state their conjecture for the moduli space
+    attached to $\mathrm{PGL}_n$, which differs from this one by the factor
+    ``jacobian(genus)(genus)`` of the cotangent bundle to the Jacobian.
+
+    INPUT:
+
+    - ``rank`` -- rank of the Higgs bundles, at least 1
+
+    - ``degree`` -- degree of the Higgs bundles, coprime to the rank
+
+    - ``genus`` -- genus of the curve, at least 1
+
+    EXAMPLES:
+
+    In rank 1 the moduli space is the cotangent bundle to the Jacobian::
+
+        sage: from diamond import *
+        sage: all(moduli_higgs_bundles(1, d, g) == jacobian(g)(g)
+        ....:     for d in range(-2, 3) for g in range(1, 5))
+        True
+
+    In genus 1 it is the cotangent bundle to the curve, in every rank coprime
+    to the degree::
+
+        sage: all(moduli_higgs_bundles(n, 1, 1) == curve(1)(1) for n in range(1, 5))
+        True
+
+    Reversing the compactly supported Betti numbers turns compact support into
+    ordinary cohomology, giving the Poincaré polynomial. In rank 2 and genus 2
+    it is Hitchin's, of degree the dimension 10, so that half of the diamond is
+    empty::
+
+        sage: P = list(reversed(moduli_higgs_bundles(2, 1, 2).betti()))
+        sage: P[:11]
+        [1, 4, 7, 12, 25, 40, 47, 44, 30, 12, 2]
+        sage: all(b == 0 for b in P[11:])
+        True
+
+    The Euler characteristic vanishes, as the moduli space fibres over the
+    cotangent bundle to the Jacobian::
+
+        sage: moduli_higgs_bundles(2, 1, 3).euler()
+        0
+
+    """
+    n = rank
+    d = degree
+    g = genus
+
+    assert n >= 1, "rank needs to be at least 1"
+    assert g >= 1, "genus needs to be at least 1"
+    assert gcd(n, d) == 1, "rank and degree need to be coprime"
+
+    # Write c = g - 1, let Z_X be the motivic zeta function of the curve, so that
+    # Z_X(s) is the sum of [Sym^j X] s^j, and let a, l, h be the arm, leg and hook
+    # length of a box of a partition. Mozgovoy's Conjecture 2 reads
+    #
+    #   sum_la t^{(1-g)(2n(la)+|la|)} prod_{box} Z_X(t^h L^a) T^{|la|}
+    #     = Exp(sum_n t^{(1-g)n^2} H_n(t) / ((1-t)(1-tL)) T^n),
+    #   [M(n,d)] = L^{dim/2} H_n(1),   dim M(n,d) = 2(cn^2+1),
+    #
+    # with n(la) the sum of the leg lengths and Exp the plethystic exponential,
+    # whose Adams operations raise t and T to the kth power and act on the
+    # Hodge--Poincaré polynomial by x -> -(-x)^k and y -> -(-y)^k.
+    #
+    # The powers of t are negative for g at least 2, and rescaling T cannot clear
+    # them, as the exponent is quadratic in the degree. So we carry the coefficient
+    # of T^m in the normalisation where it stands for t^{-K(m)} times what is
+    # stored, with K(m) = cm^2: the shifts to reinstate in a product are
+    # K(i+j)-K(i)-K(j) = 2cij, those of an Adams operation are
+    # K(km)-kK(m) = ckm^2(k-1), both non-negative, and the right hand side
+    # normalises to H_n(t)/((1-t)(1-tL)), free of any power of t. Every partition
+    # of m then contributes t^{c(m^2-m-2n(la))}, with a non-negative exponent.
+    c = g - 1
+    half = c * n**2 + 1  # half the dimension of the moduli space
+    # the conjecture says that H_n has degree twice that, so one term more is a check
+    prec = 2 * half + 2
+
+    S = PolynomialRing(QQ, ("x", "y"))
+    x, y = S.gens()
+    P = PowerSeriesRing(S, "t", default_prec=prec)
+    t = P.gen()
+    L = x * y
+
+    def K(m):
+        return c * m**2
+
+    zetas = {}
+
+    def zeta(h, a):
+        """Return the motivic zeta function of the curve evaluated at t^h L^a."""
+        if (h, a) not in zetas:
+            zetas[(h, a)] = P(
+                sum(
+                    S(symmetric_power(j, g).polynomial) * L ** (j * a) * t ** (j * h)
+                    for j in range(prec // h + 1)
+                )
+            ).add_bigoh(prec)
+        return zetas[(h, a)]
+
+    def contribution(la):
+        """Return the contribution of a single partition to the left hand side."""
+        legs = sum(la.leg_length(i, j) for (i, j) in la.cells())
+        term = prod(
+            zeta(la.hook_length(i, j), la.arm_length(i, j)) for (i, j) in la.cells()
+        )
+        return t ** (c * (la.size() ** 2 - la.size() - 2 * legs)) * term
+
+    def convolve(A, B):
+        """Return the product of two series in T, in the normalisation above."""
+        return [
+            sum(
+                (
+                    t ** (K(m) - K(i) - K(m - i)) * A[i - 1] * B[m - i - 1]
+                    for i in range(1, m)
+                ),
+                P.zero(),
+            )
+            for m in range(1, n + 1)
+        ]
+
+    def adams(f, k):
+        """Return the Adams operation psi^k, raising t to the kth power as well."""
+        return P(
+            sum(
+                (
+                    coefficient(-((-x) ** k), -((-y) ** k)) * t ** (k * j)
+                    for j, coefficient in enumerate(f.list())
+                    if k * j < prec
+                ),
+                P.zero(),
+            )
+        ).add_bigoh(prec)
+
+    series = [
+        sum((contribution(la) for la in Partitions(m)), P.zero())
+        for m in range(1, n + 1)
+    ]
+
+    # the ordinary logarithm log(1 + z) = sum_k (-1)^{k-1}/k z^k, truncated at T^n
+    logarithm = [P.zero()] * n
+    power = series
+    for k in range(1, n + 1):
+        for m in range(k, n + 1):
+            logarithm[m - 1] += QQ((-1) ** (k - 1)) / k * power[m - 1]
+        if k < n:
+            power = convolve(power, series)
+
+    # and the plethystic one, Log(1 + z) = sum_k mu(k)/k psi^k(log(1 + z)), of
+    # which only the divisors of n reach T^n
+    total = logarithm[n - 1]
+    for k in divisors(n)[1:]:
+        if moebius(k) == 0:
+            continue
+        m = n // k
+        total += (
+            QQ(moebius(k)) / k * t ** (K(n) - k * K(m)) * adams(logarithm[m - 1], k)
+        )
+
+    # H_n(t) = (1 - t)(1 - tL) Log_n, of degree the dimension of the moduli space
+    H = (1 - t) * (1 - t * L) * total
+    assert all(
+        H[j] == 0 for j in range(2 * half + 1, prec)
+    ), "the conjectural polynomial reaches beyond degree {}".format(2 * half)
+
+    value = sum(H[j] for j in range(2 * half + 1))  # H_n(1)
+    assert (
+        value.degree(x) <= half and value.degree(y) <= half
+    ), "the conjectural polynomial reaches beyond bidegree ({0}, {0})".format(half)
+
+    return HodgeDiamond.from_polynomial(HodgeDiamond.R(L**half * value))
+
+
 def moduli_parabolic_vector_bundles_rank_two(genus, alpha):
     r"""
     Hodge diamond for the moduli space of parabolic rank 2 bundles with
@@ -3424,7 +3631,9 @@ def gushel_mukai(n):
     - ``n`` - the dimension, where $n=1,\\ldots,6$
     """
 
-    assert n in range(1, 7), """There is no Gushel--Mukai variety of this
+    assert n in range(
+        1, 7
+    ), """There is no Gushel--Mukai variety of this
         dimension"""
 
     if n == 1:
