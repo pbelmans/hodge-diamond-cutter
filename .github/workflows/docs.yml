@@ -5,6 +5,9 @@ on:
     branches: [ master ]
     paths:
       - ".github/workflows/docs.yml"
+      - "index.rst"
+      - "conf.py"
+      - "diamond/**.py"
 
 jobs:
   build:
