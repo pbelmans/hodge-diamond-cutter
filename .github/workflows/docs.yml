@@ -26,7 +26,7 @@ jobs:
           sudo apt-get install -y texlive-luatex
           sage -pip install sphinx-book-theme
       - name: Checkout Hodge diamond cutter
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Install Hodge diamond cutter
         run: sage --pip install .
       - name: Run Sphinx
@@ -42,7 +42,7 @@ jobs:
           mv _build/latex/hodgediamondcutter.pdf ./github-artifacts/documentation.pdf
           mv _build/html/* ./github-artifacts
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: docs
           path: ./github-artifacts
@@ -51,8 +51,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-      - uses: actions/download-artifact@v3
+        uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
         with:
           path: github-artifacts
       - name: Move docs
