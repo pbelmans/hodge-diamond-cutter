@@ -51,6 +51,7 @@ Curves and moduli spaces of sheaves on them
 .. autofunction:: diamond.kirwans_desingularisation
 .. autofunction:: diamond.moduli_parabolic_vector_bundles_rank_two
 .. autofunction:: diamond.quot_scheme_curve
+.. autofunction:: diamond.brauer_severi
 
 
 Surfaces and moduli spaces of sheaves on them
@@ -62,6 +63,8 @@ Surfaces and moduli spaces of sheaves on them
 .. autofunction:: diamond.enriques
 .. autofunction:: diamond.hilbn
 .. autofunction:: diamond.nestedhilbn
+.. autofunction:: diamond.hilbtwo
+.. autofunction:: diamond.hilbthree
 .. autofunction:: diamond.enriques_hilbn_cover
 .. autofunction:: diamond.hopf
 .. autofunction:: diamond.inoue
@@ -107,6 +110,7 @@ Moduli spaces attached to quivers
 ---------------------------------
 
 .. autofunction:: diamond.quiver_moduli
+.. autofunction:: diamond.slope
 
 
 Hyperkähler varieties
