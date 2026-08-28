@@ -124,6 +124,7 @@ AUTHORS:
 """
 
 from itertools import groupby
+from itertools import product as iter_product
 
 # ****************************************************************************
 #       Copyright (C) 2021 Pieter Belmans <pieterbelmans@gmail.com>
@@ -154,6 +155,7 @@ from sage.modules.free_module_element import vector
 from sage.rings.function_field.constructor import FunctionField
 from sage.rings.integer import Integer
 from sage.rings.integer_ring import ZZ
+from sage.rings.laurent_series_ring import LaurentSeriesRing
 from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
 from sage.rings.polynomial.multi_polynomial import MPolynomial
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
@@ -3120,6 +3122,152 @@ def enriques_hilbn_cover(n):
             M[p, q] = coeff_n.coefficient([p, q])
 
     return HodgeDiamond.from_matrix(hilbn(S, n).matrix + M, from_variety=True)
+
+
+def _ample_complete_intersection(ambient, codimension, genus):
+    r"""Recover an ample complete intersection from its ambient diamond and chi-y genus."""
+    dimension = ambient.dimension() - codimension
+    if dimension < 0:
+        raise ValueError("that many hypersurfaces cut out nothing")
+
+    M = matrix(ZZ, dimension + 1)
+    for p in range(dimension + 1):
+        for q in range(dimension + 1):
+            if p + q < dimension:
+                M[p, q] = ambient[p, q]
+            elif p + q > dimension:
+                M[p, q] = ambient[dimension - p, dimension - q]
+
+    for p in range(dimension + 1):
+        known = sum((-1) ** q * M[p, q] for q in range(dimension + 1))
+        M[p, dimension - p] = (-1) ** (dimension - p) * (genus[p] - known)
+    return HodgeDiamond.from_matrix(M, from_variety=True)
+
+
+def _chi_y_product_projective_spaces(dimensions, multidegrees, value):
+    r"""Compute the chi-y genus at one value by fixed-point localisation."""
+    ambient_dimension = sum(dimensions)
+    L = LaurentSeriesRing(QQ, "t", default_prec=2 * ambient_dimension + 4)
+    t = L.gen()
+    s = 1 + t
+
+    def character(exponent):
+        return s**exponent
+
+    def hodge(c):
+        return (1 + value * c) / (1 - c)
+
+    def koszul(c):
+        return (1 - c) / (1 + value * c)
+
+    total = L.zero()
+    fixed_points = iter_product(*(range(1, n + 2) for n in dimensions))
+    for fixed_point in fixed_points:
+        cotangent = prod(
+            hodge(character(i - j))
+            for n, i in zip(dimensions, fixed_point)
+            for j in range(1, n + 2)
+            if j != i
+        )
+        normal = prod(
+            koszul(character(sum(degree * i for degree, i in zip(d, fixed_point))))
+            for d in multidegrees
+        )
+        total += cotangent * normal
+
+    if total.precision_absolute() <= 0:
+        raise ArithmeticError("the poles at the identity swallowed the precision")
+    return total[0]
+
+
+def complete_intersection_product_projective_spaces(dimensions, multidegrees):
+    r"""
+    Hodge diamond of a smooth ample complete intersection in a product of
+    projective spaces.
+
+    Each entry of multidegrees is the multidegree of one equation.
+    Every entry must be positive, so all defining line bundles are ample.
+    Sommese's Lefschetz theorem and the chi-y genus computed by equivariant
+    localisation determine the diamond without equations or assumptions on
+    ranks in long exact sequences.
+
+    Zero entries are rejected: the smooth family still has constant Hodge
+    numbers, but weak Lefschetz and the chi-y genus alone no longer determine
+    them.
+
+    INPUT:
+
+    - dimensions -- dimensions of the projective-space factors
+
+    - multidegrees -- one multidegree for each equation
+
+    EXAMPLES:
+
+    A bidegree $(2,2)$ curve in a product of projective lines is elliptic::
+
+        sage: from diamond import *
+        sage: complete_intersection_product_projective_spaces([1, 1], [[2, 2]]) == curve(1)
+        True
+
+    A one-factor product agrees with an ordinary projective complete
+    intersection::
+
+        sage: all(
+        ....:     complete_intersection_product_projective_spaces([n + 1], [[d]])
+        ....:     == hypersurface(d, n)
+        ....:     for n in range(5) for d in range(1, 5)
+        ....: )
+        True
+
+    The tetraquadric has Hodge numbers $(h^{1,1},h^{2,1})=(4,68)$::
+
+        sage: X = complete_intersection_product_projective_spaces([1] * 4, [[2] * 4])
+        sage: (X[1, 1], X[2, 1])
+        (4, 68)
+
+    Non-ample inputs are not accepted::
+
+        sage: complete_intersection_product_projective_spaces([1, 2], [[3, 0]])
+        Traceback (most recent call last):
+        ...
+        ValueError: multidegrees need to be positive (the defining bundles must be ample)
+    """
+    dimensions = [Integer(n) for n in dimensions]
+    if not dimensions:
+        raise ValueError("need at least one projective-space factor")
+    if any(n < 0 for n in dimensions):
+        raise ValueError("dimensions need to be non-negative")
+
+    multidegrees = [[Integer(d) for d in degree] for degree in multidegrees]
+    if any(len(degree) != len(dimensions) for degree in multidegrees):
+        raise ValueError(
+            "every multidegree needs one entry per projective-space factor"
+        )
+    if any(d <= 0 for degree in multidegrees for d in degree):
+        raise ValueError(
+            "multidegrees need to be positive (the defining bundles must be ample)"
+        )
+    if len(multidegrees) > sum(dimensions):
+        raise ValueError("that many hypersurfaces cut out nothing")
+
+    ambient = point()
+    for n in dimensions:
+        ambient *= Pn(n)
+    if not multidegrees:
+        return ambient
+
+    dimension = sum(dimensions) - len(multidegrees)
+    R = PolynomialRing(QQ, "y")
+    genus = R.lagrange_polynomial(
+        [
+            (
+                value,
+                _chi_y_product_projective_spaces(dimensions, multidegrees, QQ(value)),
+            )
+            for value in range(dimension + 1)
+        ]
+    )
+    return _ample_complete_intersection(ambient, len(multidegrees), genus)
 
 
 def complete_intersection(degrees, dimension):

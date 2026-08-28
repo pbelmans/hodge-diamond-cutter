@@ -37,6 +37,7 @@ Elementary constructions
 .. autofunction:: diamond.weighted_hypersurface
 .. autofunction:: diamond.cyclic_cover
 .. autofunction:: diamond.complete_intersection
+.. autofunction:: diamond.complete_intersection_product_projective_spaces
 
 Curves and moduli spaces of sheaves on them
 -------------------------------------------
