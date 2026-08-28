@@ -154,6 +154,7 @@ from sage.modules.free_module_element import vector
 from sage.rings.function_field.constructor import FunctionField
 from sage.rings.integer import Integer
 from sage.rings.integer_ring import ZZ
+from sage.rings.laurent_series_ring import LaurentSeriesRing
 from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
 from sage.rings.polynomial.multi_polynomial import MPolynomial
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
@@ -3120,6 +3121,223 @@ def enriques_hilbn_cover(n):
             M[p, q] = coeff_n.coefficient([p, q])
 
     return HodgeDiamond.from_matrix(hilbn(S, n).matrix + M, from_variety=True)
+
+
+def _ample_complete_intersection(ambient, codimension, genus):
+    r"""Recover an ample complete intersection from its ambient diamond and chi-y genus."""
+    dimension = ambient.dimension() - codimension
+    if dimension < 0:
+        raise ValueError("that many hypersurfaces cut out nothing")
+
+    M = matrix(ZZ, dimension + 1)
+    for p in range(dimension + 1):
+        for q in range(dimension + 1):
+            if p + q < dimension:
+                M[p, q] = ambient[p, q]
+            elif p + q > dimension:
+                M[p, q] = ambient[dimension - p, dimension - q]
+
+    for p in range(dimension + 1):
+        known = sum((-1) ** q * M[p, q] for q in range(dimension + 1))
+        M[p, dimension - p] = (-1) ** (dimension - p) * (genus[p] - known)
+    return HodgeDiamond.from_matrix(M, from_variety=True)
+
+
+def _partial_flag_fixed_points(weight_lattice, levi):
+    r"""Enumerate torus fixed points of G/P as Weyl-group representatives."""
+    W = weight_lattice.weyl_group(prefix="s")
+    fundamental_weights = weight_lattice.fundamental_weights()
+    omitted = set(weight_lattice.index_set()).difference(levi)
+    orbit_weight = sum((fundamental_weights[i] for i in omitted), weight_lattice.zero())
+
+    representatives = {orbit_weight: W.one()}
+    queue = [orbit_weight]
+    position = 0
+    simple_reflections = W.simple_reflections()
+    while position < len(queue):
+        current = queue[position]
+        position += 1
+        representative = representatives[current]
+        for reflection in simple_reflections:
+            image = reflection.action(current)
+            if image not in representatives:
+                representatives[image] = reflection * representative
+                queue.append(image)
+    return list(representatives.values())
+
+
+def _chi_y_partial_flag_variety(dynkin, levi, weights, value):
+    r"""Compute the chi-y genus at one value by fixed-point localisation."""
+    D = DynkinDiagram(dynkin)
+    root_system = D.root_system()
+    root_lattice = root_system.root_lattice()
+    weight_lattice = root_system.weight_lattice()
+    omitted = set(D.index_set()).difference(levi)
+    cotangent_roots = [
+        weight_lattice(root)
+        for root in root_lattice.positive_roots()
+        if any(root.to_vector()[i - 1] != 0 for i in omitted)
+    ]
+    fixed_points = _partial_flag_fixed_points(weight_lattice, levi)
+
+    cartan_transpose = matrix(QQ, D.cartan_matrix()).transpose()
+    scale = ZZ(abs(D.cartan_matrix().det()))
+
+    def height(weight):
+        coordinates = cartan_transpose.solve_right(
+            vector(QQ, scale * weight.to_vector())
+        )
+        return ZZ(sum(coordinates))
+
+    ambient_dimension = len(cotangent_roots)
+    L = LaurentSeriesRing(QQ, "t", default_prec=2 * ambient_dimension + 4)
+    t = L.gen()
+    s = 1 + t
+
+    def character(exponent):
+        return s**exponent
+
+    def hodge(c):
+        return (1 + value * c) / (1 - c)
+
+    def koszul(c):
+        return (1 - c) / (1 + value * c)
+
+    total = L.zero()
+    for representative in fixed_points:
+        cotangent = prod(
+            hodge(character(height(representative.action(root))))
+            for root in cotangent_roots
+        )
+        normal = prod(
+            koszul(character(height(representative.action(weight))))
+            for weight in weights
+        )
+        total += cotangent * normal
+
+    if total.precision_absolute() <= 0:
+        raise ArithmeticError("the poles at the identity swallowed the precision")
+    return total[0]
+
+
+def complete_intersection_partial_flag_variety(dynkin, vertices, highest_weights):
+    r"""
+    Hodge diamond of a smooth ample divisor complete intersection in a partial
+    flag variety.
+
+    The ambient variety uses the same Dynkin label and Levi vertices as
+    partial_flag_variety. Each defining line bundle is given by its dominant
+    highest-weight coordinates. Coordinates on Levi vertices must vanish, and
+    those on omitted vertices must be positive. For Picard rank one, positive
+    integers can be given directly.
+
+    Sommese's weak Lefschetz theorem determines every Hodge number away from
+    the middle row. Equivariant localisation computes the chi-y genus and hence
+    the remaining middle entries. This avoids any assumption about ranks of
+    maps in long exact sequences.
+
+    INPUT:
+
+    - dynkin -- the Dynkin type
+
+    - vertices -- indices defining the Levi factor of the parabolic
+
+    - highest_weights -- highest-weight coordinates of the ample line bundles
+
+    EXAMPLES:
+
+    Type A modulo the first maximal parabolic is projective space::
+
+        sage: from diamond import *
+        sage: all(
+        ....:     complete_intersection_partial_flag_variety(
+        ....:         "A5", [2, 3, 4, 5], degrees
+        ....:     ) == complete_intersection(degrees, 5 - len(degrees))
+        ....:     for degrees in ([1], [2], [3], [2, 2], [3, 2, 1])
+        ....: )
+        True
+
+    The Grassmannian of two-planes in four-space is a quadric fourfold::
+
+        sage: all(
+        ....:     complete_intersection_partial_flag_variety(
+        ....:         "A3", [1, 3], degrees
+        ....:     ) == complete_intersection([2] + degrees, 4 - len(degrees))
+        ....:     for degrees in ([1], [2], [3], [1, 1], [2, 2])
+        ....: )
+        True
+
+    An anticanonical divisor in the full flag variety of type A2 is a K3
+    surface::
+
+        sage: complete_intersection_partial_flag_variety(
+        ....:     "A2", [], [[2, 2]]
+        ....: ) == K3()
+        True
+
+    Weights which do not descend to the partial flag variety are rejected::
+
+        sage: complete_intersection_partial_flag_variety(
+        ....:     "A3", [2, 3], [[1, 1, 0]]
+        ....: )
+        Traceback (most recent call last):
+        ...
+        ValueError: highest weights of line bundles on G/P must vanish on Levi vertices
+    """
+    D = DynkinDiagram(dynkin)
+    index_set = list(D.index_set())
+    levi = sorted(set(Integer(i) for i in vertices))
+    if any(i not in index_set for i in levi):
+        raise ValueError("parabolic vertices are not vertices of the Dynkin diagram")
+    omitted = [i for i in index_set if i not in levi]
+
+    raw_weights = list(highest_weights)
+    if len(omitted) == 1 and all(isinstance(d, (int, Integer)) for d in raw_weights):
+        coordinates = [
+            [Integer(degree) if i == omitted[0] else Integer(0) for i in index_set]
+            for degree in raw_weights
+        ]
+    else:
+        coordinates = [
+            [Integer(coefficient) for coefficient in weight] for weight in raw_weights
+        ]
+    if any(len(weight) != len(index_set) for weight in coordinates):
+        raise ValueError("every highest weight needs one coordinate per Dynkin vertex")
+    if any(any(weight[i - 1] != 0 for i in levi) for weight in coordinates):
+        raise ValueError(
+            "highest weights of line bundles on G/P must vanish on Levi vertices"
+        )
+    if any(any(weight[i - 1] <= 0 for i in omitted) for weight in coordinates):
+        raise ValueError("highest weights need to be positive on every omitted vertex")
+
+    ambient = partial_flag_variety(dynkin, levi)
+    if not coordinates:
+        return ambient
+    if len(coordinates) > ambient.dimension():
+        raise ValueError("that many hypersurfaces cut out nothing")
+
+    weight_lattice = D.root_system().weight_lattice()
+    fundamental_weights = weight_lattice.fundamental_weights()
+    weights = [
+        sum(
+            (weight[i - 1] * fundamental_weights[i] for i in index_set),
+            weight_lattice.zero(),
+        )
+        for weight in coordinates
+    ]
+
+    dimension = ambient.dimension() - len(weights)
+    R = PolynomialRing(QQ, "y")
+    genus = R.lagrange_polynomial(
+        [
+            (
+                value,
+                _chi_y_partial_flag_variety(dynkin, levi, weights, QQ(value)),
+            )
+            for value in range(dimension + 1)
+        ]
+    )
+    return _ample_complete_intersection(ambient, len(weights), genus)
 
 
 def complete_intersection(degrees, dimension):
