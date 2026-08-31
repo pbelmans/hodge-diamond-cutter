@@ -143,6 +143,7 @@ from sage.combinat.partition import Partitions
 from sage.combinat.q_analogues import q_binomial
 from sage.combinat.root_system.dynkin_diagram import DynkinDiagram
 from sage.combinat.subset import Subsets
+from sage.geometry.fan import Fan
 from sage.graphs.digraph import DiGraph
 from sage.matrix.constructor import matrix
 from sage.matrix.special import diagonal_matrix
@@ -1785,6 +1786,117 @@ def Pn(n):
     """
     assert n >= 0
     return HodgeDiamond.from_matrix(matrix.identity(n + 1), from_variety=True)
+
+
+def _toric_fan_from_input(ambient, maximal_cones=None):
+    r"""Normalize the supported toric inputs to a Sage fan."""
+    if maximal_cones is not None:
+        rays = [tuple(ZZ(entry) for entry in ray) for ray in ambient]
+        cones = [tuple(ZZ(index) - 1 for index in cone) for cone in maximal_cones]
+        if any(index < 0 for cone in cones for index in cone):
+            raise ValueError("maximal-cone ray indices must be 1-based")
+        fan = Fan(cones, rays=rays, check=True)
+    elif hasattr(ambient, "fan") and callable(ambient.fan):
+        fan = ambient.fan()
+    elif hasattr(ambient, "generating_cones") and hasattr(ambient, "rays"):
+        fan = ambient
+    elif hasattr(ambient, "normal_fan") and callable(ambient.normal_fan):
+        fan = ambient.normal_fan()
+    else:
+        raise TypeError(
+            "expected a Sage toric variety, fan, full-dimensional polytope, "
+            "or rays together with maximal_cones"
+        )
+
+    if not fan.is_complete():
+        raise ValueError("the fan must be complete")
+    if not fan.is_smooth():
+        raise ValueError("the fan must be smooth")
+    return fan
+
+
+def _toric_fan_data(ambient, maximal_cones=None):
+    r"""Return portable rays and 1-based maximal cones for a supported input."""
+    fan = _toric_fan_from_input(ambient, maximal_cones)
+    rays = [tuple(ZZ(entry) for entry in ray) for ray in fan.rays()]
+    cones = [
+        tuple(ZZ(index) + 1 for index in cone.ambient_ray_indices())
+        for cone in fan.generating_cones()
+    ]
+    return rays, cones
+
+
+def toric_variety(ambient, maximal_cones=None):
+    r"""
+    Return the Hodge diamond of a smooth complete toric variety.
+
+    INPUT:
+
+    - ``ambient`` -- one of the following:
+
+      - a Sage toric variety or rational polyhedral fan;
+      - a full-dimensional polytope, whose normal fan is used; or
+      - the primitive ray generators, when ``maximal_cones`` is supplied.
+
+    - ``maximal_cones`` -- optional maximal cones as lists of **1-based** ray
+      indices. This is the portable input shared with HodgeDiamonds.jl.
+
+    The input must define a smooth complete fan. Its Hodge numbers depend only
+    on the fan's numbers~$c_k$ of $k$-dimensional cones: the coefficient of
+    $t^p$ in
+
+    .. MATH::
+
+        \sum_{k=0}^n c_k t^k(1-t)^{n-k}
+
+    is~$h^{p,p}$, and all off-diagonal Hodge numbers vanish.
+
+    EXAMPLES:
+
+    Portable fan data for the projective plane::
+
+        sage: from diamond import *
+        sage: rays = [(1, 0), (0, 1), (-1, -1)]
+        sage: cones = [(1, 2), (2, 3), (1, 3)]
+        sage: toric_variety(rays, cones) == Pn(2)
+        True
+
+    Sage toric varieties, fans, and polytopes are accepted directly::
+
+        sage: X = toric_varieties.P1xP1()
+        sage: toric_variety(X) == Pn(1) * Pn(1)
+        True
+        sage: toric_variety(X.fan()) == toric_variety(X)
+        True
+        sage: P = Polyhedron(vertices=[(0, 0), (1, 0), (0, 1)])
+        sage: toric_variety(P) == Pn(2)
+        True
+
+    Noncomplete and singular fans are rejected::
+
+        sage: toric_variety([(1, 0), (0, 1)], [(1, 2)])
+        Traceback (most recent call last):
+        ...
+        ValueError: the fan must be complete
+        sage: toric_variety([(1, 0), (0, 1), (-1, -2)],
+        ....:               [(1, 2), (2, 3), (1, 3)])
+        Traceback (most recent call last):
+        ...
+        ValueError: the fan must be smooth
+    """
+    fan = _toric_fan_from_input(ambient, maximal_cones)
+    dimension = fan.dim()
+    polynomial_ring = PolynomialRing(ZZ, "t")
+    t = polynomial_ring.gen()
+    h_polynomial = sum(
+        len(fan.cones(k)) * t**k * (1 - t) ** (dimension - k)
+        for k in range(dimension + 1)
+    )
+    x, y = HodgeDiamond.x, HodgeDiamond.y
+    return HodgeDiamond.from_polynomial(
+        sum(h_polynomial[p] * (x * y) ** p for p in range(dimension + 1)),
+        from_variety=True,
+    )
 
 
 def curve(genus):

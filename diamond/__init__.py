@@ -56,6 +56,7 @@ from diamond.diamond import (
     surface,
     symmetric_power,
     symplectic_grassmannian,
+    toric_variety,
     weighted_hypersurface,
     zero,
 )
@@ -118,6 +119,7 @@ __all__ = [
     "surface",
     "symmetric_power",
     "symplectic_grassmannian",
+    "toric_variety",
     "weighted_hypersurface",
     "zero",
 ]
