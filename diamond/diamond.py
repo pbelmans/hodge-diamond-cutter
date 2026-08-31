@@ -155,6 +155,7 @@ from sage.modules.free_module_element import vector
 from sage.rings.function_field.constructor import FunctionField
 from sage.rings.integer import Integer
 from sage.rings.integer_ring import ZZ
+from sage.rings.laurent_series_ring import LaurentSeriesRing
 from sage.rings.polynomial.laurent_polynomial_ring import LaurentPolynomialRing
 from sage.rings.polynomial.multi_polynomial import MPolynomial
 from sage.rings.polynomial.polynomial_ring_constructor import PolynomialRing
@@ -1897,6 +1898,258 @@ def toric_variety(ambient, maximal_cones=None):
         sum(h_polynomial[p] * (x * y) ** p for p in range(dimension + 1)),
         from_variety=True,
     )
+
+
+def _toric_polarization_coefficients(polytope, rays):
+    r"""Coefficients of the ample divisor whose section polytope is ``polytope``."""
+    if hasattr(polytope, "is_lattice_polytope"):
+        if not polytope.is_lattice_polytope():
+            raise ValueError("the polytope must be a lattice polytope")
+    vertices = [vector(QQ, vertex) for vertex in polytope.vertices()]
+    coefficients = []
+    for ray in rays:
+        coefficient = -min(vertex.dot_product(vector(QQ, ray)) for vertex in vertices)
+        if coefficient not in ZZ:
+            raise ValueError("the polytope must be a lattice polytope")
+        coefficients.append(ZZ(coefficient))
+    return coefficients
+
+
+def _toric_divisor_coefficients(fan, definitions):
+    r"""Normalize Sage divisors and portable coefficient vectors."""
+    coefficients = []
+    number_of_rays = fan.nrays()
+    for definition in definitions:
+        if hasattr(definition, "scheme") and hasattr(definition, "coefficient"):
+            if definition.scheme().fan() != fan:
+                raise ValueError(
+                    "all divisors must belong to the ambient toric variety"
+                )
+            current = [ZZ(definition.coefficient(i)) for i in range(number_of_rays)]
+        else:
+            try:
+                current = [ZZ(coefficient) for coefficient in definition]
+            except TypeError as error:
+                raise TypeError(
+                    "each divisor must be a Sage toric divisor or a "
+                    "ray-coefficient vector"
+                ) from error
+        if len(current) != number_of_rays:
+            raise ValueError("each divisor needs one coefficient per ray")
+        coefficients.append(current)
+    return coefficients
+
+
+def _toric_localisation_weights(rays, maximal_cones, divisors):
+    r"""Return cotangent and conormal weights at every torus fixed point."""
+    dimension = len(rays[0]) if rays else 0
+    fixed_point_data = []
+    all_cotangent_weights = []
+
+    for cone in maximal_cones:
+        generator_matrix = matrix(ZZ, [rays[index - 1] for index in cone])
+        inverse = generator_matrix.inverse()
+        cotangent_weights = [
+            vector(ZZ, inverse.transpose().row(i)) for i in range(dimension)
+        ]
+        all_cotangent_weights.extend(cotangent_weights)
+
+        local_characters = []
+        for divisor in divisors:
+            local_character = inverse * vector(
+                ZZ, [-divisor[index - 1] for index in cone]
+            )
+            local_character = vector(ZZ, local_character)
+            if any(
+                local_character.dot_product(vector(ZZ, ray)) <= -divisor[index]
+                for index, ray in enumerate(rays)
+                if index + 1 not in cone
+            ):
+                raise ValueError("every defining divisor must be ample")
+            local_characters.append(local_character)
+        fixed_point_data.append((cotangent_weights, local_characters))
+
+    if dimension == 0:
+        return [([], [])]
+    for base in range(1, len(all_cotangent_weights) * dimension + 2):
+        one_parameter_subgroup = vector(
+            ZZ, [ZZ(base) ** exponent for exponent in range(dimension)]
+        )
+        if all(
+            weight.dot_product(one_parameter_subgroup) != 0
+            for weight in all_cotangent_weights
+        ):
+            break
+    else:
+        raise ArithmeticError("could not find a generic one-parameter subgroup")
+
+    return [
+        (
+            [weight.dot_product(one_parameter_subgroup) for weight in cotangent],
+            [
+                -weight.dot_product(one_parameter_subgroup)
+                for weight in local_characters
+            ],
+        )
+        for cotangent, local_characters in fixed_point_data
+    ]
+
+
+def _chi_y_toric_complete_intersection(fixed_point_data, dimension, value):
+    r"""Compute one value of the chi-y genus by fixed-point localisation."""
+    series_ring = LaurentSeriesRing(QQ, "t", default_prec=2 * dimension + 4)
+    t = series_ring.gen()
+    s = 1 + t
+
+    def character(exponent):
+        return s**exponent
+
+    def hodge(character_value):
+        return (1 + value * character_value) / (1 - character_value)
+
+    def koszul(character_value):
+        return (1 - character_value) / (1 + value * character_value)
+
+    total = series_ring.zero()
+    for cotangent_exponents, conormal_exponents in fixed_point_data:
+        total += prod(
+            hodge(character(exponent)) for exponent in cotangent_exponents
+        ) * prod(koszul(character(exponent)) for exponent in conormal_exponents)
+    if total.precision_absolute() <= 0:
+        raise ArithmeticError("the poles at the identity swallowed the precision")
+    return total[0]
+
+
+def _toric_ample_complete_intersection(ambient, codimension, genus):
+    r"""Recover an ample complete intersection from its ambient and chi-y genus."""
+    dimension = ambient.dimension() - codimension
+    M = matrix(ZZ, dimension + 1)
+    for p in range(dimension + 1):
+        for q in range(dimension + 1):
+            if p + q < dimension:
+                M[p, q] = ambient[p, q]
+            elif p + q > dimension:
+                M[p, q] = ambient[dimension - p, dimension - q]
+
+    for p in range(dimension + 1):
+        known = sum((-1) ** q * M[p, q] for q in range(dimension + 1))
+        middle = (-1) ** (dimension - p) * (genus[p] - known)
+        if middle not in ZZ:
+            raise ArithmeticError("localisation did not produce integral Hodge numbers")
+        M[p, dimension - p] = ZZ(middle)
+    return HodgeDiamond.from_matrix(M, from_variety=True)
+
+
+def toric_complete_intersection(ambient, divisors, divisor_coefficients=None):
+    r"""
+    Return the Hodge diamond of a smooth ample toric complete intersection.
+
+    The ambient variety must be smooth and complete. Each equation is a section
+    of an ample torus-invariant Cartier divisor. A portable divisor is its list
+    of integer coefficients in the ray order. Native Sage toric divisors are
+    accepted too. For a lattice polytope, positive integers mean multiples of
+    its canonical polarization.
+
+    Sommese's weak Lefschetz theorem determines all Hodge numbers away from the
+    middle row. Fixed-point localization computes the chi-y genus and hence the
+    middle entries. No ranks of maps in long exact sequences are assumed.
+
+    INPUT:
+
+    - ``ambient`` -- a Sage toric variety, fan, or lattice polytope;
+
+    - ``divisors`` -- Sage toric divisors or ray-coefficient vectors;
+
+    - ``divisor_coefficients`` -- when supplied, ``ambient`` is the list of
+      rays, ``divisors`` is the list of 1-based maximal cones, and this argument
+      is the list of ray-coefficient vectors.
+
+    EXAMPLES:
+
+    A plane cubic from portable fan and divisor data::
+
+        sage: from diamond import *
+        sage: rays = [(1, 0), (0, 1), (-1, -1)]
+        sage: cones = [(1, 2), (2, 3), (1, 3)]
+        sage: toric_complete_intersection(rays, cones, [[0, 0, 3]]) == curve(1)
+        True
+
+    Native Sage divisors are accepted::
+
+        sage: X = toric_varieties.P2()
+        sage: cubic = X.divisor([0, 0, 3])
+        sage: toric_complete_intersection(X, [cubic]) == curve(1)
+        True
+
+    A polytope supplies a polarization, so only the positive multiples are
+    needed. Twice the square polarization is a genus-one curve::
+
+        sage: square = Polyhedron(vertices=[(0, 0), (1, 0), (0, 1), (1, 1)])
+        sage: toric_complete_intersection(square, [2]) == curve(1)
+        True
+
+    The answer agrees with projective-space complete intersections::
+
+        sage: P4 = toric_varieties.P(4)
+        sage: H = [0, 0, 0, 0, 1]
+        sage: toric_complete_intersection(
+        ....:     P4, [[5 * c for c in H]]
+        ....: ) == complete_intersection([5], 3)
+        True
+
+    Nonample inputs are rejected::
+
+        sage: toric_complete_intersection(X, [[0, 0, 0]])
+        Traceback (most recent call last):
+        ...
+        ValueError: every defining divisor must be ample
+    """
+    if divisor_coefficients is None:
+        fan = _toric_fan_from_input(ambient)
+        definitions = list(divisors)
+        if definitions and all(
+            isinstance(degree, (int, Integer)) for degree in definitions
+        ):
+            if not hasattr(ambient, "normal_fan"):
+                raise TypeError(
+                    "integer multiples are only defined for a polytope polarization"
+                )
+            degrees = definitions
+            if any(degree <= 0 for degree in degrees):
+                raise ValueError("polarization multiples must be positive")
+            rays, _ = _toric_fan_data(fan)
+            polarization = _toric_polarization_coefficients(ambient, rays)
+            definitions = [
+                [ZZ(degree) * coefficient for coefficient in polarization]
+                for degree in degrees
+            ]
+    else:
+        fan = _toric_fan_from_input(ambient, divisors)
+        definitions = list(divisor_coefficients)
+
+    ambient_diamond = toric_variety(fan)
+    if not definitions:
+        return ambient_diamond
+    if len(definitions) > fan.dim():
+        raise ValueError("that many hypersurfaces cut out nothing")
+
+    coefficients = _toric_divisor_coefficients(fan, definitions)
+    rays, maximal_cones = _toric_fan_data(fan)
+    fixed_point_data = _toric_localisation_weights(rays, maximal_cones, coefficients)
+    dimension = fan.dim() - len(coefficients)
+    polynomial_ring = PolynomialRing(QQ, "y")
+    genus = polynomial_ring.lagrange_polynomial(
+        [
+            (
+                value,
+                _chi_y_toric_complete_intersection(
+                    fixed_point_data, fan.dim(), QQ(value)
+                ),
+            )
+            for value in range(dimension + 1)
+        ]
+    )
+    return _toric_ample_complete_intersection(ambient_diamond, len(coefficients), genus)
 
 
 def curve(genus):

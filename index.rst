@@ -38,6 +38,7 @@ Elementary constructions
 .. autofunction:: diamond.cyclic_cover
 .. autofunction:: diamond.complete_intersection
 .. autofunction:: diamond.toric_variety
+.. autofunction:: diamond.toric_complete_intersection
 
 Curves and moduli spaces of sheaves on them
 -------------------------------------------
